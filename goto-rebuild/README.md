@@ -4,7 +4,7 @@ Parametric CadQuery model of the DobStuff 16" rebuild: 3/8" 6061 upper cage, str
 posts between the rings, self-aligning 3.5" secondary holder, wide-pair 6-pole truss on the mirror cage's
 stub tubes, belt-on-rim SiTech drives (GM9413 alt, GM9213 az on the rocker).
 
-Design doc: [`../docs/design.md`](../docs/design.md) (exported) · living doc: https://claude.ai/code/artifact/a2bd133b-cebf-4c55-a572-9a930c1ab10f
+Design doc: [`../docs/design.md`](../docs/design.md) (exported) · living doc: https://claude.ai/code/artifact/a2bd133b-cebf-4c55-a572-9a930c1ab10f · project context: [`../CLAUDE.md`](../CLAUDE.md)
 3D viewer: https://claude.ai/artifact/J1dg2GqFYWfny88NzJT5gF
 
 ## Run

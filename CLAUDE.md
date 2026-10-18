@@ -1,0 +1,120 @@
+# CLAUDE.md: 16" GoTo Dob rebuild
+
+Context for Claude sessions on this repo. Read this first. The living design doc is the source of truth for
+decisions; this file is the working knowledge needed to continue the engineering without re-deriving it.
+
+- Design doc (Claude Docs, editable): https://claude.ai/code/artifact/a2bd133b-cebf-4c55-a572-9a930c1ab10f
+  (project id a2bd133b-cebf-4c55-a572-9a930c1ab10f, tab 765a3677-140b, body node ae7985e7-5528).
+  `docs/design.md` is a Markdown export; re-export after changes.
+- 3D viewer artifact: https://claude.ai/artifact/J1dg2GqFYWfny88NzJT5gF (republish from `goto-rebuild/dist/index.html`
+  with the seven `*.glb.txt` files; see "Viewer" below).
+
+## Owner and working style
+
+- Nick (wardnb). Intermediate Python; fine with other languages if needed.
+- Wants an engineer's review, not reassurance: run numbers, rank findings by cost to image quality, fix them in
+  the model, say plainly what is assumed.
+- Visual observing first. Imaging (ASI533 + OAG) is a future option only; no field rotator, EQ platform maybe later.
+- Machines: AltMill 2×4 CNC (primary for aluminium and birch), LongMill CNC, Voron Trident 3D printer.
+- Transport: Kia EV6; liftgate opening about 25" tall is the binding limit (every piece ≤ about 23" tall).
+- Many dimensions are ASSUMED until Nick measures; keep them flagged and say so in answers.
+
+## Hardware on hand
+
+- Hubble Optics 16" plate-glass sandwich mirror, about f/3.9 (FL about 62.4"; confirm from test-report ROC).
+  Hubble lists 406 mm, about 42 mm thick, about 10.5 kg (23 lb).
+- DobStuff 16" strut kit (Dennis Steele, 2022): 9-point non-flotation cell (triangular 3/4" plate, nine fixed pads,
+  hung on three spring knobs through the bottom ring), mirror cage = two 3/4" ply rings + six short spacer tubes +
+  two ply side panels; three 1.25" strut tubes slide through holes in the top ring and mount on the bottom ring;
+  originally strings and a single upper ring "pre-installed for a 3-vane spider". Ebony Star on Teflon bearings,
+  detachable D bearings with wingnuts. DobStuff closed 2024-12-31 (densteele@gmail.com).
+- SiTech Servo Controller II; Nexus DSC Pro.
+- Pittman GM9213 and GM9413 gearmotors, 24 V, 19.7:1, 500 CPR encoders (LO-COG family).
+- 1800Destiny 180 Series Professional curved 3-vane spider (vanes 1.5" × 1/16", 1/4-20 clinch nut at each tip).
+- Feather Touch FTF2015BCR focuser: 1.4" racked in, 3.0" out, 1.5" travel, 1.55" of drawtube below the
+  mounting face when racked in, 3 lb.
+- Pegasus Pocket Powerbox (two RCA dew outputs; cuts out above about 14–14.5 V, so regulate LiFePO4 to 12 V).
+- WO UniGuide 50 + ToupTek G3M662C = "Waypoint" plate-solving finder (standard Synta-style finder foot).
+- ZWO ASI533 and an OAG (imaging only; OAG not used for Waypoint).
+- 2" eyepieces: Apertura Panorama 21 and 28 mm (82°), Celestron E-Lux 26/32/40 mm (56°); 1.25" SVBONY 6/9/15/20 mm.
+  ES 2" 2× Focal Extender (telecentric). Filters: Optolong L-Pro, Astronomik OIII 12 nm (2"). ES field flattener
+  (refractor only, not for the Dob).
+
+## Decisions (and why) — do not reopen without new data
+
+| Topic | Decision | Why / rejected alternatives |
+| --- | --- | --- |
+| Upper cage | Two solid 3/8" 6061 rings, ID 17.5", OD 20.5", 7.5" clear gap; four 3/4" square 6061 posts at 45/135/225/315°; 1/4" focuser board on two 1/2"×3/4" rails, 3-point push-pull | 1/4" slotted rings flexed ~3× more (cage FE). Lightening slots cost 8× in-plane stiffness for 1.3 lb. Aluminium chosen over ply for repeatable bolted joints. The 3D-printed cage failed and is retired. |
+| Spider | Straight 4-vane, 0.020" stainless × 1.5" tall, vanes at 45/135/225/315° anchored on the POSTS between the rings (#10-32 studs through the posts, nut outside = tension). Hub (2.6" dia, 2.0" bore) = secondary holder top plate, just under the upper ring | Cage+spider FE: 0.02 mm drift. Anchoring on blocks above the ring was 0.08 mm. Wire spider (8 × 0.025", long hub) reached 0.12 mm and obstructs more; shelved. Destiny curved needs towers on the ring and ~0.3 mm drift (curved vanes bend); kept only as a drawn alternative. Nick explicitly wants load-bearing anchors between the rings, not cantilevered off one ring. |
+| Secondary | 3.5" minor axis (not 3.1") | At L = 11.9" the 3.1" has only ~0.05" fully illuminated; 3.5" gives ~0.45", obstruction 21.9% (invisible visually). |
+| Secondary holder | Mirror bonded face-down in a jig to a carrier on three 0.012" pads (RTV in wells); carrier doweled to a 45° body; push screws tapped in the hub at r 1.1", pull screws in ±4° arc slots at r 0.8" for clocking; 1/4-20 centre retainer; Kapton heater + NTC on the Pegasus | Solves "glued it on twisted"; clocking is a normal collimation step. Offset built into the dowel pattern (0.317" along the major axis for 3.5"). |
+| Focal plane | L (secondary centre to focus) = 11.9" | FTF2015 + coma corrector (needs ~0.75" in-travel) sits mid-travel; racked-out shoulder-plane eyepieces still focus; drawtube clears the 8" beam when in use. |
+| Coma corrector | Always in. Explore Scientific HR 2" (~$200 on sale) chosen on price; Paracorr 2 (~$577) equivalent for this use | Reducers and refractor flatteners are wrong for this scope. Extender stacks eyepiece → extender → corrector. |
+| Truss | Wide-pair octahedron: three pre-joined pairs, 1" × 0.058" 6061-T6 poles (~30" long, 0.5 lb each). Pair blocks under the cage's lower ring at 30/150/270°; each pair spreads ±60° to cone sockets on two neighbouring stubs at 90/210/330° | Narrow pairs (±30°) were 2× softer. Truss FE: 0.046 mm with ideal joints; joints dominate (20,000 lb/in joints → 0.25 mm; any play is catastrophic). Carbon is a later upgrade. |
+| Truss joints | Bonded 6061 plugs with 60° cone ends into countersunk sockets; side knob presses a brass pad (only to stop lift-off). Base sockets plug into 1.25" stubs of the DobStuff tubes left in the cage's holes, 1" proud. Nine knobs total | Zero play by construction; loads go straight to the bottom ring. No aluminium plate on the cage top ring needed. |
+| Mirror cell | Keep DobStuff 9-point cell. Replace spring knobs with push-pull (3 × 5/16-24 + lock). If silicone-bonded: keep, no sling. If loose: 1/2" × 0.010" stainless strap at the CG plane | Sandwich is stiff (Hubble uses 6 points). Springs move with altitude. |
+| Altitude bearings | Rebuilt: 14" radius D, two laminated 3/4" Baltic birch layers, cut with dowel holes in one AltMill setup; Ebony Star on PTFE pads at ±35°; drive-side rim = 0.6" Ebony Star band + 0.4" GT2 belt band + 0.3" sealed tape band | Concentric rim for the belt and encoder; dowels for repeatable detach. Aluminium rejected (edge too narrow, heavier). |
+| Drives | Belt-on-rim on both axes: 9 mm GT2 glued teeth-out, sprung 20T pinion (0.5" PD), 2:1 GT2 stage. Alt GM9413 112:1; Az GM9213 on the ROCKER driving a fixed 30" ground ring (cut to 480 teeth), 120:1 | 1.9× torque margin each axis, ~10–11°/s slew, ~0.28"/motor count. Friction capstan rejected (μ≈0.2 → 150 lb preload). Az motor on the rocker so no cable crosses the az axis. Cable drive is the fallback. Ron's DobStuff GoTo uses SiTech + "gear and rack", confirming the approach. |
+| Encoders | Magnetic tape (not optical) on bearing rim and ground-ring rim, sprung read heads into SiTech encoder inputs | Floating PTFE bearing can't hold an optical head gap. |
+| Backlash | Keep 20–30 in-lb mirror-end imbalance | Keeps the gear train loaded one way. |
+| Balance | Solved with no counterweight: mirror face 14.6" below the altitude axis, eyepiece ~60.6" at zenith, nested transport height ~19.8" | DobStuff spacing would need ~36 lb counterweight. |
+| Wiring | Cage hub; USB3 + 12 V trunk crosses the altitude axis at the D-bearing's straight edge (twist loop, no rim groove) | Electronics box on the rocker; mini PC for ASCOM/plate solving. |
+| Guiding | OAG only (imaging); a separate guide scope suffers differential flexure at 1626 mm | |
+
+## Error budget (focal-plane drift horizon→zenith, 0.5 mm tolerance)
+
+Cage + quad spider 0.02 mm (cage_fe.py) · truss ~0.09 mm with cone joints (truss_fe.py) · cell ~0.05–0.12 mm ·
+total ≈ 0.2 mm. Collimate at 45° and the visible error halves.
+
+## Model code (`goto-rebuild/`)
+
+- Python + CadQuery 2.x (`pip install cadquery numpy matplotlib`). Units: inches in, mm out (`IN = 25.4`).
+- Frame: tube axis +Y toward the sky, focuser on −X, altitude axis along X. In `upper_cage.py` y = 0 is the
+  secondary centre; `dob_model.py` translates into the scope frame (`y_sec`).
+- `dob_model.py`: params `P` (ASSUMED values flagged), balance solve by bisection on `net_moment`, mirror cage,
+  truss (`truss` narrow, `truss_zig` = chosen wide pairs), bearings, drives; writes `out/*.glb`, `out/dob16_alt45.step`,
+  `out/params.json`. Key params: `L_secondary_to_focus=11.9`, `secondary_minor=3.5`, `mcage_tube_angles`, `stub_proud`.
+- `upper_cage.py`: INPUTS dict (plate 0.375, board_t 0.25, lighten False); STRUTS, QUAD, TOPS (Destiny seats),
+  APEX (truss pair blocks), FINDER=150°; `quad_spider()`, `spider_blocks()`, `wire_spider()`, `alignment_bar()`,
+  `centering_gauge()` (X-bars with a plug into the hub bore), `build()`.
+- `secondary_holder.py`: P (minor 3.5, thick 0.70 ASSUMED), `carrier_flat()`, `jig_flat()`, `build()`.
+  Jig standoff = mirror thickness − 0.11" (5/8" for 0.70").
+- `export_cage.py`: fit checks (clashes, beam r = 8", board holes, focuser cone, spider/gauge clashes) → `out/upper_cage/fit_report.json`, DXFs, STEPs, cut sheet.
+- `export_holder.py`: carrier/jig DXFs, holder STEP, gluing jig STEP.
+- `cage_fe.py`: 3D frame FE (custom `Frame` class) of the cage + spider; `python cage_fe.py quad`. Metric = primary's
+  focus reflected by the deflected secondary, minus eyepiece motion, swept 0–90°.
+- `truss_fe.py`: truss FE (cage rigid); reads `out/params.json`, run from `goto-rebuild/`.
+- `wire_geo2.py`, `wire_geo3.py`: wire-spider layout studies (historical).
+- Always re-run `export_cage.py` after cage/spider edits and check `clashes_in3`, `quad_spider_clashes`,
+  `quad_vanes_in_focuser_cone` are empty/False.
+
+## Viewer
+
+- `site/index.html` (three.js 0.160.0 from jsdelivr) + `build_site.py` → `dist/`. GLBs are shipped as base64
+  `.glb.txt` because the artifact host does not serve `.glb`; the page decodes them with `GLTFLoader.parse`.
+- Spider radio: Quad (default), Curved, Wire. Truss radio: Wide pairs (default), Narrow pairs.
+- Screenshots: Playwright with `executablePath: /opt/pw-browsers/chromium-1194/chrome-linux/chrome`, routing the
+  CDN to a local three install (`tools/shot*.js`).
+
+## Environment gotchas (Claude cloud sessions)
+
+- Outbound network is allowlisted; Blogger image URLs (blogger.googleusercontent.com) are blocked, so DobStuff blog
+  photos can't be downloaded. Ask Nick to attach photos instead.
+- Claude Docs edits: use find/replace with text quoted exactly; whole-block replaces need ifHash + ifRev.
+
+## Open measurements (replace ASSUMED values)
+
+- [ ] Mirror cage: angle of the three tube holes vs the bearings, tube OD, ring OD/ID, ring-to-ring height, spacer positions
+- [ ] Cell: silicone-bonded or loose; collimation bolt thread
+- [ ] Altitude bearing radius and pad positions; rocker width; ground board
+- [ ] FTF2015 base bolt circle and hole size
+- [ ] 3.5" secondary thickness when ordered
+- [ ] Mirror ROC from the Hubble test report (confirms f/3.9)
+- [ ] Starting force on each axis (luggage scale) to confirm motor assignment
+- [ ] Magnetic tape / read head model and SiTech encoder input compatibility
+
+## Next design work
+
+Socket blocks and pair blocks (detail drawings + wedge fixture), push-pull cell conversion, rocker and ground
+ring with the az pinion bracket, alt pinion bracket, electronics box layout, and a cage-on-truss combined FE once
+the measurements are in.
