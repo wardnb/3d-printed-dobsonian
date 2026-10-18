@@ -1,0 +1,10 @@
+v1 spider as drawn, slotted rings      swing 0->90: 1.752 mm | max residual after collimating at 45: 1.051 mm | hub sag @0: 0.324 mm, @90: 0.614 mm | board tilt @0: 0.403 mrad
+v1 spider as drawn, solid rings        swing 0->90: 1.272 mm | max residual after collimating at 45: 0.644 mm | hub sag @0: 0.257 mm, @90: 0.384 mm | board tilt @0: 0.251 mrad
+v2 long hub (paired/cross/45), slotted rings swing 0->90: 0.856 mm | max residual after collimating at 45: 0.605 mm | hub sag @0: 0.167 mm, @90: 0.516 mm | board tilt @0: 0.401 mrad
+v2 long hub, solid 1/4 rings           swing 0->90: 0.290 mm | max residual after collimating at 45: 0.200 mm | hub sag @0: 0.109 mm, @90: 0.211 mm | board tilt @0: 0.250 mrad
+v2 long hub, solid 3/8 rings           swing 0->90: 0.098 mm | max residual after collimating at 45: 0.059 mm | hub sag @0: 0.065 mm, @90: 0.079 mm | board tilt @0: 0.105 mrad
+v2 long hub, alt senses (8 spikes), solid swing 0->90: 0.180 mm | max residual after collimating at 45: 0.124 mm | hub sag @0: 0.116 mm, @90: 0.196 mm | board tilt @0: 0.251 mrad
+v2 long hub, lo anchors -2.5, solid    swing 0->90: 0.601 mm | max residual after collimating at 45: 0.418 mm | hub sag @0: 0.113 mm, @90: 0.250 mm | board tilt @0: 0.248 mrad
+v2 long hub, solid, apexes fixed       swing 0->90: 0.306 mm | max residual after collimating at 45: 0.207 mm | hub sag @0: 0.102 mm, @90: 0.157 mm | board tilt @0: 0.208 mrad
+v2 long hub, solid, 10 lb focuser      swing 0->90: 0.369 mm | max residual after collimating at 45: 0.258 mm | hub sag @0: 0.118 mm, @90: 0.297 mm | board tilt @0: 0.302 mrad
+v2 long hub, solid, 0.020 wire         swing 0->90: 0.287 mm | max residual after collimating at 45: 0.193 mm | hub sag @0: 0.127 mm, @90: 0.214 mm | board tilt @0: 0.250 mrad

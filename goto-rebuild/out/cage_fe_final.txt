@@ -1,0 +1,4 @@
+FINAL v2 cage: 3/8 solid rings, paired/50deg, 1/4 board swing 0->90: 0.119 mm | max residual after collimating at 45: 0.070 mm | hub sag @0: 0.071 mm, @90: 0.084 mm | board tilt @0: 0.099 mrad
+  same with 1/4 rings                  swing 0->90: 0.350 mm | max residual after collimating at 45: 0.241 mm | hub sag @0: 0.116 mm, @90: 0.232 mm | board tilt @0: 0.241 mrad
+  same, alt senses                     swing 0->90: 0.105 mm | max residual after collimating at 45: 0.069 mm | hub sag @0: 0.080 mm, @90: 0.077 mm | board tilt @0: 0.100 mrad
+  same, 8 lb focuser load              swing 0->90: 0.132 mm | max residual after collimating at 45: 0.082 mm | hub sag @0: 0.072 mm, @90: 0.100 mm | board tilt @0: 0.110 mrad

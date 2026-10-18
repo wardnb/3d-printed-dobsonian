@@ -1,0 +1,448 @@
+<title>16-inch Dob Rebuild</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one working viewer (3D scope) with a narrow spec rail beside it; rail stacks under the viewer on phones. */
+:root {
+  --bg: #e9edf0;
+  --surface: #f7f9fa;
+  --ink: #1a2430;
+  --muted: #5b6878;
+  --rule: #c8d1d9;
+  --sky: #d9e1e8;
+  --brass: #9a6d1f;
+  --brass-soft: rgba(154, 109, 31, 0.12);
+  --warn: #9b5a12;
+  --ok: #2f6b47;
+  --f-display: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e141b; --surface: #141c25; --ink: #e3e9ef; --muted: #91a0af; --rule: #263240;
+    --sky: #0a1018; --brass: #d4a24a; --brass-soft: rgba(212, 162, 74, 0.14);
+    --warn: #e0a050; --ok: #7cc49a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e141b; --surface: #141c25; --ink: #e3e9ef; --muted: #91a0af; --rule: #263240;
+  --sky: #0a1018; --brass: #d4a24a; --brass-soft: rgba(212, 162, 74, 0.14);
+  --warn: #e0a050; --ok: #7cc49a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 32px;
+}
+.wrap { max-width: 1320px; margin: 0 auto; display: grid; gap: 16px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 24px; }
+h1 { font-family: var(--f-display); font-weight: 600; font-size: 28px; letter-spacing: 0.01em; margin: 0; text-wrap: balance; }
+.sub { color: var(--muted); margin: 0; }
+.sub b { color: var(--ink); font-weight: 600; }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+@media (max-width: 900px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+
+.viewer { position: relative; background: var(--sky); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden;
+  height: clamp(420px, 74vh, 860px); }
+.viewer canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-family: var(--f-mono); font-size: 13px; }
+.labels { position: absolute; inset: 0; pointer-events: none; }
+.tag { position: absolute; transform: translate(-50%, -100%); font-family: var(--f-mono); font-size: 11px; white-space: nowrap;
+  color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 1px 6px; opacity: 0.92; }
+.tag::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: 10px; background: var(--muted); }
+.hud { position: absolute; left: 12px; bottom: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; pointer-events: none; }
+.hud > * { pointer-events: auto; }
+.views { display: flex; gap: 4px; flex-wrap: wrap; }
+button.v { font: 500 12px var(--f-mono); color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 5px 9px; cursor: pointer; }
+button.v[aria-pressed="true"] { border-color: var(--brass); color: var(--brass); }
+button.v:focus-visible, input:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+.hint { margin-left: auto; font-family: var(--f-mono); font-size: 11px; color: var(--muted); background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 4px 8px; }
+
+aside { display: grid; gap: 18px; min-width: 0; }
+section h2 { font-family: var(--f-display); font-weight: 600; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+.ctrl { display: grid; gap: 6px; }
+.alt-row { display: flex; align-items: baseline; justify-content: space-between; }
+.alt-val { font-family: var(--f-mono); font-size: 22px; font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--brass); }
+.scale { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.seg { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.seg-l { font-size: 14px; margin-right: 8px; }
+.seg label { font: 500 12px var(--f-mono); border: 1px solid var(--rule); border-radius: 4px; padding: 5px 10px; cursor: pointer; background: var(--surface); }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label:has(input:checked) { border-color: var(--brass); color: var(--brass); }
+.seg label:has(input:focus-visible) { outline: 2px solid var(--brass); outline-offset: 2px; }
+.note { margin: 0; font-size: 13px; color: var(--muted); }
+.toggles { display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+td { padding: 6px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td.n { text-align: right; font-family: var(--f-mono); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; padding-left: 12px; }
+td small { display: block; color: var(--muted); font-size: 12px; }
+.callout { border-left: 3px solid var(--brass); background: var(--brass-soft); padding: 10px 12px; font-size: 14px; border-radius: 0 4px 4px 0; }
+.callout b { font-weight: 600; }
+ul.meas { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+ul.meas li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--rule); font-size: 14px; }
+ul.meas .val { font-family: var(--f-mono); font-size: 13px; white-space: nowrap; }
+.chip { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--warn); border: 1px solid currentColor; border-radius: 3px; padding: 0 4px; margin-left: 6px; vertical-align: 1px; }
+.key { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; font-size: 13px; color: var(--muted); }
+.key span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>16-inch Dob Rebuild</h1>
+    <p class="sub">Model v2 (upper cage reviewed: 3/8″ solid rings, quad spider, 3.5″ secondary, FTF2015 + coma corrector) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>dimensions marked “assumed” still need measuring</b></p>
+  </header>
+
+  <div class="grid">
+    <div class="viewer" id="viewer">
+      <div class="loading" id="loading">Loading model…</div>
+      <div class="labels" id="labels"></div>
+      <div class="hud">
+        <div class="views" role="group" aria-label="Camera views">
+          <button class="v" data-view="three" aria-pressed="true">3/4</button>
+          <button class="v" data-view="side" aria-pressed="false">Side</button>
+          <button class="v" data-view="front" aria-pressed="false">Front</button>
+          <button class="v" data-view="cage" aria-pressed="false">Upper cage</button>
+          <button class="v" data-view="drives" aria-pressed="false">Drives</button>
+          <button class="v" data-view="spider" aria-pressed="false">Down the tube</button>
+        </div>
+        <span class="hint">Drag to orbit · scroll or pinch to zoom</span>
+      </div>
+    </div>
+
+    <aside>
+      <section class="ctrl">
+        <h2>Altitude</h2>
+        <div class="alt-row"><label for="alt">Tube angle</label><span class="alt-val" id="altv">45°</span></div>
+        <input id="alt" type="range" min="0" max="90" step="1" value="45">
+        <div class="scale"><span>0° horizon</span><span>90° zenith</span></div>
+        <div class="seg" role="radiogroup" aria-label="Truss layout">
+          <span class="seg-l">Truss</span>
+          <label><input type="radio" name="truss" value="zigzag" checked> Wide pairs</label>
+          <label><input type="radio" name="truss" value="pairs"> Narrow pairs</label>
+        </div>
+        <p class="note" id="trussNote"></p>
+        <div class="seg" role="radiogroup" aria-label="Spider">
+          <span class="seg-l">Spider</span>
+          <label><input type="radio" name="spider" value="quad" checked> Quad</label>
+          <label><input type="radio" name="spider" value="curved"> Curved</label>
+          <label><input type="radio" name="spider" value="wire"> Wire</label>
+        </div>
+        <p class="note" id="spiderNote"></p>
+        <div class="toggles">
+          <label><input id="beam" type="checkbox" checked> Light path</label>
+          <label><input id="tags" type="checkbox" checked> Labels</label>
+        </div>
+      </section>
+
+      <section>
+        <h2>What the model says</h2>
+        <div class="callout"><b>Balance moved the altitude axis.</b> With the DobStuff spacing (mirror about 8″ below the axis) the tube would need roughly <b id="cwDob">20 lb</b> of counterweight. Moving the axis so the mirror face sits <b id="sVal">12.7″</b> below it balances with none, and the eyepiece still lands near <b id="epVal">62″</b> at zenith.</div>
+      </section>
+
+      <section>
+        <h2>Key numbers</h2>
+        <table>
+          <tbody id="checks"></tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Still to measure</h2>
+        <ul class="meas" id="meas"></ul>
+      </section>
+
+      <section>
+        <h2>Colour key</h2>
+        <div class="key">
+          <span style="--c:#dbb880">Baltic birch</span>
+          <span style="--c:#bcc2c9">6061 aluminum</span>
+          <span style="--c:#1f1f21">Poles, focuser, vanes</span>
+          <span style="--c:#4d4f54">Pittman motors</span>
+          <span style="--c:#cc7333">Encoder strips</span>
+          <span style="--c:#335a8c">SiTech box, read head</span>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+const D = __PARAMS__;
+const IN = 25.4;
+const F = D.frame, C = D.checks, P = D.params;
+
+// ---------- side panel ----------
+document.getElementById("cwDob").textContent = Math.round(C.dobstuff_layout_counterweight_lb) + " lb";
+document.getElementById("sVal").textContent = C.mirror_face_below_axis_in.toFixed(1) + "″";
+document.getElementById("epVal").textContent = Math.round(C.eyepiece_height_zenith_in) + "″";
+const rows = [
+  ["Eyepiece height at zenith", C.eyepiece_height_zenith_in.toFixed(1) + "″", "Ground to eyepiece, standing"],
+  ["Transport height, nested", C.nested_transport_height_in.toFixed(1) + "″", "Mirror cage in rocker, bearings off · EV6 liftgate about 25″"],
+  ["Altitude axis height", C.z_alt_axis_in.toFixed(1) + "″", "Set by the lower tube's swing radius"],
+  ["Truss poles", "<span id='poleLen'>6 × " + C.truss_pole_length_in.toFixed(1) + "″</span>", "<span id='poleNote'>1″ OD, three pairs</span>"],
+  ["Tube weight", "≈ " + Math.round(C.tube_weight_lb) + " lb", "Everything that tilts"],
+  ["Altitude drive", Math.round(C.alt_external_ratio) + ":1", "GT2 belt glued on the " + F.R + "″ bearing rim, 20T pinion, 2:1 stage, GM9413"],
+  ["Azimuth drive", Math.round(C.az_external_ratio) + ":1", "GT2 belt on the 30″ ground ring, 20T pinion, 2:1 stage, GM9213 on the rocker"],
+  ["Secondary", P.secondary_minor + "″ minor axis", "Centre " + (P.aperture * P.focal_ratio - P.L_secondary_to_focus).toFixed(1) + "″ above the mirror"],
+];
+document.getElementById("checks").innerHTML = rows.map(([a, b, c]) =>
+  `<tr><td>${a}<small>${c}</small></td><td class="n">${b}</td></tr>`).join("");
+const meas = [
+  ["Mirror diameter", P.mirror_dia + "″"],
+  ["Mirror thickness", P.mirror_thick + "″"],
+  ["Mirror weight", P.mirror_lb + " lb"],
+  ["Altitude bearing radius", P.alt_bearing_radius + "″"],
+  ["Mirror cage ring OD", P.mcage_ring_od + "″"],
+  ["Cell depth below mirror face", P.cell_depth + "″"],
+  ["Rocker width", P.rocker_width + "″"],
+  ["Rocker disc diameter", P.rocker_disc_dia + "″"],
+  ["Spider vane-tip geometry", "generic curve"],
+  ["Feather Touch travel", "1.5″ assumed"],
+  ["Component weights", "estimates"],
+];
+document.getElementById("meas").innerHTML = meas.map(([a, b]) =>
+  `<li><span>${a}<span class="chip">assumed</span></span><span class="val">${b}</span></li>`).join("");
+
+// ---------- scene ----------
+const host = document.getElementById("viewer");
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+host.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(32, 1, 20, 20000);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.maxPolarAngle = Math.PI * 0.495;
+
+scene.add(new THREE.HemisphereLight(0xf2f5ff, 0x3a3326, 1.6));
+const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(1800, 2600, 1400); scene.add(key);
+const fillLight = new THREE.DirectionalLight(0xdfe8ff, 0.9); fillLight.position.set(-2000, 900, -1200); scene.add(fillLight);
+
+function themeColor(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+let floorMat;
+function applyTheme() {
+  scene.background = new THREE.Color(themeColor("--sky"));
+  if (floorMat) floorMat.color = new THREE.Color(themeColor("--rule"));
+  beamMat.color = new THREE.Color(themeColor("--brass"));
+}
+const beamMat = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.55 });
+
+// floor rings for scale (every 12 inches)
+const floor = new THREE.Group();
+floorMat = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.9 });
+for (let r = 12; r <= 48; r += 12) {
+  const pts = [];
+  for (let i = 0; i <= 96; i++) { const a = i / 96 * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * r * IN, 0, Math.sin(a) * r * IN)); }
+  floor.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), floorMat));
+}
+scene.add(floor);
+
+// tube pivot at the altitude axis (glTF frame: x, z_cad, -y_cad)
+const pivot = new THREE.Group();
+pivot.position.set(0, F.z_alt * IN, 0);
+scene.add(pivot);
+
+// light path: mirror rim -> secondary -> focus (CAD inches -> glTF mm)
+const cad = (x, y, z) => new THREE.Vector3(x * IN, z * IN, -y * IN);
+const beam = new THREE.Group();
+{
+  const FL = P.aperture * P.focal_ratio, r = P.aperture / 2, ym = F.y_mirror, ys = F.y_sec;
+  const focus = cad(-(ym + FL - ys), ys, 0);
+  const seg = [];
+  for (let i = 0; i < 16; i++) {
+    const a = i / 16 * Math.PI * 2, cx = Math.cos(a) * r, cz = Math.sin(a) * r;
+    const t = (ys - cx - ym) / (FL - cx);                 // hit the 45 deg secondary plane y = ys - x
+    const hx = cx * (1 - t), hy = ym + FL * t, hz = cz * (1 - t);
+    seg.push(cad(cx, F.y_ring_hi + 2, cz), cad(cx, ym, cz));   // incoming
+    seg.push(cad(cx, ym, cz), cad(hx, hy, hz));                 // to secondary
+    seg.push(cad(hx, hy, hz), focus);                           // to focus
+  }
+  beam.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(seg), beamMat));
+}
+pivot.add(beam);
+
+// labels
+const tags = [
+  { t: "Upper cage · 6061 rings", p: cad(0, F.y_ring_hi, 10.4), g: pivot },
+  { t: "Feather Touch 2″", p: cad(F.focuser_x - 0.5, F.y_sec, 1.6), g: pivot },
+  { t: "6-pole truss", p: cad(6.0, 20, 6.5), g: pivot },
+  { t: "Drive bearing · tape + belt", p: cad(F.bearing_x + 0.6, -F.R * 0.7, -F.R * 0.7), g: pivot },
+  { t: "Mirror cage", p: cad(-10.9, -6, 5), g: pivot },
+  { t: "Alt pinion + GM9413", p: cad(F.bearing_x + 3.5, 0, F.z_alt - F.R - 3.2), g: scene },
+  { t: "Az pinion + GM9213 (on the rocker)", p: cad(15.4 * 0.5 + 1.1, -(15.4 * 0.866 + 1.9), 5), g: scene },
+  { t: "SiTech box", p: cad(0, 14.5, 7.2), g: scene },
+];
+const labelHost = document.getElementById("labels");
+for (const tg of tags) {
+  tg.o = new THREE.Object3D(); tg.o.position.copy(tg.p); tg.g.add(tg.o);
+  tg.el = document.createElement("div"); tg.el.className = "tag"; tg.el.textContent = tg.t; labelHost.appendChild(tg.el);
+}
+
+// ---------- load models ----------
+const loader = new GLTFLoader();
+// models are published as base64 text files (the artifact host serves .txt, not .glb)
+const load = url => fetch(url).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+  .then(b64 => {
+    const bin = atob(b64.trim()), buf = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+    return new Promise((res, rej) => loader.parse(buf.buffer, "", g => res(g.scene), rej));
+  });
+const trussModels = {};
+const spiderModels = {};
+const spiderInfo = {
+  quad: "Chosen after the design review: four 0.020\u2033 (0.5 mm) stainless vanes, 1.5\u2033 tall, anchored on the four posts between the rings (45/135/225/315\u00b0) by #10-32 studs through the posts, so the pull lands on beams bolted to both rings. Short 2.6\u2033 hub = the secondary holder's top plate, just under the upper ring. Four spikes at 45\u00b0 to the altitude axis; vane obstruction 0.5 in\u00b2. Cage FE: 0.02 mm of focal-point drift horizon to zenith on 3/8\u2033 rings.",
+  curved: "Destiny 180 Professional: three curved aluminium vanes, 1.5″ tall, each screwed into a tower at 0/120/240°, with a 3/4″ stalk down to the holder. No spikes, but curved vanes carry side loads in bending: the model predicts ~0.3 mm of focal-point drift horizon to zenith (0.45 mm with a 1/4″ stalk).",
+  wire: "v2 wire spider: eight 0.025\u2033 music-wire strings in two planes 3\u2033 apart. A 2.4\u2033 hollow hub (also the secondary holder's top plate) runs from the holder up past the upper ring; the upper wires anchor on four blocks standing on the ring at 45/135/225/315\u00b0, the lower wires on the posts between the rings. Each post's pair forms a V landing on one side of the hub, neighbours alternate sides: no gravity load can twist or tilt the hub, and the eight wires project in only two directions, so stars show four spikes. Cage FE: focal point wanders 0.12 mm horizon to zenith (v1 was 1.8 mm).",
+};
+function setSpider(kind) {
+  for (const k in spiderModels) spiderModels[k].visible = (k === kind);
+  document.getElementById("spiderNote").textContent = spiderInfo[kind];
+}
+document.querySelectorAll('input[name="spider"]').forEach(r => r.addEventListener("change", () => setSpider(r.value)));
+setSpider("curved");
+function tune(obj) {
+  obj.traverse(m => {
+    if (!m.isMesh) return;
+    const mat = m.material;
+    mat.side = THREE.DoubleSide;
+    const c = mat.color;
+    const isAlu = Math.abs(c.r - c.b) < 0.08 && c.r > 0.45 && c.r < 0.8;
+    const isMirror = c.b > 0.85 && c.r < 0.8;
+    mat.metalness = isMirror ? 0.9 : isAlu ? 0.55 : 0.05;
+    mat.roughness = isMirror ? 0.12 : isAlu ? 0.38 : 0.7;
+  });
+}
+const trussInfo = {
+  zigzag: { len: C.truss_zigzag_pole_length_in, note: "1″ × 0.058″ 6061, three pre-joined pairs on a ±60° base",
+    text: "Chosen after the truss review. Each pre-joined pair meets at one block under the lower ring and spreads 120° to two cone sockets on the mirror cage; neighbouring pairs share a socket block, so the six poles form a fully triangulated octahedron. Twice as stiff as the narrow layout (0.05 vs 0.09 mm of focal-point drift with ideal joints); the joints, not the poles, decide the rest. Three units to carry, three double sockets, nine knobs." },
+  pairs: { len: C.truss_pole_length_in, note: "1″ OD, pre-joined pairs on a ±30° base",
+    text: "The earlier layout, kept for comparison: slimmer triangles to carry, but a 10″ base gives half the twist stiffness, and six separate sockets." },
+};
+function setTruss(kind) {
+  for (const k in trussModels) trussModels[k].visible = (k === kind);
+  const i = trussInfo[kind];
+  document.getElementById("trussNote").textContent = i.text;
+  const pl = document.getElementById("poleLen"), pn = document.getElementById("poleNote");
+  if (pl) pl.textContent = "6 × " + i.len.toFixed(1) + "″";
+  if (pn) pn.textContent = i.note;
+}
+document.querySelectorAll('input[name="truss"]').forEach(r => r.addEventListener("change", () => setTruss(r.value)));
+setTruss("zigzag");
+Promise.all(["base", "tube", "truss_pairs", "truss_zigzag", "spider_curved", "spider_wire", "spider_quad"].map(n => load(n + ".glb.txt"))).then(([base, tube, tp, tz, sc, sw, sq]) => {
+  [base, tube, tp, tz, sc, sw, sq].forEach(tune);
+  scene.add(base);
+  pivot.add(tube, tp, tz, sc, sw, sq);
+  trussModels.pairs = tp; trussModels.zigzag = tz;
+  spiderModels.curved = sc; spiderModels.wire = sw; spiderModels.quad = sq;
+  setSpider(document.querySelector('input[name="spider"]:checked').value);
+  setTruss(document.querySelector('input[name="truss"]:checked').value);
+  document.getElementById("loading").hidden = true;
+  setView("three", true);
+}).catch(err => {
+  document.getElementById("loading").textContent = "The 3D model didn't load (" + (err && err.message || "network error") + "). Reload the page to try again.";
+});
+
+// ---------- controls ----------
+const altInput = document.getElementById("alt"), altv = document.getElementById("altv");
+function setAlt(deg) {
+  pivot.rotation.x = THREE.MathUtils.degToRad(deg);
+  altv.textContent = deg + "°";
+}
+altInput.addEventListener("input", () => setAlt(+altInput.value));
+setAlt(+altInput.value);
+document.getElementById("beam").addEventListener("change", e => { beam.visible = e.target.checked; });
+document.getElementById("tags").addEventListener("change", e => { labelHost.hidden = !e.target.checked; });
+
+const views = {
+  three:  { pos: [2300, 1650, 2500], tgt: [0, 700, -150] },
+  side:   { pos: [4300, 1000, -250], tgt: [0, 820, -250] },
+  front:  { pos: [0, 1000, 4400],    tgt: [0, 820, -250] },
+  cage:   { pos: [-1500, 1800, 900], tgt: null },
+  drives: { pos: [1900, 850, 1650],  tgt: [250, 300, 0] },
+  spider: { pos: null, tgt: null },
+};
+function cageCenter() {
+  const v = cad(0, F.y_sec, 0); pivot.updateMatrixWorld(); return v.applyMatrix4(pivot.matrixWorld);
+}
+function setView(name, instant) {
+  const v = views[name];
+  let tgt, pos;
+  if (name === "spider") {
+    pivot.updateMatrixWorld();
+    tgt = cad(0, F.y_ring_hi + 1, 0).applyMatrix4(pivot.matrixWorld);
+    const axis = new THREE.Vector3(0, 0, -1).applyQuaternion(pivot.getWorldQuaternion(new THREE.Quaternion()));
+    pos = tgt.clone().add(axis.multiplyScalar(1100)).add(new THREE.Vector3(0, 40, 0));
+  } else {
+    tgt = v.tgt ? new THREE.Vector3(...v.tgt) : cageCenter();
+    pos = v.tgt ? new THREE.Vector3(...v.pos) : tgt.clone().add(new THREE.Vector3(-900, 350, 700));
+  }
+  const aspect = host.clientWidth / Math.max(1, host.clientHeight);
+  if (aspect < 1.2) pos = tgt.clone().add(pos.clone().sub(tgt).multiplyScalar(Math.pow(1.2 / aspect, 0.8)));
+  if (instant || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    camera.position.copy(pos); controls.target.copy(tgt);
+  } else { anim = { from: camera.position.clone(), fromT: controls.target.clone(), to: pos, toT: tgt, t: 0 }; }
+  document.querySelectorAll("button.v").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.view === name)));
+}
+let anim = null;
+document.querySelectorAll("button.v").forEach(b => b.addEventListener("click", () => setView(b.dataset.view)));
+setView("three", true);
+
+// ---------- render loop ----------
+function resize() {
+  const w = host.clientWidth, h = host.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(host);
+resize();
+applyTheme();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+const tmp = new THREE.Vector3();
+function frame() {
+  if (anim) {
+    anim.t = Math.min(1, anim.t + 0.06);
+    const e = 1 - Math.pow(1 - anim.t, 3);
+    camera.position.lerpVectors(anim.from, anim.to, e);
+    controls.target.lerpVectors(anim.fromT, anim.toT, e);
+    if (anim.t >= 1) anim = null;
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  if (!labelHost.hidden) {
+    const w = host.clientWidth, h = host.clientHeight;
+    for (const tg of tags) {
+      tg.o.getWorldPosition(tmp); tmp.project(camera);
+      const vis = tmp.z < 1 && Math.abs(tmp.x) < 1.05 && Math.abs(tmp.y) < 1.05;
+      tg.el.style.display = vis ? "" : "none";
+      if (vis) { tg.el.style.left = ((tmp.x + 1) / 2 * w) + "px"; tg.el.style.top = ((1 - tmp.y) / 2 * h - 10) + "px"; }
+    }
+  }
+  requestAnimationFrame(frame);
+}
+frame();
+</script>

@@ -1,0 +1,120 @@
+{
+  "clashes_in3": [],
+  "beam_hits": [],
+  "board_pull_holes_yz": [
+    [
+      -3.3,
+      -2.6
+    ],
+    [
+      -3.3,
+      2.6
+    ],
+    [
+      2.7,
+      2.6
+    ]
+  ],
+  "rails_at_z": [
+    2.6,
+    -2.6
+  ],
+  "weights_lb": {
+    "ring_lower": 3.25,
+    "ring_upper": 3.24,
+    "struts": 1.65,
+    "board_rails": 0.55,
+    "focuser_board": 1.01,
+    "spider_blocks": 0.37,
+    "finder_bracket": 0.29,
+    "pair_connectors_concept": 0.94
+  },
+  "cage_metal_lb": 11.3,
+  "quad_block_clashes": [],
+  "quad_beam_hit": false,
+  "quad_spider": {
+    "vane_len_in": 8.02,
+    "vane_centre_y": 2.95,
+    "hub_top_y": 3.7,
+    "vane_angles": [
+      45,
+      135,
+      225,
+      315
+    ]
+  },
+  "quad_spider_clashes": [],
+  "quad_spider_internal": [],
+  "quad_vanes_in_focuser_cone": false,
+  "quad_spider_weights_lb": {
+    "hub": 0.3,
+    "vanes": 0.27,
+    "studs": 0.06
+  },
+  "quad_alignment_bar_clash": null,
+  "wire_runs_in": [
+    [
+      45,
+      6.0249999999999995,
+      8.76
+    ],
+    [
+      45,
+      0.9,
+      9.72
+    ],
+    [
+      135,
+      6.0249999999999995,
+      8.79
+    ],
+    [
+      135,
+      0.9,
+      9.69
+    ],
+    [
+      225,
+      6.0249999999999995,
+      8.76
+    ],
+    [
+      225,
+      0.9,
+      9.72
+    ],
+    [
+      315,
+      6.0249999999999995,
+      8.79
+    ],
+    [
+      315,
+      0.9,
+      9.69
+    ]
+  ],
+  "wire_spider_clashes": [],
+  "wire_spider_internal_clashes": [
+    "wires/studs"
+  ],
+  "wire_pair_min_gap_in": [
+    0.077,
+    0.077,
+    0.077,
+    0.077
+  ],
+  "wires_in_focuser_cone": false,
+  "extension_tip_deflection_in": 0.000274,
+  "extension_root_moment_inlb": 142.5,
+  "post_deflection_in": 0.00222,
+  "alignment_bar_clashes": [],
+  "alignment_bar_len_in": 14.31,
+  "gauge_clashes": [],
+  "wire_spider_weights_lb": {
+    "hub": 0.61,
+    "wires": 0.01,
+    "studs": 0.13,
+    "extensions": 0.6
+  }
+}

@@ -1,0 +1,9 @@
+v2 alt, solid 1/4                      swing 0->90: 0.180 mm | max residual after collimating at 45: 0.124 mm | hub sag @0: 0.116 mm, @90: 0.196 mm | board tilt @0: 0.251 mrad
+v2 alt, solid 5/16                     swing 0->90: 0.100 mm | max residual after collimating at 45: 0.063 mm | hub sag @0: 0.086 mm, @90: 0.111 mm | board tilt @0: 0.152 mrad
+v2 alt, solid 3/8                      swing 0->90: 0.071 mm | max residual after collimating at 45: 0.042 mm | hub sag @0: 0.071 mm, @90: 0.074 mm | board tilt @0: 0.105 mrad
+v2 paired, solid 5/16                  swing 0->90: 0.156 mm | max residual after collimating at 45: 0.104 mm | hub sag @0: 0.080 mm, @90: 0.119 mm | board tilt @0: 0.151 mrad
+v2 paired, solid 1/4 + diagonals       swing 0->90: 0.463 mm | max residual after collimating at 45: 0.322 mm | hub sag @0: 0.073 mm, @90: 0.219 mm | board tilt @0: 0.151 mrad
+v2 alt, solid 1/4 + diagonals          swing 0->90: 0.343 mm | max residual after collimating at 45: 0.233 mm | hub sag @0: 0.081 mm, @90: 0.201 mm | board tilt @0: 0.161 mrad
+v2 paired, solid 3/8 + diagonals       swing 0->90: 0.160 mm | max residual after collimating at 45: 0.103 mm | hub sag @0: 0.051 mm, @90: 0.082 mm | board tilt @0: 0.063 mrad
+v2 paired, solid 1/2                   swing 0->90: 0.060 mm | max residual after collimating at 45: 0.042 mm | hub sag @0: 0.053 mm, @90: 0.046 mm | board tilt @0: 0.063 mrad
+v1 as drawn, solid 3/8                 swing 0->90: 1.190 mm | max residual after collimating at 45: 0.601 mm | hub sag @0: 0.208 mm, @90: 0.316 mm | board tilt @0: 0.106 mrad
