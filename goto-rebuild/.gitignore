@@ -2,3 +2,4 @@ __pycache__/
 dist/
 *.log
 .venv/
+dist_joints/

@@ -9,6 +9,8 @@ decisions; this file is the working knowledge needed to continue the engineering
 - `docs/measurements.md` is the log of as-built measurements; `docs/dobstuff_kit_reference.md` is what the DobStuff blog shows.
 - 3D viewer artifact: https://claude.ai/artifact/J1dg2GqFYWfny88NzJT5gF (republish from `goto-rebuild/dist/index.html`
   with the seven `*.glb.txt` files; see "Viewer" below).
+- Truss joints viewer: https://claude.ai/artifact/1scoQ7z6AcpRmrQ3ZDc6of (source `goto-rebuild/site_joints/index.html`,
+  models from `truss_joints.py` → `out/truss_joints/`; bundle to `dist_joints/` as base64 `.glb.txt` and republish).
 
 ## Owner and working style
 
@@ -87,6 +89,10 @@ measured 38.5" (truss_fe.py) · cell ~0.05–0.12 mm · total ≈ 0.25 mm. Colli
 - `cage_fe.py`: 3D frame FE (custom `Frame` class) of the cage + spider; `python cage_fe.py quad`. Metric = primary's
   focus reflected by the deflected secondary, minus eyepiece motion, swept 0–90°.
 - `truss_fe.py`: truss FE (cage rigid); reads `out/params.json`, run from `goto-rebuild/`.
+- `truss_joints.py`: joint detail (60° cone plugs bonded in the carbon poles, socket blocks with a spigot bonded into the
+  1 5/8" stubs and two cups at ±0.8" on the tangent, pair blocks bonded to both poles with two dowels and one knob under
+  the cage ring). Reads `out/params.json`; writes GLBs and STEPs to `out/truss_joints/`. Plug shank sized for a
+  1.126" bore: re-run after measuring the real tube.
 - `wire_geo2.py`, `wire_geo3.py`: wire-spider layout studies (historical).
 - Always re-run `export_cage.py` after cage/spider edits and check `clashes_in3`, `quad_spider_clashes`,
   `quad_vanes_in_focuser_cone` are empty/False.

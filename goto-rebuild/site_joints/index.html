@@ -1,0 +1,229 @@
+<title>Truss Joints</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one-screen viewer on top, a scrolling drawing sheet underneath. Engineering-sheet feel: condensed display face, tabular numbers, brass accent taken from the pads. */
+:root {
+  --bg: #e9ebee; --paper: #f6f7f8; --ink: #1c2330; --muted: #5b6676; --line: #c6ccd5;
+  --accent: #b8862b; --accent-ink: #7a5712; --alu: #9aa3ad; --carbon: #1a1d22; --scene: #dde1e6;
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "Barlow", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15181d; --paper: #1d2127; --ink: #e8ebef; --muted: #9aa4b2; --line: #343a44;
+  --accent: #d9a441; --accent-ink: #f0c66a; --alu: #b7bec7; --carbon: #0c0e11; --scene: #262b33; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #15181d; --paper: #1d2127; --ink: #e8ebef; --muted: #9aa4b2; --line: #343a44;
+  --accent: #d9a441; --accent-ink: #f0c66a; --alu: #b7bec7; --carbon: #0c0e11; --scene: #262b33; color-scheme: dark }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.45; }
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 12px 32px; max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+h1 { font-family: var(--display); font-weight: 600; font-size: 30px; letter-spacing: .01em; margin: 0; text-wrap: balance; }
+header .sub { color: var(--muted); font-size: 14px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font-family: var(--display); font-size: 17px; letter-spacing: .03em; text-transform: uppercase; padding: 10px 14px; min-height: 44px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 6px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #1c1608; }
+.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.stage { position: relative; height: 58dvh; min-height: 320px; max-height: 640px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--scene); touch-action: none; }
+.stage canvas { display: block; width: 100%; height: 100%; }
+.stage .msg { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-family: var(--mono); font-size: 13px; padding: 16px; text-align: center; }
+.hint { position: absolute; left: 10px; bottom: 8px; font-family: var(--mono); font-size: 11px; color: var(--muted); pointer-events: none; }
+.sheet { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 14px; }
+.sheet h2 { font-family: var(--display); font-weight: 600; font-size: 22px; margin: 0; letter-spacing: .01em; }
+.sheet p { margin: 0; max-width: 62ch; }
+.spec { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; font-size: 15px; }
+.spec dt { color: var(--muted); }
+.spec dd { margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--sw); border: 1px solid var(--line); }
+.diagram { overflow-x: auto; }
+.diagram svg { display: block; max-width: 100%; height: auto; }
+.diagram text { font-family: var(--body); font-size: 13px; fill: var(--ink); }
+.diagram .lbl { fill: var(--muted); }
+.diagram .mono { font-family: var(--mono); font-size: 12px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Truss Joints</h1>
+    <div class="sub">Cone-seated carbon poles, 16" GoTo Dob rebuild</div>
+  </header>
+
+  <div class="chips" role="group" aria-label="View">
+    <button class="chip" data-view="full" aria-pressed="true">Whole truss</button>
+    <button class="chip" data-view="socket" aria-pressed="false">Socket</button>
+    <button class="chip" data-view="section" aria-pressed="false">Cut-away</button>
+    <button class="chip" data-view="pair" aria-pressed="false">Pair block</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="msg" id="msg">Loading model…</div>
+    <div class="hint">drag to orbit · pinch or wheel to zoom · two fingers to pan</div>
+  </div>
+
+  <div class="legend">
+    <span style="--sw:#b7bec7">6061 aluminium</span>
+    <span style="--sw:#1a1d22">carbon tube</span>
+    <span style="--sw:#cc9e40">brass pad / dowel</span>
+    <span style="--sw:#9d9fa5">1 5/8" stub</span>
+    <span style="--sw:#dbb880">plywood ring</span>
+  </div>
+
+  <section class="sheet" id="caption"></section>
+
+  <section class="sheet">
+    <h2>Section through one cone joint</h2>
+    <p>Drawn along the pole axis. The pole hangs from the cage at the top and seats in the socket block at the bottom. Scale in inches.</p>
+    <div class="diagram">
+      <svg viewBox="0 0 640 430" width="640" height="430" role="img" aria-label="Section through a cone joint: carbon tube with a bonded aluminium plug ending in a 60 degree cone, seated in a countersunk cup in the socket block; a brass pad and knob press the plug flank from the side; the block's spigot sits in the 1 5/8 inch stub tube.">
+        <!-- stub tube under the block -->
+        <rect x="203" y="330" width="9" height="90" fill="#9d9fa5"/>
+        <rect x="388" y="330" width="9" height="90" fill="#9d9fa5"/>
+        <!-- block + spigot -->
+        <path d="M150 200 H450 V330 H385 V372 H215 V330 H150 Z" fill="#b7bec7" stroke="#6c7682" stroke-width="1.5"/>
+        <!-- cup (cut) -->
+        <path d="M231 200 L300 320 L369 200 Z" fill="var(--scene)" stroke="#6c7682" stroke-width="1.2"/>
+        <!-- knob bore -->
+        <rect x="362" y="241" width="88" height="18" fill="var(--scene)"/>
+        <!-- carbon tube -->
+        <rect x="231" y="20" width="7" height="136" fill="#1a1d22"/>
+        <rect x="362" y="20" width="7" height="136" fill="#1a1d22"/>
+        <!-- plug: shank in tube, shoulder, cone -->
+        <rect x="238" y="20" width="124" height="136" fill="#d9dde2" stroke="#6c7682" stroke-width="1"/>
+        <path d="M231 156 H369 V200 L322 282 H278 L231 200 Z" fill="#d9dde2" stroke="#6c7682" stroke-width="1.2"/>
+        <!-- epoxy line -->
+        <rect x="236" y="20" width="2.5" height="136" fill="#cc9e40"/>
+        <rect x="361.5" y="20" width="2.5" height="136" fill="#cc9e40"/>
+        <!-- brass pad + knob screw + head -->
+        <rect x="340" y="240" width="22" height="20" fill="#cc9e40" stroke="#7a5712" stroke-width="1"/>
+        <rect x="362" y="243" width="90" height="14" fill="#2a2d33"/>
+        <rect x="450" y="231" width="30" height="38" rx="4" fill="#2a2d33"/>
+        <!-- node -->
+        <circle cx="300" cy="320" r="3.5" fill="#b8862b"/>
+        <!-- dimension: 60 deg -->
+        <path d="M262 253 A45 45 0 0 1 338 253" fill="none" stroke="#b8862b" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="300" y="262" text-anchor="middle" class="mono" fill="#b8862b">60°</text>
+        <!-- labels -->
+        <text x="20" y="60" class="lbl">1.25 × 0.062 carbon tube</text>
+        <path d="M165 55 L231 55" stroke="var(--muted)" stroke-width="1"/>
+        <text x="20" y="110">6061 plug, bonded</text>
+        <text x="20" y="128" class="mono">1.75 in in the bore</text>
+        <path d="M150 112 L238 112" stroke="var(--muted)" stroke-width="1"/>
+        <text x="20" y="178">shoulder, flush</text>
+        <path d="M118 174 L231 174" stroke="var(--muted)" stroke-width="1"/>
+        <text x="20" y="225">cup machined</text>
+        <text x="20" y="243">in the block</text>
+        <path d="M120 230 L240 215" stroke="var(--muted)" stroke-width="1"/>
+        <text x="490" y="215" class="lbl">1/4-20 knob</text>
+        <text x="490" y="233" class="lbl">and brass pad</text>
+        <text x="490" y="251" class="lbl">stop lift-off only</text>
+        <text x="20" y="300">cone apex: the node</text>
+        <path d="M160 296 L297 318" stroke="var(--muted)" stroke-width="1"/>
+        <text x="490" y="320">spigot bonded</text>
+        <text x="490" y="338">into the stub</text>
+        <path d="M486 326 L388 345" stroke="var(--muted)" stroke-width="1"/>
+        <text x="20" y="395" class="lbl">1 5/8 in DobStuff tube,</text>
+        <text x="20" y="413" class="lbl">cut to a stub in the box</text>
+        <path d="M190 400 L203 390" stroke="var(--muted)" stroke-width="1"/>
+        <text x="420" y="395" class="mono lbl">cup depth 1.08 · nose Ø0.40 · Ø1.25 at the rim</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="sheet">
+    <h2>Why it holds collimation</h2>
+    <p>A pin in a hole always has clearance, and the truss analysis puts the whole error budget in that clearance: a 5,000 lb/in joint drifts a millimetre from horizon to zenith. A cone in a cup has no clearance by construction. Gravity seats it, it self-centres, and the load spreads over the whole conical face. The knob adds no stiffness and its torque does not matter in the dark.</p>
+    <dl class="spec">
+      <dt>Pole, node to node</dt><dd>38.2 in</dd>
+      <dt>Carbon tube cut length</dt><dd>36.1 in</dd>
+      <dt>Plug shank, for a 1.126 in bore</dt><dd>1.120 in</dd>
+      <dt>Cone, included angle</dt><dd>60°</dd>
+      <dt>Cup depth, apex to rim</dt><dd>1.08 in</dd>
+      <dt>Cups per socket, spaced on the tangent</dt><dd>2 at ±0.8 in</dd>
+      <dt>Knobs to set up</dt><dd>9</dd>
+      <dt>Truss drift 0–90°, ideal joints</dt><dd>0.042 mm</dd>
+      <dt>Same with 20,000 lb/in joints</dt><dd>0.32 mm</dd>
+    </dl>
+  </section>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+               "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+const CAPTIONS = {
+  full: { h: "Whole truss, three pairs", p: "Each pair is two carbon poles bonded permanently into one block that hangs under the cage's lower ring on a single knob. The poles spread 60° each way to the socket blocks on the three stubs left in the mirror box, so every socket receives one pole from each neighbouring pair. Six cones, six knobs below, three above." },
+  socket: { h: "Socket block on a stub", p: "An aluminium block with a spigot bonded into the 1 5/8 inch stub. Two countersunk cups, 0.8 inch either side of the stub's centre, point up along the two poles that meet here. A 1/4-20 knob through the outer face presses a brass pad against each plug's flank so the cone cannot lift out when the scope is bumped." },
+  section: { h: "Cut-away through the cups", p: "Sectioned on the vertical plane through the stub's centre. The plug's cone sits fully in the cup with the shoulder flush at the block's top face; the brass pad bears on the cone flank at mid-depth. The loads go straight down the spigot into the stub and the mirror board." },
+  pair: { h: "Pair block under the cage", p: "The two poles are bonded into bores drilled at the pole angles, so the pair comes out of the car as one rigid V. Two dowels locate the block on the ring and one knob on a stud holds it. The block's top face is the ring's mirror-side face." },
+};
+
+const stage = document.getElementById("stage"), msg = document.getElementById("msg"), cap = document.getElementById("caption");
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+stage.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, 1, 100000);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; controls.dampingFactor = 0.1;
+scene.add(new THREE.HemisphereLight(0xffffff, 0x667788, 1.1));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(1, 2, 1.2); scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff, 0.5); fill.position.set(-1, 0.5, -1); scene.add(fill);
+
+function sceneBg() {
+  const c = getComputedStyle(document.documentElement).getPropertyValue("--scene").trim();
+  scene.background = new THREE.Color(c || "#dde1e6");
+}
+sceneBg();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", sceneBg);
+new MutationObserver(sceneBg).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stage); resize();
+
+const loader = new GLTFLoader();
+const cache = {};
+async function load(name) {
+  if (cache[name]) return cache[name];
+  const r = await fetch(name + ".glb.txt"); if (!r.ok) throw new Error("HTTP " + r.status + " for " + name);
+  const bin = atob((await r.text()).trim()), buf = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+  const g = await new Promise((res, rej) => loader.parse(buf.buffer, "", res, rej));
+  g.scene.traverse(o => { if (o.isMesh && o.material) { o.material.metalness = 0.15; o.material.roughness = 0.6; o.material.side = THREE.DoubleSide; } });
+  cache[name] = g.scene; return g.scene;
+}
+
+let current = null;
+const VIEWS = { full: "joints_full", socket: "socket_detail", section: "socket_section", pair: "pair_detail" };
+async function show(view) {
+  for (const b of document.querySelectorAll(".chip")) b.setAttribute("aria-pressed", String(b.dataset.view === view));
+  cap.innerHTML = "<h2>" + CAPTIONS[view].h + "</h2><p>" + CAPTIONS[view].p + "</p>";
+  msg.hidden = false; msg.textContent = "Loading model…";
+  try {
+    const obj = await load(VIEWS[view]);
+    if (current) scene.remove(current);
+    current = obj; scene.add(obj);
+    const box = new THREE.Box3().setFromObject(obj), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
+    const r = size.length() / 2;
+    controls.target.copy(c);
+    const dir = view === "full" ? new THREE.Vector3(0.9, 0.5, 1.1) : view === "section" ? new THREE.Vector3(0.15, 0.35, 1.0) : new THREE.Vector3(1.0, 0.7, 1.3);
+    camera.position.copy(c).add(dir.normalize().multiplyScalar(r * (view === "section" ? 1.9 : 2.3)));
+    camera.near = r / 100; camera.far = r * 20; camera.updateProjectionMatrix();
+    controls.update();
+    msg.hidden = true;
+  } catch (e) { msg.textContent = "Model failed to load: " + e.message; }
+}
+for (const b of document.querySelectorAll(".chip")) b.addEventListener("click", () => show(b.dataset.view));
+(function tick() { controls.update(); renderer.render(scene, camera); requestAnimationFrame(tick); })();
+const initial = ["full", "socket", "section", "pair"].includes(location.hash.slice(1)) ? location.hash.slice(1) : "full";
+show(initial);
+</script>
