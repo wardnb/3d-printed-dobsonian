@@ -18,7 +18,7 @@ Y_SEC = F["y_sec"]                     # secondary centre above the altitude axi
 Y_RING_LO = F["y_ring_lo"]
 L_FOCUS = 11.9
 X_FOC = -L_FOCUS                        # focal point (eyepiece) at (-11.9, y_sec, 0)
-Y_MCAGE_TOP = P["params"]["mcage_top_above_axis"]
+Y_MCAGE_TOP = F["y_mcage_top"]              # top ring's top face, from the measured box (below the axis)
 R_TOP, R_BOT = P["params"]["truss_top_radius"], P["params"]["truss_bottom_radius"]
 Y_APEX, Y_BASE = Y_RING_LO - 0.6, Y_MCAGE_TOP + 1.6
 FL = P["params"]["aperture"] * P["params"]["focal_ratio"]
@@ -137,6 +137,10 @@ if __name__ == "__main__":
     sweep("pairs, 1.25 x 0.058 Al", od=1.25)
     sweep("pairs, 0.875 x 0.058 Al", od=0.875)
     sweep("pairs, 1.0 x 0.062 carbon (E 15 Msi)", wall=0.062, E=15e6, G=1.0e6, pole_dens=0.057)
+    sweep("zigzag, 1.25 x 0.062 carbon (CHOSEN)", layout="zigzag", od=1.25, wall=0.062, E=15e6, G=1.0e6, pole_dens=0.057)
+    sweep("zigzag, 1.25 carbon, base clamps 20,000 lb/in", layout="zigzag", od=1.25, wall=0.062, E=15e6, G=1.0e6, pole_dens=0.057, base_spring=20000)
+    sweep("zigzag, 1.25 carbon, base clamps 5,000 lb/in", layout="zigzag", od=1.25, wall=0.062, E=15e6, G=1.0e6, pole_dens=0.057, base_spring=5000)
+    sweep("zigzag, 1.25 x 0.058 Al (for comparison)", layout="zigzag", od=1.25)
     sweep("pairs, 1.0 Al, base clamps 20,000 lb/in", base_spring=20000)
     sweep("pairs, 1.0 Al, base clamps 5,000 lb/in", base_spring=5000)
     sweep("pairs, 1.0 Al, base clamps 1,000 lb/in (sloppy)", base_spring=1000)

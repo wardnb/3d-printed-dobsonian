@@ -32,13 +32,16 @@ P = dict(
     mirror_dia=16.0,          # Hubble Optics 16" f/4 sandwich: 406 mm
     mirror_thick=1.65,        # 42 mm (Hubble Optics spec)
     mirror_lb=23.1,           # 10.5 kg (Hubble Optics spec)
-    # Mirror cage / altitude geometry (ASSUMED)
-    mirror_face_below_axis=None,  # None = solve for balance (DobStuff-like 8" is top-heavy)
-    alt_bearing_radius=14.0,      # ASSUMED
-    mcage_ring_od=21.5,           # ASSUMED
-    mcage_ring_id=17.25,          # ASSUMED
-    mcage_top_above_axis=1.0,     # ASSUMED
-    cell_depth=3.5,               # ASSUMED: mirror back + cell below the face
+    # Mirror cage as built by DobStuff (measured 2026-10-18, see docs/measurements.md)
+    mirror_face_below_axis=None,  # None = solve for balance (the as-built axis is ~7" above the mirror face)
+    alt_bearing_radius=14.0,      # DESIGN: rebuilt bearings (as-built DobStuff D is 12 3/16" radius)
+    mcage_ring_od=21.5,           # from Nick's STEP of the DobStuff ring: 21.5" round part, shield sides, point to 12.49" 
+    mcage_point_radius=12.49,     # measured: 10.68" hole radius + 1 13/16" hole centre to the tip
+    mcage_flat_half_width=10.13,  # measured: 21 11/16" across the side strips' outer faces, minus the 18 mm strip
+    mcage_ring_id=18.0,           # measured
+    mcage_top_above_mirror=7.0,   # measured: top ring's top face above the mirror face
+    mcage_height=12.8,            # measured: 11 3/8" between the boards + two 18 mm boards
+    cell_depth=3.0,               # measured: mirror face down to the bottom of the cell triangle
     # Rocker / ground board (ASSUMED)
     rocker_disc_dia=30.0,         # ASSUMED: round rocker floor, az drive edge
     rocker_width=26.5,            # ASSUMED
@@ -52,23 +55,22 @@ P = dict(
     board_inner_from_axis=8.75,
     focuser_racked_in=1.405,      # Feather Touch 2" spec
     # Truss (design)
-    truss_pole_od=1.0,
+    truss_pole_od=1.25,           # DECIDED 2026-10-18: 1.25" x 0.062" roll-wrapped carbon poles
     truss_top_radius=9.6,
-    truss_bottom_radius=9.7,      # = mirror-cage tube radius: the sockets sit on the tube tops
-    mcage_tube_od=1.25,           # DobStuff strut tubes: slide through the top ring, mount on the bottom ring
-    mcage_tube_angles=(90, 210, 330),   # ASSUMED: measure relative to the bearings (must clear the side panels at 0/180)
-    mcage_spacer_od=1.0,          # ASSUMED: the six short tubes between the two rings
-    mcage_spacer_angles=(0, 60, 120, 180, 240, 300),   # ASSUMED
+    truss_bottom_radius=10.68,    # measured: strut holes 18.5" apart centre to centre = 10.68" radius
+    mcage_tube_od=1.625,          # measured: the ring holes are 1 5/8"; the DobStuff struts are 1 5/8" or a hair under
+    mcage_tube_angles=(90, 210, 330),   # measured: one hole square to the bearings (the ring's point), two 30 deg off the bearing axis
+    mcage_spacer_od=1.25,         # measured: seven short tubes between the two rings
+    mcage_spacer_angles=(60, 90, 120, 200, 240, 300, 340),   # from the overhead photo, +/-10 deg
     stub_proud=1.0,               # stub tubes stand this far above the top ring; sockets plug into them
     # Masses for balance (ASSUMED)
-    cell_lb=6.0, mcage_lb_per_in=1.1, bearings_lb=9.0, poles_lb=4.5,   # six 1" x 0.058" 6061 poles at 0.5 lb + plugs
+    cell_lb=6.0, mcage_lb_per_in=1.1, bearings_lb=9.0, poles_lb=3.6,   # six 1.25" x 0.062" carbon poles, ~38.5" at 0.48 lb + plugs
     upper_cage_lb=14.0, eyepiece_lb=3.3,   # cage v2 11.3 lb + wire spider 1.3 + Waypoint 1.4 (cage hub not yet included); 31 Nagler + Paracorr
 )
 
 ASSUMED = [k for k in P if k in (
     "mirror_dia", "mirror_thick", "mirror_lb", "mirror_face_below_axis",
-    "alt_bearing_radius", "mcage_ring_od", "mcage_ring_id",
-    "mcage_top_above_axis", "cell_depth", "rocker_disc_dia", "rocker_width",
+    "rocker_disc_dia", "rocker_width",
     "ground_foot_radius")]
 
 # --------------------------------------------------------------------------
@@ -81,7 +83,8 @@ y_sec_rel = FL - P["L_secondary_to_focus"]          # secondary above mirror fac
 
 def net_moment(s_):
     """lb-in about the altitude axis for mirror face s_ below it (+ = top heavy)."""
-    top, bot = P["mcage_top_above_axis"], -s_ - P["cell_depth"]
+    top = -s_ + P["mcage_top_above_mirror"]
+    bot = top - P["mcage_height"]
     mc_len = top - bot
     ring_lo = y_sec_rel - s_ - 4.5
     m = [
@@ -111,18 +114,18 @@ y_sec = FL - P["L_secondary_to_focus"] - s          # secondary centre
 import upper_cage as _uc
 y_ring_lo = y_sec - (_uc.I["ring_gap"] / 2 + _uc.T)   # lower ring outer face (7.5" gap + two 3/8" rings)
 y_ring_hi = y_sec + (_uc.I["ring_gap"] / 2 + _uc.T)   # upper ring outer (sky) face
-y_mcage_top = P["mcage_top_above_axis"]
-y_mcage_bot = -s - P["cell_depth"]
+y_mcage_top = -s + P["mcage_top_above_mirror"]       # top ring's top face (below the axis in the rebuild)
+y_mcage_bot = y_mcage_top - P["mcage_height"]          # mirror board's bottom face
 mc_r = P["mcage_ring_od"] / 2
 
 # swing radius of the lower tube and the altitude axis height that clears it
-swing = math.hypot(-y_mcage_bot, mc_r)
+swing = math.hypot(-y_mcage_bot, P["mcage_point_radius"])
 ground_top = 1.5 + 0.75                           # feet + ground board + az drive ring
 rocker_floor_top = ground_top + 0.15 + P["ply"]   # PTFE + rocker floor
 z_alt = rocker_floor_top + swing + 0.5
 
 # bearing / rocker x positions
-panel_x = mc_r + 0.1                              # mirror cage side panel inner
+panel_x = P["mcage_flat_half_width"]              # side strip inner face, on the ring's flat
 bearing_x = panel_x + P["ply"] + P["ply"] / 2     # bearing mid-plane
 rocker_wall_in = bearing_x + P["ply"] / 2 + 0.6
 rw = P["rocker_width"] / 2
@@ -247,18 +250,18 @@ for a in (90, 210, 330):
     cell = cell.union(box(x, y_mirror - P["mirror_thick"] - 0.7, z, 2.4, 1.6, 0.5))
 tube.add(cell, name="mirror_cell_9pt", color=ALU)
 
-# mirror cage as DobStuff built it (Nick, 2026-10-18): two 3/4" plywood rings, six short tubes between
-# them, two plywood side panels for the bearings; the three 1.25" strut tubes slide through holes in the
-# top ring and mount on the bottom ring. For the truss, short stubs of those tubes stay in place and the
-# socket blocks plug into their tops.
+# mirror cage as DobStuff built it (measured 2026-10-18): an 18 mm shield-shaped top ring and mirror board,
+# seven 1.25" spacer tubes between them, a narrow 18 mm strip on each side that the bearings bolt to (no
+# side panels), and three 1 5/8" holes on a 10.68" radius for the strut tubes. For the truss, short stubs
+# of those tubes stay in place and the socket blocks plug into their tops.
 mc = ring_y(y_mcage_bot, P["ply"], P["mcage_ring_id"] / 2, mc_r)                        # bottom ring
 mc = mc.union(ring_y(y_mcage_top - P["ply"], P["ply"], P["mcage_ring_id"] / 2, mc_r))    # top ring
-for sx in (-1, 1):                                                                       # bearing side panels
+for sx in (-1, 1):                                                                       # bearing side strips
     mc = mc.union(box(sx * (panel_x + P["ply"] / 2), (y_mcage_top + y_mcage_bot) / 2, 0,
-                      P["ply"], y_mcage_top - y_mcage_bot, 13.0))
+                      P["ply"], y_mcage_top - y_mcage_bot, 3.0))
 tubes = None
-for a in P["mcage_spacer_angles"]:                                                       # six short tubes
-    x, z = polar(P["truss_bottom_radius"], a)
+for a in P["mcage_spacer_angles"]:                                                       # seven short tubes
+    x, z = polar(mc_r - 0.8, a)
     t_ = cyl_y(y_mcage_bot + P["ply"], y_mcage_top - y_mcage_bot - 2 * P["ply"], P["mcage_spacer_od"] / 2, x, z)
     tubes = t_ if tubes is None else tubes.union(t_)
 for a in P["mcage_tube_angles"]:                                                         # three stub tubes
@@ -519,6 +522,7 @@ checks = dict(
 json.dump(dict(params=P, assumed=ASSUMED, checks=checks,
                frame=dict(z_alt=z_alt, y_sec=y_sec, y_mirror=y_mirror,
                           y_ring_hi=y_ring_hi, y_ring_lo=y_ring_lo,
+                          y_mcage_top=y_mcage_top, y_mcage_bot=y_mcage_bot,
                           focuser_x=bx - 0.125 - P["focuser_racked_in"] - 1.0,
                           bearing_x=bearing_x, R=R)),
           open(os.path.join(out, "params.json"), "w"), indent=2)
