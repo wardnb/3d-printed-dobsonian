@@ -97,7 +97,7 @@ cage in the model, so these are for the record only; nothing in the rebuild depe
 | Top ring outside, across the flats to the point | about 22 to 23" | tape photos | read from photo |
 | Top ring thickness | about 3/4" (18 mm) | tape photo | read from photo |
 | Strut hole chords, centre to centre | 18.5" (all three) | Nick, tape | confirmed |
-| Derived: strut hole circle radius | 10.68" (model assumed truss_bottom_radius 9.7) | computed | |
+| Derived: strut hole circle radius | 10.68" if equilateral (superseded: the STEP pilots put the back holes at r 10.625" and the point hole at r 10.25", 18.0" from each back hole) | computed | superseded 2026-10-19 |
 | Strut hole angles | one hole on the plane square to the bearings (the point), the other two 30° off the bearing axis: the model's (90, 210, 330) pattern | overhead photo | confirmed |
 | Box height, inside, mirror board top face to top ring bottom face | 11 3/8" | Nick, tape | confirmed |
 | Box height, overall | 11 3/8" + two 18 mm boards = about 12 13/16" (photo read 12 5/8) | computed | |
@@ -153,7 +153,7 @@ favour of the aluminium cage in the model; the spider and focuser carry over.
 (3.6" x 4.4" x 3.6", a tilted secondary) and "eye" (3" x 3.5" x 4.5"), an optical-layout study. The printed cage
 design (v12) is not in the repo, so the strut bore has to come from a tape round a strut.
 | Point hole centre to the tip of the point | 1 13/16" | Nick, tape | confirmed |
-| Derived: tube axis to the point tip (swing radius input) | 12.49" | computed | |
+| Derived: tube axis to the point tip (swing radius input) | 12.125" (STEP tip; 10.25 + 1.81 = 12.06 by tape) | computed | agrees two ways |
 
 **Nick's STEP files (2026-10-18).** `wooden_cage.step` models the DobStuff ring: 3/4" thick, 18" ID, 21.5" OD on the
 round part, shield sides as 31.4" arcs, 22.9" to the point (real ring taped at 23 3/8"). `cage.step` is the retired
@@ -165,3 +165,17 @@ holder); its strut clamps are not included, so the strut bore is still unknown. 
 **Truss decision (2026-10-18):** 1.25" x 0.062" roll-wrapped carbon poles, wide pairs. FE at 38.5": 0.042 mm ideal
 joints (1" Al 0.086, 1.25" Al 0.070), lateral mode 88 Hz. With 20,000 lb/in base joints 0.32 mm, so joint quality
 is the whole game; the plugs get bonded into the pole bore. Mirror face 13.9" below the axis, eyepiece 63.5" at zenith.
+
+## Top ring from `wooden_cage.step`, 2026-10-19
+
+Nick's STEP of the DobStuff ring, taken as accurate. Read with CadQuery (`importers.importStep`, circular edges). Angles in the
+model frame: bearings on 0/180°, point hole at 90°.
+
+| Item | Value | Status |
+| --- | --- | --- |
+| Outline | 18" ID, 21.5" OD round part, point tip 12.125" from the centre, point sides are arcs of r 15.7" centred 4.96" behind the centre, 3/4" thick | from the STEP |
+| Strut hole pilots (0.26") | back holes at r 10.625" (210° and 330°), point hole at r 10.25" (90°). Back to back 18.5", back to point 18.0" | from the STEP; 18.5" taped, 18.0" to tape |
+| Spacer pilots (0.26") | six at r 9.875": 20/40, 140/160, 260/280 (two per side, two at the back). Nick counted seven with three at the back; the seventh is assumed at 270° | from the STEP; seventh to confirm |
+| 1" holes | two at r 10.25", 25° either side of the back (205° and 335°); purpose unknown | from the STEP |
+| Edge vs 45 mm holes | a 45 mm hole at r 10.625" reaches r 11.51", but the round edge is at r 10.75": breaks out by 3/4" as drawn. The photo shows ply all round the hole, so the as-built ring is wider there | **conflict, measure** |
+| Effect on the model | `mcage_tube_radii=(10.25, 10.625, 10.625)`, `mcage_point_radius=12.125`; poles 38.15" to the point socket and 38.20" to the back sockets; pair blocks at 30° and 150° are mirror images; truss FE unchanged (0.042 mm); eyepiece 63.3" | applied |

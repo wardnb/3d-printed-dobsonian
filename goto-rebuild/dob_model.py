@@ -36,7 +36,7 @@ P = dict(
     mirror_face_below_axis=None,  # None = solve for balance (the as-built axis is ~7" above the mirror face)
     alt_bearing_radius=14.0,      # DESIGN: rebuilt bearings (as-built DobStuff D is 12 3/16" radius)
     mcage_ring_od=21.5,           # from Nick's STEP of the DobStuff ring: 21.5" round part, shield sides, point to 12.49" 
-    mcage_point_radius=12.49,     # measured: 10.68" hole radius + 1 13/16" hole centre to the tip
+    mcage_point_radius=12.125,    # from Nick's wooden_cage.step (tip 12.125" from the ring centre); agrees with 10.25" hole + 1 13/16" to the tip
     mcage_flat_half_width=10.13,  # measured: 21 11/16" across the side strips' outer faces, minus the 18 mm strip
     mcage_ring_id=18.0,           # measured
     mcage_top_above_mirror=7.0,   # measured: top ring's top face above the mirror face
@@ -57,12 +57,13 @@ P = dict(
     # Truss (design)
     truss_pole_od=1.25,           # DECIDED 2026-10-18: 1.25" x 0.062" roll-wrapped carbon poles
     truss_top_radius=9.6,
-    truss_bottom_radius=10.68,    # measured: strut holes 18.5" apart centre to centre = 10.68" radius
+    truss_bottom_radius=10.68,    # narrow-pair layout only (historical); the stubs use mcage_tube_radii
     mcage_tube_od=1.772,          # measured 2026-10-19 (calipers): DobStuff struts 45 mm OD x 40 mm ID, ring holes 45 mm
     mcage_tube_wall=0.098,        # 2.5 mm wall
-    mcage_tube_angles=(90, 210, 330),   # measured: one hole square to the bearings (the ring's point), two 30 deg off the bearing axis
+    mcage_tube_angles=(90, 210, 330),   # point hole at 90 (square to the bearings), back holes 30 deg off the bearing axis
+    mcage_tube_radii=(10.25, 10.625, 10.625),   # from wooden_cage.step pilot holes: back holes 18.5" apart, 18.0" to the point hole
     mcage_spacer_od=1.25,         # measured: seven short tubes between the two rings
-    mcage_spacer_angles=(60, 90, 120, 200, 240, 300, 340),   # from the overhead photo, +/-10 deg
+    mcage_spacer_angles=(20, 40, 140, 160, 260, 270, 280),   # six from wooden_cage.step (r 9.875); 270 is the seventh Nick counted at the back, position ASSUMED
     stub_proud=1.0,               # stub tubes stand this far above the top ring; sockets plug into them
     # Masses for balance (ASSUMED)
     cell_lb=6.0, mcage_lb_per_in=1.1, bearings_lb=9.0, poles_lb=3.6,   # six 1.25" x 0.062" carbon poles, ~38.5" at 0.48 lb + plugs
@@ -141,6 +142,15 @@ def polar(r, deg):
     return r * math.cos(a), r * math.sin(a)        # (x, z) around the tube axis
 
 
+def base_xz(deg):
+    """(x, z) of the stub tube at angle deg (the three socket positions, from the STEP)."""
+    d = deg % 360
+    for a, r in zip(P["mcage_tube_angles"], P["mcage_tube_radii"]):
+        if abs((d - a + 180) % 360 - 180) < 1:
+            return polar(r, a)
+    return polar(P["truss_bottom_radius"], deg)
+
+
 truss = []
 for k, t in enumerate(tops):
     tx, tz = polar(P["truss_top_radius"], t)
@@ -155,7 +165,7 @@ truss_zig = []
 for t in tops:
     tx, tz = polar(P["truss_top_radius"], t)
     for b in (t - 60, t + 60):
-        bx, bz = polar(P["truss_bottom_radius"], b)
+        bx, bz = base_xz(b)
         truss_zig.append(((bx, y_mcage_top + P["stub_proud"] + 0.6, bz), (tx, y_ring_lo - 0.6, tz)))
 pole_len_zig = math.dist(*truss_zig[0])
 
@@ -266,7 +276,7 @@ for a in P["mcage_spacer_angles"]:                                              
     t_ = cyl_y(y_mcage_bot + P["ply"], y_mcage_top - y_mcage_bot - 2 * P["ply"], P["mcage_spacer_od"] / 2, x, z)
     tubes = t_ if tubes is None else tubes.union(t_)
 for a in P["mcage_tube_angles"]:                                                         # three stub tubes
-    x, z = polar(P["truss_bottom_radius"], a)
+    x, z = base_xz(a)
     t_ = cyl_y(y_mcage_bot, y_mcage_top - y_mcage_bot + P["stub_proud"], P["mcage_tube_od"] / 2, x, z)
     tubes = t_ if tubes is None else tubes.union(t_)
 tube.add(tubes, name="mirror_cage_tubes", color=cq.Color(0.72, 0.73, 0.75))
@@ -277,7 +287,7 @@ def truss_assy(name, poles_list, bottom_angles, blk_w):
     a = cq.Assembly(name=name)
     blocks = None
     for b in bottom_angles:
-        x, z = polar(P["truss_bottom_radius"], b)
+        x, z = base_xz(b)
         # socket block: blk_w tangential x 1.6 radial x 1.2 tall, square to the radius, on the tube top
         y_top = y_mcage_top + P["stub_proud"]
         blk = (cq.Workplane("XY").box(1.6 * IN, 1.2 * IN, blk_w * IN)
@@ -525,6 +535,7 @@ json.dump(dict(params=P, assumed=ASSUMED, checks=checks,
                           y_ring_hi=y_ring_hi, y_ring_lo=y_ring_lo,
                           y_mcage_top=y_mcage_top, y_mcage_bot=y_mcage_bot,
                           focuser_x=bx - 0.125 - P["focuser_racked_in"] - 1.0,
-                          bearing_x=bearing_x, R=R)),
+                          bearing_x=bearing_x, R=R,
+                          stub_xz={str(a): base_xz(a) for a in P["mcage_tube_angles"]})),
           open(os.path.join(out, "params.json"), "w"), indent=2)
 print(json.dumps(checks, indent=2))

@@ -20,6 +20,16 @@ L_FOCUS = 11.9
 X_FOC = -L_FOCUS                        # focal point (eyepiece) at (-11.9, y_sec, 0)
 Y_MCAGE_TOP = F["y_mcage_top"]              # top ring's top face, from the measured box (below the axis)
 R_TOP, R_BOT = P["params"]["truss_top_radius"], P["params"]["truss_bottom_radius"]
+STUB_XZ = {int(k): tuple(v) for k, v in F["stub_xz"].items()}   # measured stub positions (zigzag bases)
+
+
+def base_xz(deg, layout):
+    d = deg % 360
+    if layout == "zigzag":
+        for a, xz in STUB_XZ.items():
+            if abs((d - a + 180) % 360 - 180) < 1:
+                return xz
+    return pol(R_BOT, d)
 Y_APEX, Y_BASE = Y_RING_LO - 0.6, Y_MCAGE_TOP + 1.6
 FL = P["params"]["aperture"] * P["params"]["focal_ratio"]
 Y_MIRROR = F["y_mirror"]
@@ -66,7 +76,7 @@ def build(layout="pairs", od=1.0, wall=0.058, E=E_AL, G=G_AL, base="pinned", ape
             fr.beam(cage, apex_node, RIGID)
         for b in (t - spread, t + spread):
             b = b % 360
-            bx, bz = pol(R_BOT, b)
+            bx, bz = base_xz(b, layout)
             if b not in base_nodes:
                 bn = fr.node(bx, Y_BASE, bz)
                 if base_spring is None:

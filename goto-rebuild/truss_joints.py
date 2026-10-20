@@ -17,7 +17,16 @@ P = json.load(open("out/params.json"))
 F, PR = P["frame"], P["params"]
 
 # --- geometry from the model -------------------------------------------------------------
-R_TOP, R_BOT = PR["truss_top_radius"], PR["truss_bottom_radius"]       # 9.6, 10.68
+R_TOP = PR["truss_top_radius"]                                         # 9.6
+STUB_XZ = {int(k): tuple(v) for k, v in F["stub_xz"].items()}            # stub positions from the STEP pilots
+
+
+def base_xz(deg):
+    d = deg % 360
+    for a, xz in STUB_XZ.items():
+        if abs((d - a + 180) % 360 - 180) < 1:
+            return xz
+    raise KeyError(deg)
 TOPS = [30, 150, 270]
 Y_RING_LO = F["y_ring_lo"]                     # cage lower ring, mirror-side face
 Y_STUB_TOP = F["y_mcage_top"] + PR["stub_proud"]
@@ -89,7 +98,7 @@ def ring_sector(y0, thick, rin, rout, deg, half_span):
 def node_points(t, side):
     """side = -1: pole to base t-60; +1: pole to base t+60. Returns (apex_pt, base_pt)."""
     b = (t + 60 * side) % 360
-    ax, az = polar(R_TOP, t); bx, bz = polar(R_BOT, b)
+    ax, az = polar(R_TOP, t); bx, bz = base_xz(b)
     _, tt = rad_tan(t); _, tb = rad_tan(b)
     # at the apex the pole toward +60 sits on the +tangent side, toward -60 on the -tangent side;
     # at the base the pole that came from the +60 apex (i.e. this base's "-side" neighbour) sits on -tangent
@@ -125,7 +134,7 @@ def pole_parts(A, B, full_pole=True):
 
 def socket_block(b):
     """Block bonded into the stub at base angle b with two cups. Returns dict of solids."""
-    bx, bz = polar(R_BOT, b)
+    bx, bz = base_xz(b)
     rd, td = rad_tan(b)
     centre = (bx, Y_STUB_TOP + BLOCK_H / 2, bz)
     blk = block(centre, b, BLOCK_T, BLOCK_H, BLOCK_R)
@@ -178,7 +187,7 @@ def pole_tube_cut_at_pair(tube, t):
 
 
 def stub_and_ring(b):
-    bx, bz = polar(R_BOT, b)
+    bx, bz = base_xz(b)
     stub = cyl(STUB_OD / 2, Y_STUB_TOP - (F["y_mcage_top"] - 2.5), (bx, F["y_mcage_top"] - 2.5, bz), (0, 1, 0))
     stub = stub.cut(cyl(STUB_OD / 2 - STUB_WALL, 10, (bx, F["y_mcage_top"] - 3, bz), (0, 1, 0)))
     ring = ring_sector(F["y_mcage_top"] - PR["ply"], PR["ply"], PR["mcage_ring_id"] / 2, PR["mcage_ring_od"] / 2, b, 22)
@@ -216,7 +225,7 @@ def build_full():
 
 def build_socket_detail(b=90, section=False):
     a = cq.Assembly(name="socket_detail" + ("_section" if section else ""))
-    bx, bz = polar(R_BOT, b)
+    bx, bz = base_xz(b)
     rd, td = rad_tan(b)
     half = None
     if section:
@@ -272,7 +281,8 @@ if __name__ == "__main__":
     A, B = node_points(30, 1)
     pole_parts(A, B)[0].val().exportStep(f"{out}/pole_plug.step")
     L = math.dist(*node_points(30, 1))
-    print(json.dumps(dict(pole_node_to_node_in=round(L, 2), tube_len_in=round(L - 0.6 - S_SHOULDER - SHOULDER_L, 2),
+    lens = {f'{t}->{(t + 60 * s) % 360}': round(math.dist(*node_points(t, s)), 3) for t in TOPS for s in (-1, 1)}
+    print(json.dumps(dict(pole_node_to_node_in=round(L, 2), pole_lengths_in=lens, tube_len_in=round(L - 0.6 - S_SHOULDER - SHOULDER_L, 2),
                           plug_nose_to_shoulder_in=round(S_SHOULDER - S_NOSE, 3), shank_od_in=round(BORE - 0.006, 3),
                           cup_depth_in=round(S_SHOULDER, 3), node_offset_in=NODE_OFF,
                           spigot_od_in=round(STUB_OD - 2 * STUB_WALL - 0.006, 3), stub_od_in=STUB_OD), indent=1))

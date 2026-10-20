@@ -10,7 +10,7 @@
     "mirror_face_below_axis": null,
     "alt_bearing_radius": 14.0,
     "mcage_ring_od": 21.5,
-    "mcage_point_radius": 12.49,
+    "mcage_point_radius": 12.125,
     "mcage_flat_half_width": 10.13,
     "mcage_ring_id": 18.0,
     "mcage_top_above_mirror": 7.0,
@@ -36,15 +36,20 @@
       210,
       330
     ],
+    "mcage_tube_radii": [
+      10.25,
+      10.625,
+      10.625
+    ],
     "mcage_spacer_od": 1.25,
     "mcage_spacer_angles": [
-      60,
-      90,
-      120,
-      200,
-      240,
-      300,
-      340
+      20,
+      40,
+      140,
+      160,
+      260,
+      270,
+      280
     ],
     "stub_proud": 1.0,
     "cell_lb": 6.0,
@@ -65,14 +70,14 @@
   ],
   "checks": {
     "focal_length_in": 62.4,
-    "z_alt_axis_in": 26.91,
-    "lower_tube_swing_radius_in": 23.3,
+    "z_alt_axis_in": 26.72,
+    "lower_tube_swing_radius_in": 23.11,
     "secondary_y_in": 36.63,
     "truss_pole_length_in": 37.56,
     "truss_zigzag_pole_length_in": 38.54,
-    "eyepiece_height_zenith_in": 63.5,
+    "eyepiece_height_zenith_in": 63.3,
     "nested_transport_height_in": 13.5,
-    "rocker_wall_height_in": 13.4,
+    "rocker_wall_height_in": 13.2,
     "mirror_face_below_axis_in": 13.87,
     "tube_weight_lb": 73.1,
     "net_moment_lb_in": 0.0,
@@ -83,7 +88,7 @@
     "az_external_ratio": 120.0
   },
   "frame": {
-    "z_alt": 26.90940772175457,
+    "z_alt": 26.71580689753563,
     "y_sec": 36.63,
     "y_mirror": -13.87,
     "y_ring_hi": 40.755,
@@ -92,6 +97,20 @@
     "y_mcage_bot": -19.67,
     "focuser_x": -11.405,
     "bearing_x": 11.1935,
-    "R": 14.0
+    "R": 14.0,
+    "stub_xz": {
+      "90": [
+        6.276314845630185e-16,
+        10.25
+      ],
+      "210": [
+        -9.20151991520966,
+        -5.312500000000001
+      ],
+      "330": [
+        9.201519915209659,
+        -5.312500000000004
+      ]
+    }
   }
 }
