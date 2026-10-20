@@ -156,9 +156,11 @@ design (v12) is not in the repo, so the strut bore has to come from a tape round
 | Derived: tube axis to the point tip (swing radius input) | 12.125" (STEP tip; 10.25 + 1.81 = 12.06 by tape) | computed | agrees two ways |
 
 **Nick's STEP files (2026-10-18).** `wooden_cage.step` models the DobStuff ring: 3/4" thick, 18" ID, 21.5" OD on the
-round part, shield sides as 31.4" arcs, 22.9" to the point (real ring taped at 23 3/8"). `cage.step` is the retired
-printed cage (ten ring segments on the same outline, four 8" posts, focuser board with a 2.75" hole, 3.5" secondary
-holder); its strut clamps are not included, so the strut bore is still unknown. Both kept in the session scratchpad only.
+round part, shield sides as 31.4" arcs, 12.125" centre to the tip. `cage.step` is the retired printed upper cage: two rings of
+the same shield outline 6.8" apart, three 8" curved posts between them at the spacer positions, a focuser board and holder.
+Its upper ring carries 0.26" vertical holes at exactly the wooden ring's strut pilots (29.5°/10.62", 150.5°/10.61",
+270°/10.24"), which is how the 50.5" struts attached: a 1/4" bolt down through the ring into each strut end (Nick's
+recollection, to confirm). Both files are kept in `docs/` (`wooden_cage.step`, `printed_cage.step`).
 | Box width across the side strips' outer faces, no bearings | 21 11/16" | Nick, tape | confirmed |
 | Bearing position, as built | the D rides on the PTFE pads on TOP of the rocker side panels, lip hanging outside the panel; the bearing plane is over the panel (about 11.5" from the tube axis), not inside the 22 1/4" rocker width, which only clears the 21 11/16" box | Nick | confirmed |
 
@@ -174,7 +176,7 @@ model frame: bearings on 0/180°, point hole at 90°.
 | Item | Value | Status |
 | --- | --- | --- |
 | Outline | 18" ID, 21.5" OD round part, point tip 12.125" from the centre, point sides are arcs of r 15.7" centred 4.96" behind the centre, 3/4" thick | from the STEP |
-| Strut hole pilots (0.26") | back holes at r 10.625" (210° and 330°), point hole at r 10.25" (90°). Back to back 18.5", back to point 18.0" | from the STEP; 18.5" taped, 18.0" to tape |
+| Strut hole pilots (0.26") | back holes at r 10.625" (210° and 330°), point hole at r 10.25" (90°). Back to back 18.5", back to point 18.0". The printed cage's upper ring has the same three holes, and the straight struts fitted both, so the positions are corroborated | wooden and printed cage STEPs; 18.5" taped, 18.0" to tape |
 | Spacer pilots (0.26") | six at r 9.875": 20/40, 140/160, 260/280 (two per side, two at the back). Nick counted seven with three at the back; the seventh is assumed at 270° | from the STEP; seventh to confirm |
 | 1" holes | two at r 10.25", 25° either side of the back (205° and 335°); purpose unknown | from the STEP |
 | Edge vs 45 mm holes | a 45 mm hole at r 10.625" reaches r 11.51", but the round edge is at r 10.75": breaks out by 3/4" as drawn. The photo shows ply all round the hole, so the as-built ring is wider there | **conflict, measure** |
