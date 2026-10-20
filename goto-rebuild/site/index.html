@@ -213,7 +213,7 @@ const rows = [
 document.getElementById("checks").innerHTML = rows.map(([a, b, c]) =>
   `<tr><td>${a}<small>${c}</small></td><td class="n">${b}</td></tr>`).join("");
 const measured = [
-  ["Top ring", P.mcage_ring_id + "″ ID, 45 mm strut holes at 10.625″ (back) and 10.25″ (point)"],
+  ["Top ring", P.mcage_ring_id + "″ ID shield from the STEP: 21.5″ across the flats, back corners at 12.56″, point at 12.125″; 45 mm strut holes at 10.625″ (back) and 10.25″ (point)"],
   ["Struts (DobStuff)", "45 × 2.5 mm aluminium, 50.5″"],
   ["Box inside height", "11 3/8″, seven 1 1/4″ spacers"],
   ["Mirror face below the top ring", P.mcage_top_above_mirror + "″"],
@@ -225,7 +225,6 @@ const measured = [
 document.getElementById("measured").innerHTML = measured.map(([a, b]) =>
   `<li><span>${a}<span class="chip ok">measured</span></span><span class="val">${b}</span></li>`).join("");
 const meas = [
-  ["Ring OD at the back holes", P.mcage_ring_od + "″ in the STEP; a 45 mm hole at 10.625″ would break out"],
   ["Back hole to point hole", "18.0″ centre to centre per the STEP; tape it"],
   ["Mirror weight", P.mirror_lb + " lb (Hubble spec)"],
   ["Box with mirror, bearing, strut", "bathroom scale"],

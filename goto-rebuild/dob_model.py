@@ -35,7 +35,10 @@ P = dict(
     # Mirror cage as built by DobStuff (measured 2026-10-18, see docs/measurements.md)
     mirror_face_below_axis=None,  # None = solve for balance (the as-built axis is ~7" above the mirror face)
     alt_bearing_radius=14.0,      # DESIGN: rebuilt bearings (as-built DobStuff D is 12 3/16" radius)
-    mcage_ring_od=21.5,           # from Nick's STEP of the DobStuff ring: 21.5" round part, shield sides, point to 12.49" 
+    mcage_ring_od=21.5,           # wooden_cage.step: the front quadrants are r 10.75 arcs and the bearing-side flats are at x = +/-10.75
+    mcage_flat_back_z=6.49,       # the flats run from the bearing axis to 6.49" behind it
+    mcage_back_arc_r=15.706,      # the back is one broad arc, centred 4.96" ahead of the ring centre (corners at r 12.56)
+    mcage_back_arc_cz=4.96,
     mcage_point_radius=12.125,    # from Nick's wooden_cage.step (tip 12.125" from the ring centre); agrees with 10.25" hole + 1 13/16" to the tip
     mcage_flat_half_width=10.13,  # measured: 21 11/16" across the side strips' outer faces, minus the 18 mm strip
     mcage_ring_id=18.0,           # measured
@@ -121,7 +124,8 @@ y_mcage_bot = y_mcage_top - P["mcage_height"]          # mirror board's bottom f
 mc_r = P["mcage_ring_od"] / 2
 
 # swing radius of the lower tube and the altitude axis height that clears it
-swing = math.hypot(-y_mcage_bot, P["mcage_point_radius"])
+mcage_corner_r = math.hypot(P["mcage_ring_od"] / 2, P["mcage_flat_back_z"])          # back corners, 12.56"
+swing = math.hypot(-y_mcage_bot, max(P["mcage_point_radius"], mcage_corner_r))
 ground_top = 1.5 + 0.75                           # feet + ground board + az drive ring
 rocker_floor_top = ground_top + 0.15 + P["ply"]   # PTFE + rocker floor
 z_alt = rocker_floor_top + swing + 0.5
@@ -204,6 +208,23 @@ def ring_y(y0, thick, rin, rout):
     return w.extrude(-thick * IN).translate(v(0, y0, 0))
 
 
+def shield_y(y0, thick, rin):
+    """The DobStuff ring outline from wooden_cage.step: flats on the bearing sides, r 10.75 front arcs to a point
+    at +Z, one broad arc across the back. Local XZ-workplane coords are (X, Z)."""
+    fx, fz = P["mcage_ring_od"] / 2, P["mcage_flat_back_z"]
+    tip = P["mcage_point_radius"]; ar, acz = P["mcage_back_arc_r"], P["mcage_back_arc_cz"]
+    # front arc meets the point line where the STEP puts it: (4.97, 9.53) on the r 10.75 circle
+    pa = math.atan2(9.53, 4.97); qx, qz = fx * math.cos(pa), fx * math.sin(pa)
+    ma = (pa + 0) / 2; mx, mz = fx * math.cos(ma), fx * math.sin(ma)
+    w = (cq.Workplane("XZ").moveTo(fx * IN, 0).lineTo(fx * IN, -fz * IN)
+         .threePointArc((0, (acz - ar) * IN), (-fx * IN, -fz * IN))
+         .lineTo(-fx * IN, 0).threePointArc((-mx * IN, mz * IN), (-qx * IN, qz * IN))
+         .lineTo(0, tip * IN).lineTo(qx * IN, qz * IN).threePointArc((mx * IN, mz * IN), (fx * IN, 0)).close())
+    if rin:
+        w = w.circle(rin * IN)
+    return w.extrude(-thick * IN).translate(v(0, y0, 0))
+
+
 def cyl_y(y0, length, r, x=0, z=0):
     return cq.Workplane("XZ").circle(r * IN).extrude(-length * IN).translate(v(x, y0, z))
 
@@ -263,10 +284,10 @@ tube.add(cell, name="mirror_cell_9pt", color=ALU)
 
 # mirror cage as DobStuff built it (measured 2026-10-18): an 18 mm shield-shaped top ring and mirror board,
 # seven 1.25" spacer tubes between them, a narrow 18 mm strip on each side that the bearings bolt to (no
-# side panels), and three 1 5/8" holes on a 10.68" radius for the strut tubes. For the truss, short stubs
+# side panels, strips flush with the ring flats), and three 45 mm holes at the STEP pilot positions for the strut tubes. For the truss, short stubs
 # of those tubes stay in place and the socket blocks plug into their tops.
-mc = ring_y(y_mcage_bot, P["ply"], P["mcage_ring_id"] / 2, mc_r)                        # bottom ring
-mc = mc.union(ring_y(y_mcage_top - P["ply"], P["ply"], P["mcage_ring_id"] / 2, mc_r))    # top ring
+mc = shield_y(y_mcage_bot, P["ply"], P["mcage_ring_id"] / 2)                             # mirror board
+mc = mc.union(shield_y(y_mcage_top - P["ply"], P["ply"], P["mcage_ring_id"] / 2))         # top ring
 for sx in (-1, 1):                                                                       # bearing side strips
     mc = mc.union(box(sx * (panel_x + P["ply"] / 2), (y_mcage_top + y_mcage_bot) / 2, 0,
                       P["ply"], y_mcage_top - y_mcage_bot, 3.0))

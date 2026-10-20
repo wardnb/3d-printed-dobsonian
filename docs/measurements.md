@@ -175,9 +175,9 @@ model frame: bearings on 0/180°, point hole at 90°.
 
 | Item | Value | Status |
 | --- | --- | --- |
-| Outline | 18" ID, 21.5" OD round part, point tip 12.125" from the centre, point sides are arcs of r 15.7" centred 4.96" behind the centre, 3/4" thick | from the STEP |
+| Outline | 18" ID, 3/4" thick. Flats on the bearing sides at ±10.75" running from the bearing axis to 6.49" behind it; front quadrants are r 10.75" arcs; point tip 12.125" from the centre; the back is one r 15.7" arc centred 4.96" ahead of the ring centre, 10.75" out at the back centre and 12.56" at the two back corners. The bearing strips (21 11/16" across) are flush with the flats | from the STEP |
 | Strut hole pilots (0.26") | back holes at r 10.625" (210° and 330°), point hole at r 10.25" (90°). Back to back 18.5", back to point 18.0". The printed cage's upper ring has the same three holes, and the straight struts fitted both, so the positions are corroborated | wooden and printed cage STEPs; 18.5" taped, 18.0" to tape |
 | Spacer pilots (0.26") | six at r 9.875": 20/40, 140/160, 260/280 (two per side, two at the back). Nick counted seven with three at the back; the seventh is assumed at 270° | from the STEP; seventh to confirm |
 | 1" holes | two at r 10.25", 25° either side of the back (205° and 335°); purpose unknown | from the STEP |
-| Edge vs 45 mm holes | a 45 mm hole at r 10.625" reaches r 11.51", but the round edge is at r 10.75": breaks out by 3/4" as drawn. The photo shows ply all round the hole, so the as-built ring is wider there | **conflict, measure** |
-| Effect on the model | `mcage_tube_radii=(10.25, 10.625, 10.625)`, `mcage_point_radius=12.125`; poles 38.15" to the point socket and 38.20" to the back sockets; pair blocks at 30° and 150° are mirror images; truss FE unchanged (0.042 mm); eyepiece 63.3" | applied |
+| Edge vs 45 mm holes | the back holes sit in the back corners (r 12.56"): 0.6" of ply to the flat, 1.6" to the back arc. No conflict (an earlier note assumed a round back) | resolved |
+| Effect on the model | `mcage_tube_radii=(10.25, 10.625, 10.625)`, `mcage_point_radius=12.125`; poles 38.15" to the point socket and 38.20" to the back sockets; pair blocks at 30° and 150° are mirror images; truss FE unchanged (0.042 mm). The true outline is drawn (`shield_y`) and the swing radius uses the 12.56" back corners, so the axis is 27.0" up and the eyepiece 63.6" | applied |

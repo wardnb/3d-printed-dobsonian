@@ -120,11 +120,11 @@ measured 38.5" (truss_fe.py) · cell ~0.05–0.12 mm · total ≈ 0.25 mm. Colli
       The bearings are the box's sides (narrow ply strips, no side panels).
 - [~] Cell: 1/4" spring studs; mirror sits on a thin ply disc over the 3/4" triangle; bond still unconfirmed (no RTV visible at the edge)
 - [x] Altitude bearing measured: running radius 12 3/16", lip 12 3/8", 18 mm ply + 3/16" lip, axis on the straight edge (`docs/measurements.md`). Pad positions, rocker width, ground board still open
-- [ ] Top ring edge vs holes: `wooden_cage.step` (Nick's, taken as accurate) has 0.26" pilots at the strut positions (back r 10.625"
-      at 30/150, point r 10.25") and the round edge at r 10.75, so a 45 mm back hole would break out by 3/4" if the ring matched.
-      Asked 2026-10-19 for: ply width outside a back hole, back hole to point hole centre to centre (18.0" per the STEP), ring width
-      across the round part, and where the seventh spacer is (STEP has six at r 9.875: 20/40/140/160/260/280 in the model frame).
-      Also weights (box with mirror, one bearing, one strut) and a caliper reading on a spacer tube.
+- [~] Top ring: outline and strut positions taken from `docs/wooden_cage.step` (flats at ±10.75", r 10.75 front arcs, point 12.125",
+      back arc r 15.7 centred 4.96" ahead so the back corners are at r 12.56"; strut pilots back r 10.625" at 30/150, point r 10.25").
+      `docs/printed_cage.step` has the same three holes in its upper ring, so the positions are corroborated. Still to confirm:
+      back hole to point hole 18.0" by tape, the seventh spacer's position (STEP has six at r 9.875: 20/40/140/160/260/280),
+      weights (box with mirror, one bearing, one strut), a caliper reading on a spacer tube, how the strut ends were bolted.
 - [ ] FTF2015 base bolt circle and hole size
 - [ ] 3.5" secondary thickness when ordered
 - [ ] Mirror ROC from the Hubble test report (confirms f/3.9)
