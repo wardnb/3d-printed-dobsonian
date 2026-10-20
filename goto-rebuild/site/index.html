@@ -90,6 +90,7 @@ ul.meas { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
 ul.meas li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--rule); font-size: 14px; }
 ul.meas .val { font-family: var(--f-mono); font-size: 13px; white-space: nowrap; }
 .chip { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--warn); border: 1px solid currentColor; border-radius: 3px; padding: 0 4px; margin-left: 6px; vertical-align: 1px; }
+.chip.ok { color: var(--ok, #4caf7d); }
 .key { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; font-size: 13px; color: var(--muted); }
 .key span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
@@ -98,7 +99,7 @@ ul.meas .val { font-family: var(--f-mono); font-size: 13px; white-space: nowrap;
 <div class="wrap">
   <header>
     <h1>16-inch Dob Rebuild</h1>
-    <p class="sub">Model v2 (upper cage reviewed: 3/8″ solid rings, quad spider, 3.5″ secondary, FTF2015 + coma corrector) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>dimensions marked “assumed” still need measuring</b></p>
+    <p class="sub">Model v3 (mirror box, bearings and rocker measured 18–19 Oct 2026; 1.25″ carbon truss on 45 mm stubs) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>weights and the ring-edge check still open</b></p>
   </header>
 
   <div class="grid">
@@ -156,6 +157,11 @@ ul.meas .val { font-family: var(--f-mono); font-size: 13px; white-space: nowrap;
       </section>
 
       <section>
+        <h2>Measured</h2>
+        <ul class="meas" id="measured"></ul>
+      </section>
+
+      <section>
         <h2>Still to measure</h2>
         <ul class="meas" id="meas"></ul>
       </section>
@@ -206,21 +212,31 @@ const rows = [
 ];
 document.getElementById("checks").innerHTML = rows.map(([a, b, c]) =>
   `<tr><td>${a}<small>${c}</small></td><td class="n">${b}</td></tr>`).join("");
+const measured = [
+  ["Top ring", P.mcage_ring_id + "″ ID, strut holes 45 mm on an 18.5″ triangle"],
+  ["Struts (DobStuff)", "45 × 2.5 mm aluminium, 50.5″"],
+  ["Box inside height", "11 3/8″, seven 1 1/4″ spacers"],
+  ["Mirror face below the top ring", P.mcage_top_above_mirror + "″"],
+  ["Existing bearing", "12 3/16″ running radius, 18 mm ply + lip"],
+  ["Existing rocker", "22 1/4 × 23″ inside, pads 15 3/8″ apart"],
+  ["Ground board", "10″ foot radius, 3/8″ pivot"],
+  ["Encoders", "Astro Devices HD Sensor + 2″ ring"],
+];
+document.getElementById("measured").innerHTML = measured.map(([a, b]) =>
+  `<li><span>${a}<span class="chip ok">measured</span></span><span class="val">${b}</span></li>`).join("");
 const meas = [
-  ["Mirror diameter", P.mirror_dia + "″"],
-  ["Mirror thickness", P.mirror_thick + "″"],
-  ["Mirror weight", P.mirror_lb + " lb"],
-  ["Altitude bearing radius", P.alt_bearing_radius + "″"],
-  ["Mirror cage ring OD", P.mcage_ring_od + "″"],
-  ["Cell depth below mirror face", P.cell_depth + "″"],
-  ["Rocker width", P.rocker_width + "″"],
-  ["Rocker disc diameter", P.rocker_disc_dia + "″"],
-  ["Spider vane-tip geometry", "generic curve"],
-  ["Feather Touch travel", "1.5″ assumed"],
-  ["Component weights", "estimates"],
+  ["Ring OD at the back holes", P.mcage_ring_od + "″ from the STEP; 45 mm holes at 10.68″ would break out"],
+  ["Mirror weight", P.mirror_lb + " lb (Hubble spec)"],
+  ["Box with mirror, bearing, strut", "bathroom scale"],
+  ["Carbon tube bore", "1.126″ until measured"],
+  ["Mirror ROC", "from the Hubble test report"],
+  ["Cell depth below mirror face", P.cell_depth + "″, bond unknown"],
+  ["New rocker width", P.rocker_width + "″ design"],
+  ["Rocker disc diameter", P.rocker_disc_dia + "″ design"],
+  ["FTF2015 base bolt circle", "when the focuser is out"],
 ];
 document.getElementById("meas").innerHTML = meas.map(([a, b]) =>
-  `<li><span>${a}<span class="chip">assumed</span></span><span class="val">${b}</span></li>`).join("");
+  `<li><span>${a}<span class="chip">open</span></span><span class="val">${b}</span></li>`).join("");
 
 // ---------- scene ----------
 const host = document.getElementById("viewer");
@@ -337,8 +353,8 @@ function tune(obj) {
   });
 }
 const trussInfo = {
-  zigzag: { len: C.truss_zigzag_pole_length_in, note: "1″ × 0.058″ 6061, three pre-joined pairs on a ±60° base",
-    text: "Chosen after the truss review. Each pre-joined pair meets at one block under the lower ring and spreads 120° to two cone sockets on the mirror cage; neighbouring pairs share a socket block, so the six poles form a fully triangulated octahedron. Twice as stiff as the narrow layout (0.05 vs 0.09 mm of focal-point drift with ideal joints); the joints, not the poles, decide the rest. Three units to carry, three double sockets, nine knobs." },
+  zigzag: { len: C.truss_zigzag_pole_length_in, note: "1.25″ × 0.062″ carbon, three pre-joined pairs on a ±60° base, cone sockets on the 45 mm stubs",
+    text: "Chosen after the truss review. Each pre-joined pair meets at one block under the lower ring and spreads 120° to two cone sockets on the mirror cage; neighbouring pairs share a socket block, so the six poles form a fully triangulated octahedron. Twice as stiff as the narrow layout (0.04 vs 0.09 mm of focal-point drift with ideal joints at the measured 38.5″); the joints, not the poles, decide the rest. Three units to carry, three double sockets, nine knobs." },
   pairs: { len: C.truss_pole_length_in, note: "1″ OD, pre-joined pairs on a ±30° base",
     text: "The earlier layout, kept for comparison: slimmer triangles to carry, but a 10″ base gives half the twist stiffness, and six separate sockets." },
 };
