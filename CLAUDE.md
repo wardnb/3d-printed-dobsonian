@@ -62,6 +62,7 @@ decisions; this file is the working knowledge needed to continue the engineering
 | Encoders | Magnetic tape (not optical) on bearing rim and ground-ring rim, sprung read heads into SiTech encoder inputs | Floating PTFE bearing can't hold an optical head gap. |
 | Backlash | Keep 20–30 in-lb mirror-end imbalance | Keeps the gear train loaded one way. |
 | Balance | Solved with no counterweight: mirror face 13.9" below the altitude axis, eyepiece ~63.5" at zenith, nested transport height ~13.5" (measured box) | DobStuff spacing (axis ~7" above the mirror) would need ~34 lb counterweight. The new 14" D bearings stand ~7" above the box's top ring and bolt to its side strips. |
+| Rocker | **Rebuild** (decided 2026-10-19): 3/4" Baltic birch cut on the AltMill from the model's DXFs, sides cut to the new axis height with pad pockets, alt pinion and encoder brackets, az motor bracket and the pivot bore machined in; new ground board carrying the fixed az ring. The existing rocker (22 1/4 × 23" inside, 11/16" ply, pads 15 3/8" apart at 14 3/4") is kept intact as a fallback | Width would have worked as-is (bearings ride on top of the side panels), but 14" bearings on the existing pads put the axis 2.6" higher than the 23.9" the box needs (eyepiece 66" not 63.6"), and lowering the pads means cutting an assembled box. Retrofit = a few afternoons of hand-fitted brackets on an old box; rebuild = one 5×5 sheet (~$100) and a Saturday with every bracket face machined where the model says. The ground board is new either way (fixed az ring). |
 | Wiring | Cage hub; USB3 + 12 V trunk crosses the altitude axis at the D-bearing's straight edge (twist loop, no rim groove) | Electronics box on the rocker; mini PC for ASCOM/plate solving. |
 | Guiding | OAG only (imaging); a separate guide scope suffers differential flexure at 1626 mm | |
 
@@ -134,6 +135,8 @@ measured 38.5" (truss_fe.py) · cell ~0.05–0.12 mm · total ≈ 0.25 mm. Colli
 
 ## Next design work
 
-Socket blocks and pair blocks (detail drawings + wedge fixture), push-pull cell conversion, rocker and ground
-ring with the az pinion bracket, alt pinion bracket, electronics box layout, and a cage-on-truss combined FE once
-the measurements are in.
+Rocker and ground board (next up, decided 2026-10-19): size the rocker to the measured box (bearings on the side strips at
+±10.84", 1.5" thick, pads on the panel tops), walls to the model's axis height, pad pockets, alt pinion + encoder bracket faces,
+az motor bracket, pivot, fixed az ring on the ground board, EV6 height check; export DXFs per part for Aspire. Then socket
+blocks and pair blocks (detail drawings + wedge fixture), push-pull cell conversion, electronics box layout, and a
+cage-on-truss combined FE once the weights are in.
