@@ -104,7 +104,7 @@ cage in the model, so these are for the record only; nothing in the rebuild depe
 | Spacer tubes | SEVEN short tubes, 1 1/4" OD, 11 3/8" long: three at the back of the box and two on each side near the front (model assumed six at 1" OD, 60° apart) | Nick, tape | confirmed |
 | Spacer tube positions | on a circle just inside the ring's outer edge. In the model frame (bearings at 0/180, point hole at 270, back holes at 30/150): three across the back between the 30° and 150° holes at roughly 60/90/120; two per side toward the front at roughly 200/240 and 300/340, the pair nearest the point carrying the string eye bolts | overhead photo | read from photo, good to about 10° |
 | Point of the top ring | faces the front (eyepiece side); the string eye bolts flank it | photo | likely, confirm when assembled |
-| Long struts | **45 mm OD x 40 mm ID aluminium (1.772" x 1.575", 2.5 mm wall)**, 50 1/2" long, plain tube ends (no fittings). Earlier tape/eyeball readings of 1 5/8 and 1 3/4 superseded | Nick, calipers 2026-10-19 | confirmed |
+| Long struts | **45 mm OD x 40 mm ID aluminium (1.772" x 1.575", 2.5 mm wall)**, 50 1/2" long (cut down from the original DobStuff length when the printed cage replaced the single ring), plain tube ends (no fittings). Earlier tape/eyeball readings of 1 5/8 and 1 3/4 superseded | Nick, calipers 2026-10-19 | confirmed |
 | Strut hole diameter | 45 mm (the 1 5/8" tape reading was wrong; a caliper photo with the outside jaws in the hole reads 43.5 mm, which is 45–46 mm once the jaw tips are added) | Nick, calipers 2026-10-19 | confirmed |
 | Top ring top face to mirror face | about 7" (the 3 3/4" photo reading was the tape bending over the baffle, not the glass) | Nick | confirmed, roughly |
 | Mirror face to the bottom of the cell (the triangle) | about 3" (glass 1.65" + disc + pads). The model's `cell_depth` of 3.5 counts down to the mirror board; with the springs it is about 7" top ring to mirror face + 3" cell = 10" from the top ring to the cell bottom, leaving about 1 3/8" of spring and board gap above the 11 3/8" inside height | Nick | confirmed, roughly |
@@ -155,12 +155,13 @@ design (v12) is not in the repo, so the strut bore has to come from a tape round
 | Point hole centre to the tip of the point | 1 13/16" | Nick, tape | confirmed |
 | Derived: tube axis to the point tip (swing radius input) | 12.125" (STEP tip; 10.25 + 1.81 = 12.06 by tape) | computed | agrees two ways |
 
-**Nick's STEP files (2026-10-18).** `wooden_cage.step` models the DobStuff ring: 3/4" thick, 18" ID, 21.5" OD on the
-round part, shield sides as 31.4" arcs, 12.125" centre to the tip. `cage.step` is the retired printed upper cage: two rings of
-the same shield outline 6.8" apart, three 8" curved posts between them at the spacer positions, a focuser board and holder.
-Its upper ring carries 0.26" vertical holes at exactly the wooden ring's strut pilots (29.5°/10.62", 150.5°/10.61",
-270°/10.24"), which is how the 50.5" struts attached: a 1/4" bolt down through the ring into each strut end (Nick's
-recollection, to confirm). Both files are kept in `docs/` (`wooden_cage.step`, `printed_cage.step`).
+**Nick's STEP files (2026-10-18).** `wooden_cage.step` is the ORIGINAL DOBSTUFF UPPER RING (secondary cage), not the mirror
+box: 3/4" thick, 18" ID, flats at ±10.75", 12.125" centre to the tip (Nick taped 23 3/8" tip to back on the real ring, the
+STEP gives 22.9"). `cage.step` is the retired printed upper cage: two rings of the same shield outline 6.8" apart, three 8"
+curved posts between them, a focuser board and holder. Both carry 0.26" vertical holes at the same three strut positions
+(29.5°/10.62", 150.5°/10.61", 270°/10.24"), which is how the 50.5" struts attached: a 1/4" bolt down through the ring into
+each strut end (Nick's recollection, to confirm). The struts pass straight through both box rings, so the box's strut holes
+sit at the same positions. Both files are kept in `docs/` (`wooden_cage.step`, `printed_cage.step`).
 | Box width across the side strips' outer faces, no bearings | 21 11/16" | Nick, tape | confirmed |
 | Bearing position, as built | the D rides on the PTFE pads on TOP of the rocker side panels, lip hanging outside the panel; the bearing plane is over the panel (about 11.5" from the tube axis), not inside the 22 1/4" rocker width, which only clears the 21 11/16" box | Nick | confirmed |
 
@@ -168,16 +169,16 @@ recollection, to confirm). Both files are kept in `docs/` (`wooden_cage.step`, `
 joints (1" Al 0.086, 1.25" Al 0.070), lateral mode 88 Hz. With 20,000 lb/in base joints 0.32 mm, so joint quality
 is the whole game; the plugs get bonded into the pole bore. Mirror face 13.9" below the axis, eyepiece 63.5" at zenith.
 
-## Top ring from `wooden_cage.step`, 2026-10-19
+## Upper ring from `wooden_cage.step`, 2026-10-19 (and what carries over to the box)
 
-Nick's STEP of the DobStuff ring, taken as accurate. Read with CadQuery (`importers.importStep`, circular edges). Angles in the
+Nick's STEP of the original DobStuff upper ring, taken as accurate. The mirror box rings share the ID, the point and the flats; the back outline is assumed to match until measured. Read with CadQuery (`importers.importStep`, circular edges). Angles in the
 model frame: bearings on 0/180°, point hole at 90°.
 
 | Item | Value | Status |
 | --- | --- | --- |
 | Outline | 18" ID, 3/4" thick. Flats on the bearing sides at ±10.75" running from the bearing axis to 6.49" behind it; front quadrants are r 10.75" arcs; point tip 12.125" from the centre; the back is one r 15.7" arc centred 4.96" ahead of the ring centre, 10.75" out at the back centre and 12.56" at the two back corners. The bearing strips (21 11/16" across) are flush with the flats | from the STEP |
-| Strut hole pilots (0.26") | back holes at r 10.625" (210° and 330°), point hole at r 10.25" (90°). Back to back 18.5", back to point 18.0". The printed cage's upper ring has the same three holes, and the straight struts fitted both, so the positions are corroborated | wooden and printed cage STEPs; 18.5" taped, 18.0" to tape |
-| Spacer pilots (0.26") | six at r 9.875": 20/40, 140/160, 260/280 (two per side, two at the back). Nick counted seven with three at the back; the seventh is assumed at 270° | from the STEP; seventh to confirm |
+| Strut bolt holes (0.26") | back at r 10.625" (210° and 330°), point at r 10.25" (90°). Back to back 18.5", back to point 18.0". The printed cage has the same three holes, and the straight struts through the box fitted both, so the box's 45 mm holes sit at these positions | upper-ring and printed-cage STEPs; 18.5" taped on the box, 18.0" to tape |
+| Other 0.26" holes | six at r 9.875": 20/40, 140/160, 260/280. Upper-ring hardware (string eyes, spider), not the box spacers; the box has seven spacers per Nick's count and the overhead photo | from the STEP |
 | 1" holes | two at r 10.25", 25° either side of the back (205° and 335°); purpose unknown | from the STEP |
-| Edge vs 45 mm holes | the back holes sit in the back corners (r 12.56"): 0.6" of ply to the flat, 1.6" to the back arc. No conflict (an earlier note assumed a round back) | resolved |
-| Effect on the model | `mcage_tube_radii=(10.25, 10.625, 10.625)`, `mcage_point_radius=12.125`; poles 38.15" to the point socket and 38.20" to the back sockets; pair blocks at 30° and 150° are mirror images; truss FE unchanged (0.042 mm). The true outline is drawn (`shield_y`) and the swing radius uses the 12.56" back corners, so the axis is 27.0" up and the eyepiece 63.6" | applied |
+| Edge vs 45 mm holes | on this outline the back holes sit in the back corners (r 12.56"): 0.6" of ply to the flat, 1.6" to the back arc. No conflict (an earlier note assumed a round back). Holds for the box if its back matches | resolved for the upper ring |
+| Effect on the model | `mcage_tube_radii=(10.25, 10.625, 10.625)`, `mcage_point_radius=12.125`; poles 38.15" to the point socket and 38.20" to the back sockets; pair blocks at 30° and 150° are mirror images; truss FE unchanged (0.042 mm). The outline is drawn (`shield_y`) and the swing radius uses the 12.56" back corners, so the axis is 27.0" up and the eyepiece 63.6". Box back shape ASSUMED = upper ring; measure tip-to-back-edge and tip-to-back-corner on the box | applied, back shape to confirm |

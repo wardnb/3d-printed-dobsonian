@@ -35,9 +35,11 @@ P = dict(
     # Mirror cage as built by DobStuff (measured 2026-10-18, see docs/measurements.md)
     mirror_face_below_axis=None,  # None = solve for balance (the as-built axis is ~7" above the mirror face)
     alt_bearing_radius=14.0,      # DESIGN: rebuilt bearings (as-built DobStuff D is 12 3/16" radius)
-    mcage_ring_od=21.5,           # wooden_cage.step: the front quadrants are r 10.75 arcs and the bearing-side flats are at x = +/-10.75
-    mcage_flat_back_z=6.49,       # the flats run from the bearing axis to 6.49" behind it
-    mcage_back_arc_r=15.706,      # the back is one broad arc, centred 4.96" ahead of the ring centre (corners at r 12.56)
+    # Ring outline: from wooden_cage.step, which is the ORIGINAL UPPER RING (secondary cage), not the mirror box. The box's
+    # rings share the 18" ID, the point and the 21.5" flats (tape); the back shape is ASSUMED the same until measured.
+    mcage_ring_od=21.5,           # front quadrants are r 10.75 arcs; bearing-side flats at x = +/-10.75 (box taped 21 11/16 over the strips)
+    mcage_flat_back_z=6.49,       # flats run from the bearing axis to 6.49" behind it (upper ring STEP; box ASSUMED)
+    mcage_back_arc_r=15.706,      # back: one broad arc centred 4.96" ahead of the ring centre, corners at r 12.56 (upper ring STEP; box ASSUMED)
     mcage_back_arc_cz=4.96,
     mcage_point_radius=12.125,    # from Nick's wooden_cage.step (tip 12.125" from the ring centre); agrees with 10.25" hole + 1 13/16" to the tip
     mcage_flat_half_width=10.13,  # measured: 21 11/16" across the side strips' outer faces, minus the 18 mm strip
@@ -64,9 +66,9 @@ P = dict(
     mcage_tube_od=1.772,          # measured 2026-10-19 (calipers): DobStuff struts 45 mm OD x 40 mm ID, ring holes 45 mm
     mcage_tube_wall=0.098,        # 2.5 mm wall
     mcage_tube_angles=(90, 210, 330),   # point hole at 90 (square to the bearings), back holes 30 deg off the bearing axis
-    mcage_tube_radii=(10.25, 10.625, 10.625),   # from wooden_cage.step pilot holes: back holes 18.5" apart, 18.0" to the point hole
+    mcage_tube_radii=(10.25, 10.625, 10.625),   # strut bolt holes in the upper-ring and printed-cage STEPs; straight struts, so the box holes match
     mcage_spacer_od=1.25,         # measured: seven short tubes between the two rings
-    mcage_spacer_angles=(20, 40, 140, 160, 260, 270, 280),   # six from wooden_cage.step (r 9.875); 270 is the seventh Nick counted at the back, position ASSUMED
+    mcage_spacer_angles=(20, 60, 120, 160, 240, 270, 300),   # seven, from the overhead photo (+/-10 deg): three across the back (270 side), two per side
     stub_proud=1.0,               # stub tubes stand this far above the top ring; sockets plug into them
     # Masses for balance (ASSUMED)
     cell_lb=6.0, mcage_lb_per_in=1.1, bearings_lb=9.0, poles_lb=3.6,   # six 1.25" x 0.062" carbon poles, ~38.5" at 0.48 lb + plugs
@@ -75,7 +77,7 @@ P = dict(
 
 ASSUMED = [k for k in P if k in (
     "mirror_dia", "mirror_thick", "mirror_lb", "mirror_face_below_axis",
-    "rocker_disc_dia", "rocker_width",
+    "rocker_disc_dia", "rocker_width", "mcage_flat_back_z", "mcage_back_arc_r",
     "ground_foot_radius")]
 
 # --------------------------------------------------------------------------
@@ -209,8 +211,8 @@ def ring_y(y0, thick, rin, rout):
 
 
 def shield_y(y0, thick, rin):
-    """The DobStuff ring outline from wooden_cage.step: flats on the bearing sides, r 10.75 front arcs to a point
-    at +Z, one broad arc across the back. Local XZ-workplane coords are (X, Z)."""
+    """DobStuff ring outline (from the upper-ring STEP; the box rings are assumed to match): flats on the bearing
+    sides, r 10.75 front arcs to a point at +Z, one broad arc across the back. Local XZ-workplane coords are (X, Z)."""
     fx, fz = P["mcage_ring_od"] / 2, P["mcage_flat_back_z"]
     tip = P["mcage_point_radius"]; ar, acz = P["mcage_back_arc_r"], P["mcage_back_arc_cz"]
     # front arc meets the point line where the STEP puts it: (4.97, 9.53) on the r 10.75 circle

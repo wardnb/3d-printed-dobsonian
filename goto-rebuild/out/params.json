@@ -47,12 +47,12 @@
     "mcage_spacer_od": 1.25,
     "mcage_spacer_angles": [
       20,
-      40,
-      140,
+      60,
+      120,
       160,
-      260,
+      240,
       270,
-      280
+      300
     ],
     "stub_proud": 1.0,
     "cell_lb": 6.0,
@@ -67,6 +67,8 @@
     "mirror_thick",
     "mirror_lb",
     "mirror_face_below_axis",
+    "mcage_flat_back_z",
+    "mcage_back_arc_r",
     "rocker_disc_dia",
     "rocker_width",
     "ground_foot_radius"

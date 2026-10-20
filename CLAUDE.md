@@ -120,11 +120,12 @@ measured 38.5" (truss_fe.py) · cell ~0.05–0.12 mm · total ≈ 0.25 mm. Colli
       The bearings are the box's sides (narrow ply strips, no side panels).
 - [~] Cell: 1/4" spring studs; mirror sits on a thin ply disc over the 3/4" triangle; bond still unconfirmed (no RTV visible at the edge)
 - [x] Altitude bearing measured: running radius 12 3/16", lip 12 3/8", 18 mm ply + 3/16" lip, axis on the straight edge (`docs/measurements.md`). Pad positions, rocker width, ground board still open
-- [~] Top ring: outline and strut positions taken from `docs/wooden_cage.step` (flats at ±10.75", r 10.75 front arcs, point 12.125",
-      back arc r 15.7 centred 4.96" ahead so the back corners are at r 12.56"; strut pilots back r 10.625" at 30/150, point r 10.25").
-      `docs/printed_cage.step` has the same three holes in its upper ring, so the positions are corroborated. Still to confirm:
-      back hole to point hole 18.0" by tape, the seventh spacer's position (STEP has six at r 9.875: 20/40/140/160/260/280),
-      weights (box with mirror, one bearing, one strut), a caliper reading on a spacer tube, how the strut ends were bolted.
+- [~] Box rings: strut positions from the strut bolt holes in `docs/wooden_cage.step` (the ORIGINAL UPPER RING, not the box) and
+      `docs/printed_cage.step`: back r 10.625" at 30/150, point r 10.25"; straight struts through the box, so the box holes match.
+      The box ring outline is drawn as that upper ring (flats ±10.75", point 12.125", back arc r 15.7 with corners at r 12.56")
+      and the back shape is ASSUMED: measure on the box tip to back edge on the centreline and tip to a back corner (sets the
+      swing radius). Still open: back hole to point hole 18.0" by tape, weights (box with mirror, one bearing, one strut),
+      a caliper reading on a spacer tube, how the strut ends were bolted.
 - [ ] FTF2015 base bolt circle and hole size
 - [ ] 3.5" secondary thickness when ordered
 - [ ] Mirror ROC from the Hubble test report (confirms f/3.9)
