@@ -119,6 +119,9 @@ measured 38.5" (truss_fe.py) · cell ~0.05–0.12 mm · total ≈ 0.25 mm. Colli
       The bearings are the box's sides (narrow ply strips, no side panels).
 - [~] Cell: 1/4" spring studs; mirror sits on a thin ply disc over the 3/4" triangle; bond still unconfirmed (no RTV visible at the edge)
 - [x] Altitude bearing measured: running radius 12 3/16", lip 12 3/8", 18 mm ply + 3/16" lip, axis on the straight edge (`docs/measurements.md`). Pad positions, rocker width, ground board still open
+- [ ] Top ring hole circle vs ring OD: a 45 mm hole at the 10.68" radius reaches 11.57", past the 21.5" OD in Nick's STEP.
+      Asked 2026-10-19 for: ply width outside a back hole (calipers), hole-to-hole edge to edge (16 3/4" expected), ring width
+      across the round part. Also weights (box with mirror, one bearing, one strut) and a caliper reading on a spacer tube.
 - [ ] FTF2015 base bolt circle and hole size
 - [ ] 3.5" secondary thickness when ordered
 - [ ] Mirror ROC from the Hubble test report (confirms f/3.9)
