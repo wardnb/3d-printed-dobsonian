@@ -13,6 +13,7 @@ Design doc: [`../docs/design.md`](../docs/design.md) (exported) · living doc: h
     python dob_model.py        # whole scope -> out/*.glb, out/dob16_alt45.step, out/params.json
     python export_cage.py      # upper cage fit checks + DXF/STEP -> out/upper_cage/
     python export_holder.py    # secondary holder, carrier, gluing jig -> out/secondary_holder/
+    python export_rocker.py    # rocker, ground board, bearing layers: fit checks + DXFs + cut sheet -> out/rocker/
     python cage_fe.py quad     # cage + spider collimation-drift FE
     python truss_fe.py         # truss FE (layouts, joint stiffness)
     python build_site.py       # viewer -> dist/ (GLBs base64 as .txt for the artifact host)
@@ -24,10 +25,10 @@ Design doc: [`../docs/design.md`](../docs/design.md) (exported) · living doc: h
 | `dob_model.py` | Whole scope, balance solve, mirror cage, truss, bearings, drives |
 | `upper_cage.py` | Rings, posts, rails, focuser board, spiders (quad/Destiny/wire), finder, tools |
 | `secondary_holder.py` | Carrier, 45° body, gluing jig |
+| `rocker.py` | Rocker, ground board, 14" D bearings (derive numbers, build solids and flats) |
 | `cage_fe.py`, `truss_fe.py`, `wire_geo*.py` | Frame FE studies |
 | `site/index.html` | three.js viewer template |
 
 ## Inputs still assumed (measure)
 
-Mirror cage tube hole angles vs bearings, tube OD, cage ring OD/ID and height; bearing radius; rocker and
-ground board; Feather Touch FTF2015 bolt circle; secondary thickness; cell (silicone-bonded or loose on pads). Full list in `../docs/design.md`.
+Box ring back outline (swing radius), weights, carbon tube bore; Feather Touch FTF2015 bolt circle; secondary thickness; cell (silicone-bonded or loose on pads). Full list in `../docs/design.md`.

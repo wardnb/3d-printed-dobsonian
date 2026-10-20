@@ -47,10 +47,16 @@ P = dict(
     mcage_top_above_mirror=7.0,   # measured: top ring's top face above the mirror face
     mcage_height=12.8,            # measured: 11 3/8" between the boards + two 18 mm boards
     cell_depth=3.0,               # measured: mirror face down to the bottom of the cell triangle
-    # Rocker / ground board (ASSUMED)
-    rocker_disc_dia=30.0,         # ASSUMED: round rocker floor, az drive edge
-    rocker_width=26.5,            # ASSUMED
-    ground_foot_radius=17.0,      # ASSUMED
+    # Rocker / ground board (DESIGN, 2026-10-19: rebuild on the AltMill, see rocker.py)
+    alt_pad_angle=30,             # PTFE pads +/-30 deg from the bottom of the bearing arc
+    alt_min_deg=15,               # lowest altitude with the front pad still under the arc (sets the D's chord offset)
+    rocker_horn_angle=42,         # wall top follows the arc to here, then slopes to the end height
+    rocker_inside_depth=26.0,     # between the end boards (box needs 22.9 tip to back + clearance)
+    rocker_end_height=4.0,        # end boards, under the box's swing circle
+    ground_ring_od=30.0,          # fixed az ring on the ground board: belt + tape on its rim, pads on its top
+    ground_ring_id=23.0,
+    ground_foot_radius=14.0,      # feet under the ring, on the three arms
+    ground_pad_radius=12.75,      # az PTFE pads on the ring, under the rocker floor's laminate
     ply=0.709,                    # 18 mm Baltic birch
     # Upper cage (design)
     ring_id=17.5,
@@ -71,14 +77,13 @@ P = dict(
     mcage_spacer_angles=(20, 60, 120, 160, 240, 270, 300),   # seven, from the overhead photo (+/-10 deg): three across the back (270 side), two per side
     stub_proud=1.0,               # stub tubes stand this far above the top ring; sockets plug into them
     # Masses for balance (ASSUMED)
-    cell_lb=6.0, mcage_lb_per_in=1.1, bearings_lb=9.0, poles_lb=3.6,   # six 1.25" x 0.062" carbon poles, ~38.5" at 0.48 lb + plugs
+    cell_lb=6.0, mcage_lb_per_in=1.1, bearings_lb=13.1, poles_lb=3.6,   # bearings: rocker.bearing_area_in2 x 1.418 x 0.0243 lb/in3   # six 1.25" x 0.062" carbon poles, ~38.5" at 0.48 lb + plugs
     upper_cage_lb=14.0, eyepiece_lb=3.3,   # cage v2 11.3 lb + wire spider 1.3 + Waypoint 1.4 (cage hub not yet included); 31 Nagler + Paracorr
 )
 
 ASSUMED = [k for k in P if k in (
     "mirror_dia", "mirror_thick", "mirror_lb", "mirror_face_below_axis",
-    "rocker_disc_dia", "rocker_width", "mcage_flat_back_z", "mcage_back_arc_r",
-    "ground_foot_radius")]
+    "mcage_flat_back_z", "mcage_back_arc_r")]
 
 # --------------------------------------------------------------------------
 # Derived geometry (inches)
@@ -128,15 +133,11 @@ mc_r = P["mcage_ring_od"] / 2
 # swing radius of the lower tube and the altitude axis height that clears it
 mcage_corner_r = math.hypot(P["mcage_ring_od"] / 2, P["mcage_flat_back_z"])          # back corners, 12.56"
 swing = math.hypot(-y_mcage_bot, max(P["mcage_point_radius"], mcage_corner_r))
-ground_top = 1.5 + 0.75                           # feet + ground board + az drive ring
-rocker_floor_top = ground_top + 0.15 + P["ply"]   # PTFE + rocker floor
-z_alt = rocker_floor_top + swing + 0.5
-
-# bearing / rocker x positions
 panel_x = P["mcage_flat_half_width"]              # side strip inner face, on the ring's flat
-bearing_x = panel_x + P["ply"] + P["ply"] / 2     # bearing mid-plane
-rocker_wall_in = bearing_x + P["ply"] / 2 + 0.6
-rw = P["rocker_width"] / 2
+import rocker
+G = rocker.derive(P, R, swing, panel_x)           # rocker, ground board and bearing numbers (rocker.py)
+ground_top, rocker_floor_top, z_alt = G["ground_top"], G["floor_top"], G["z_alt"]
+bearing_x = G["bearing_x"]                        # bearing mid-plane (two 18 mm layers on the strip's outer face)
 
 # truss
 tops = [30, 150, 270]             # pair blocks under the lower ring (upper_cage.APEX)
@@ -187,7 +188,7 @@ nested_height = P["ply"] + (y_mcage_top - y_mcage_bot)
 # 20T pinion (0.5" pitch dia) on a 2:1 reduction from the gearbox (16:32)
 PINION_PD, STAGE = 0.5, 2
 alt_ratio = ((R + 0.06) / (PINION_PD / 2)) * STAGE
-az_ratio = ((P["rocker_disc_dia"] / 2 + 0.06) / (PINION_PD / 2)) * STAGE
+az_ratio = ((P["ground_ring_od"] / 2 + 0.06) / (PINION_PD / 2)) * STAGE
 
 
 # --------------------------------------------------------------------------
@@ -244,20 +245,6 @@ def rod(p0, p1, r):
     d = b - a
     solid = cq.Solid.makeCylinder(r * IN, d.Length, a, d.normalized())
     return cq.Workplane("XY").add(solid)
-
-
-def d_bearing(x_mid, thick, r_out, r_in):
-    """Half-disc altitude bearing in the YZ plane, flat edge on the axis
-    plane y=0, curved side toward the mirror (-Y)."""
-    w = (cq.Workplane("YZ")
-         .moveTo(0, -r_out * IN).threePointArc((-r_out * IN, 0), (0, r_out * IN))
-         .close())
-    solid = w.extrude(thick * IN)
-    cut = (cq.Workplane("YZ")
-           .moveTo(-1.2 * IN, -r_in * IN)
-           .threePointArc((-r_in * IN, 0), (-1.2 * IN, r_in * IN))
-           .close().extrude(thick * IN))
-    return solid.cut(cut).translate(v(x_mid - thick / 2, 0, 0))
 
 
 BIRCH = cq.Color(0.86, 0.72, 0.50)
@@ -330,8 +317,8 @@ truss_pairs = truss_assy("truss_pairs", truss, bots, 1.6)
 truss_zigzag = truss_assy("truss_zigzag", truss_zig, zig_bots, 2.6)
 
 # altitude bearings: drive side (+X) laminated, plain side (-X)
-drive_b = d_bearing(bearing_x, P["ply"] * 2 + 0.25, R, R - 2.6)
-plain_b = d_bearing(-bearing_x, P["ply"], R, R - 2.6)
+drive_b = rocker.bearing_outline(G).translate(v(G["bearing_x_in"], 0, 0))      # rim + bar + web, chord past the axis
+plain_b = rocker.bearing_outline(G).translate(v(-G["bearing_x_out"], 0, 0))
 tube.add(drive_b, name="alt_bearing_drive", color=BIRCH)
 tube.add(plain_b, name="alt_bearing_plain", color=BIRCH)
 # ebonystar running edges + encoder strip + cable groove on drive bearing
@@ -342,10 +329,11 @@ def rim(x_mid, width, r_out, r_in):
     return w.extrude(width * IN).translate(v(x_mid - width / 2, 0, 0))
 
 
-tube.add(rim(-bearing_x, P["ply"], R + 0.06, R), name="ebony_plain", color=EBONY)
-tube.add(rim(bearing_x - 0.45, 0.6, R + 0.06, R), name="ebony_drive", color=EBONY)
-tube.add(rim(bearing_x + 0.25, 0.3, R + 0.04, R - 0.02), name="encoder_strip_alt", color=STRIP)
-tube.add(rim(bearing_x + 0.62, 0.35, R + 0.09, R), name="alt_belt_on_rim", color=BLACK)   # GT2 belt, 9 mm, teeth out
+tube.add(rim(-bearing_x, G["bearing_t"], R + 0.06, R), name="ebony_plain", color=EBONY)
+_xi, _b = G["bearing_x_in"], G["bands"]
+tube.add(rim(_xi + sum(_b["ebony"]) / 2, _b["ebony"][1] - _b["ebony"][0], R + 0.06, R), name="ebony_drive", color=EBONY)
+tube.add(rim(_xi + sum(_b["tape"]) / 2, _b["tape"][1] - _b["tape"][0], R + 0.04, R - 0.02), name="encoder_strip_alt", color=STRIP)
+tube.add(rim(_xi + sum(_b["belt"]) / 2, _b["belt"][1] - _b["belt"][0], R + 0.09, R), name="alt_belt_on_rim", color=BLACK)   # GT2 belt, 9 mm, teeth out
 
 # upper cage: detailed parts from upper_cage.py (machining v1)
 import upper_cage
@@ -431,87 +419,12 @@ for k, col in (("hub", BLACK), ("vanes", WIRE), ("studs", cq.Color(0.55, 0.57, 0
 # --------------------------------------------------------------------------
 base = cq.Assembly(name="base")
 
-# ground board: three arms + feet + centre hub + PTFE pads
-gb = cyl_z(0.75, 0.75, 4.0)
-for a in (90, 210, 330):
-    x, y = polar(P["ground_foot_radius"] / 2, a)
-    arm = (cq.Workplane("XY").box(P["ground_foot_radius"] * IN, 3.5 * IN, 0.75 * IN)
-           .rotate((0, 0, 0), (0, 0, 1), a).translate(v(x, y, 1.125)))
-    gb = gb.union(arm)
-tube_feet = None
-for a in (90, 210, 330):
-    x, y = polar(P["ground_foot_radius"] - 0.8, a)
-    foot = cyl_z(0, 0.75, 1.0, x, y)
-    tube_feet = foot if tube_feet is None else tube_feet.union(foot)
-gb = gb.union(cyl_z(1.5, 0.75, P["rocker_disc_dia"] / 2).cut(cyl_z(1.5, 0.75, P["rocker_disc_dia"] / 2 - 2.0)))   # az drive ring
-base.add(gb, name="ground_board", color=BIRCH)
-base.add(tube_feet, name="feet", color=BLACK)
-pads = None
-for a in (90, 210, 330):
-    x, y = polar(12.5, a)
-    pad = box(x, y, ground_top + 0.075, 1.5, 1.5, 0.15)   # PTFE pads on the ground ring
-    pads = pad if pads is None else pads.union(pad)
-base.add(pads, name="az_ptfe", color=PTFE)
-
-# rocker: round floor disc (az drive edge), two side walls, front/back boards
-floor_z0 = ground_top + 0.15
-rk = cyl_z(floor_z0, P["ply"], P["rocker_disc_dia"] / 2)
-wall_top = z_alt - R * math.cos(math.radians(40)) + 0.3
-wall_h = wall_top - rocker_floor_top
-for sx in (-1, 1):
-    rk = rk.union(box(sx * (rocker_wall_in + P["ply"] / 2), 0,
-                      rocker_floor_top + wall_h / 2, P["ply"], P["rocker_width"], wall_h))
-for sy in (-1, 1):
-    rk = rk.union(box(0, sy * (rw - P["ply"] / 2), rocker_floor_top + 3.0,
-                      2 * rocker_wall_in, P["ply"], 6.0))
-base.add(rk, name="rocker", color=BIRCH)
-base.add(cyl_z(1.52, 0.3, P["rocker_disc_dia"] / 2 + 0.03).cut(cyl_z(1.5, 1.0, P["rocker_disc_dia"] / 2 - 0.05)),
-         name="encoder_strip_az", color=STRIP)        # magnetic tape on the lower 0.3" of the ground ring's rim
-
-# altitude PTFE pads at +/-40 deg under each bearing
-apads = None
-for xm in (bearing_x, -bearing_x):
-    for ang in (-40, 40):
-        a = math.radians(ang)
-        y = R * math.sin(a)
-        z = z_alt - R * math.cos(a)
-        blk = (cq.Workplane("XY").box(1.4 * IN, 1.6 * IN, 0.5 * IN)
-               .rotate((0, 0, 0), (1, 0, 0), -ang)
-               .translate(v(xm, y + 0.25 * math.sin(a), z - 0.25 * math.cos(a))))
-        stand = box(xm + (0.9 if xm > 0 else -0.9), y, (z + rocker_floor_top) / 2,
-                    0.5, 1.4, z - rocker_floor_top)
-        part = blk.union(stand)
-        apads = part if apads is None else apads.union(part)
-base.add(apads, name="alt_ptfe_pads", color=PTFE)
-
-# altitude drive: pinion under the drive bearing meshing with the rim belt, motor outside the wall
-cap_z = z_alt - R - 0.09 - PINION_PD / 2
-base.add(cyl_x(bearing_x + 0.45, 0.4, PINION_PD / 2, y=0, z=cap_z), name="alt_pinion", color=ALU)
-base.add(cyl_x(bearing_x + 0.85, rocker_wall_in + P["ply"] + 1.2 - bearing_x - 0.85, 0.2, y=0, z=cap_z), name="alt_pinion_shaft", color=ALU)
-m_x0 = rocker_wall_in + P["ply"] + 0.5
-base.add(cyl_x(m_x0 + 0.3, 5.2, 0.75, y=0, z=cap_z - 2.6), name="alt_motor_GM9413", color=MOTOR)
-base.add(box(m_x0 + 0.15, 0, cap_z - 1.3, 0.3, 2.4, 4.0), name="alt_belt_plate", color=ALU)
-base.add(box(m_x0 - 0.3 - P["ply"] / 2 + 0.1, 0.0, z_alt - R + 0.4, 0.4, 1.0, 1.4),
-         name="alt_read_head", color=ELEC)
-
-# azimuth drive on the ground board: vertical motor, roller on the disc edge
-az_ang = 300
-rx, ry = polar(P["rocker_disc_dia"] / 2 + 0.09 + PINION_PD / 2, az_ang)
-mx, my = polar(P["rocker_disc_dia"] / 2 + 2.2, az_ang)
-# (rocker-mounted: the motor hangs from a bracket on the rocker floor's edge and its roller runs on the
-#  ground ring's rim, so nothing crosses the azimuth axis; the read head for the az tape sits beside it)
-base.add(cyl_z(1.85, 0.4, PINION_PD / 2, rx, ry), name="az_pinion", color=ALU)   # meshes with the belt on the upper 0.4" of the ring rim
-base.add(cyl_z(1.85, 0.35, P["rocker_disc_dia"] / 2 + 0.09).cut(cyl_z(1.8, 0.5, P["rocker_disc_dia"] / 2)),
-         name="az_belt_on_rim", color=BLACK)
-base.add(cyl_z(1.2, 5.2, 0.75, mx, my), name="az_motor_GM9213", color=MOTOR)
-base.add(box((rx + mx) / 2, (ry + my) / 2, floor_z0 + 0.5, 3.0, 2.2, 0.3)
-         .rotate(v(rx, ry, 0), v(rx, ry, 1), 0), name="az_belt_plate", color=ALU)
-base.add(box(mx, my, floor_z0 + P["ply"] + 0.4, 4.0, 4.0, 0.8), name="az_drive_bracket", color=ALU)
-base.add(box(rx * 0.97 + 1.6 * math.cos(math.radians(az_ang + 90)), ry * 0.97 + 1.6 * math.sin(math.radians(az_ang + 90)), 1.67, 1.2, 0.8, 0.5), name="az_read_head", color=ELEC)
-
-# electronics box on the front board
-base.add(box(0, rw + 1.2, rocker_floor_top + 3.5, 8.0, 2.4, 5.0), name="electronics_box_sitech",
-         color=ELEC)
+# rocker, ground board, drives and brackets from rocker.py (see its docstring for the layout)
+_COL = dict(BIRCH=BIRCH, ALU=ALU, BLACK=BLACK, PTFE=PTFE, MOTOR=MOTOR, STRIP=STRIP, ELEC=ELEC)
+rocker_solids, rocker_flats, rocker_holes = rocker.build(G)
+for _name, (_solid, _c) in rocker_solids.items():
+    base.add(_solid, name=_name, color=_COL[_c])
+bearing_lb_each = rocker.bearing_area_in2(G) * G["bearing_t"] * 0.0243
 
 # --------------------------------------------------------------------------
 # Export
@@ -543,7 +456,17 @@ checks = dict(
     truss_zigzag_pole_length_in=round(pole_len_zig, 2),
     eyepiece_height_zenith_in=round(eyepiece_zenith, 1),
     nested_transport_height_in=round(nested_height, 1),
-    rocker_wall_height_in=round(wall_h, 1),
+    rocker_wall_height_at_pads_in=round(G["h_pad"], 2),
+    rocker_wall_height_horns_in=round(G["h_horn"], 2),
+    rocker_overall_height_in=round(G["rocker_top"], 2),
+    rocker_inside_width_in=round(G["inside_w"], 2),
+    rocker_box_clearance_in=round(G["box_clearance"], 2),
+    rocker_floor_in=(round(G["floor_w"], 2), round(G["floor_l"], 2)),
+    rocker_end_height_in=(G["end_h"], round(G["end_h_max"], 2)),
+    bearing_chord_offset_in=round(G["chord_e"], 2),
+    bearing_above_box_top_ring_in=round(-y_mcage_top + G["chord_e"], 2),
+    bearing_lb_each=round(bearing_lb_each, 2),
+    min_altitude_deg=G["alt_min"],
     mirror_face_below_axis_in=s,
     tube_weight_lb=round(tube_lb, 1),
     net_moment_lb_in=round(net, 0),
@@ -553,12 +476,13 @@ checks = dict(
     alt_external_ratio=round(alt_ratio, 0),
     az_external_ratio=round(az_ratio, 0),
 )
-json.dump(dict(params=P, assumed=ASSUMED, checks=checks,
+rocker_json = {k: val for k, val in G.items() if isinstance(val, (int, float, str, tuple, list, dict))}
+json.dump(dict(params=P, assumed=ASSUMED, checks=checks, rocker=rocker_json, rocker_holes=rocker_holes,
                frame=dict(z_alt=z_alt, y_sec=y_sec, y_mirror=y_mirror,
                           y_ring_hi=y_ring_hi, y_ring_lo=y_ring_lo,
                           y_mcage_top=y_mcage_top, y_mcage_bot=y_mcage_bot,
                           focuser_x=bx - 0.125 - P["focuser_racked_in"] - 1.0,
-                          bearing_x=bearing_x, R=R,
+                          bearing_x=bearing_x, R=R, bearing_x_in=G["bearing_x_in"], bearing_x_out=G["bearing_x_out"],
                           stub_xz={str(a): base_xz(a) for a in P["mcage_tube_angles"]})),
           open(os.path.join(out, "params.json"), "w"), indent=2)
 print(json.dumps(checks, indent=2))

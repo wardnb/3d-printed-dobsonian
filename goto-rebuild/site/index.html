@@ -99,7 +99,7 @@ ul.meas .val { font-family: var(--f-mono); font-size: 13px; white-space: nowrap;
 <div class="wrap">
   <header>
     <h1>16-inch Dob Rebuild</h1>
-    <p class="sub">Model v3 (mirror box, bearings and rocker measured 18–19 Oct 2026; 1.25″ carbon truss on 45 mm stubs) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>weights and the ring-edge check still open</b></p>
+    <p class="sub">Model v4 (rocker, ground board and 14″ bearings designed 19 Oct 2026 for the AltMill; 1.25″ carbon truss on 45 mm stubs) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>weights and the ring-edge check still open</b></p>
   </header>
 
   <div class="grid">
@@ -204,6 +204,10 @@ const rows = [
   ["Eyepiece height at zenith", C.eyepiece_height_zenith_in.toFixed(1) + "″", "Ground to eyepiece, standing"],
   ["Transport height, nested", C.nested_transport_height_in.toFixed(1) + "″", "Mirror cage in rocker, bearings off · EV6 liftgate about 25″"],
   ["Altitude axis height", C.z_alt_axis_in.toFixed(1) + "″", "Set by the lower tube's swing radius"],
+  ["Rocker height", C.rocker_overall_height_in.toFixed(1) + "″", "Ground to the horn tips · walls " + C.rocker_wall_height_at_pads_in.toFixed(1) + "″ at the pads · EV6 limit about 23″"],
+  ["Rocker inside", C.rocker_inside_width_in.toFixed(1) + " × " + P.rocker_inside_depth + "″", C.rocker_box_clearance_in.toFixed(2) + "″ each side of the box · walls centred under the pads"],
+  ["Lowest altitude", C.min_altitude_deg + "°", "Pads at ±" + P.alt_pad_angle + "°; the D's straight edge sits " + C.bearing_chord_offset_in.toFixed(1) + "″ past the axis so the front pad stays under the arc"],
+  ["Bearings", "2 × " + C.bearing_lb_each.toFixed(1) + " lb", "Rim + bar + web on the box's side strips, two 18 mm layers, 2 dowels + 2 bolts each"],
   ["Truss poles", "<span id='poleLen'>6 × " + C.truss_pole_length_in.toFixed(1) + "″</span>", "<span id='poleNote'>1″ OD, three pairs</span>"],
   ["Tube weight", "≈ " + Math.round(C.tube_weight_lb) + " lb", "Everything that tilts"],
   ["Altitude drive", Math.round(C.alt_external_ratio) + ":1", "GT2 belt glued on the " + F.R + "″ bearing rim, 20T pinion, 2:1 stage, GM9413"],
@@ -232,8 +236,7 @@ const meas = [
   ["Carbon tube bore", "1.126″ until measured"],
   ["Mirror ROC", "from the Hubble test report"],
   ["Cell depth below mirror face", P.cell_depth + "″, bond unknown"],
-  ["New rocker width", P.rocker_width + "″ design"],
-  ["Rocker disc diameter", P.rocker_disc_dia + "″ design"],
+  ["Box back outline", "assumed to match the upper ring (sets the swing radius, ±0.4″ of axis height)"],
   ["FTF2015 base bolt circle", "when the focuser is out"],
 ];
 document.getElementById("meas").innerHTML = meas.map(([a, b]) =>
@@ -310,8 +313,8 @@ const tags = [
   { t: "Drive bearing · tape + belt", p: cad(F.bearing_x + 0.6, -F.R * 0.7, -F.R * 0.7), g: pivot },
   { t: "Mirror cage", p: cad(-10.9, -6, 5), g: pivot },
   { t: "Alt pinion + GM9413", p: cad(F.bearing_x + 3.5, 0, F.z_alt - F.R - 3.2), g: scene },
-  { t: "Az pinion + GM9213 (on the rocker)", p: cad(15.4 * 0.5 + 1.1, -(15.4 * 0.866 + 1.9), 5), g: scene },
-  { t: "SiTech box", p: cad(0, 14.5, 7.2), g: scene },
+  { t: "Az pinion + GM9213 (on the rocker)", p: cad(14.5, 8.5, 4.5), g: scene },
+  { t: "SiTech box", p: cad(-13.4, 7, 6.5), g: scene },
 ];
 const labelHost = document.getElementById("labels");
 for (const tg of tags) {

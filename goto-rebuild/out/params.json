@@ -19,9 +19,15 @@
     "mcage_top_above_mirror": 7.0,
     "mcage_height": 12.8,
     "cell_depth": 3.0,
-    "rocker_disc_dia": 30.0,
-    "rocker_width": 26.5,
-    "ground_foot_radius": 17.0,
+    "alt_pad_angle": 30,
+    "alt_min_deg": 15,
+    "rocker_horn_angle": 42,
+    "rocker_inside_depth": 26.0,
+    "rocker_end_height": 4.0,
+    "ground_ring_od": 30.0,
+    "ground_ring_id": 23.0,
+    "ground_foot_radius": 14.0,
+    "ground_pad_radius": 12.75,
     "ply": 0.709,
     "ring_id": 17.5,
     "ring_od": 20.5,
@@ -57,7 +63,7 @@
     "stub_proud": 1.0,
     "cell_lb": 6.0,
     "mcage_lb_per_in": 1.1,
-    "bearings_lb": 9.0,
+    "bearings_lb": 13.1,
     "poles_lb": 3.6,
     "upper_cage_lb": 14.0,
     "eyepiece_lb": 3.3
@@ -68,41 +74,221 @@
     "mirror_lb",
     "mirror_face_below_axis",
     "mcage_flat_back_z",
-    "mcage_back_arc_r",
-    "rocker_disc_dia",
-    "rocker_width",
-    "ground_foot_radius"
+    "mcage_back_arc_r"
   ],
   "checks": {
     "focal_length_in": 62.4,
-    "z_alt_axis_in": 26.95,
-    "lower_tube_swing_radius_in": 23.34,
-    "secondary_y_in": 36.63,
+    "z_alt_axis_in": 26.59,
+    "lower_tube_swing_radius_in": 23.02,
+    "secondary_y_in": 37.01,
     "truss_pole_length_in": 37.56,
     "truss_zigzag_pole_length_in": 38.54,
     "eyepiece_height_zenith_in": 63.6,
     "nested_transport_height_in": 13.5,
-    "rocker_wall_height_in": 13.4,
-    "mirror_face_below_axis_in": 13.87,
-    "tube_weight_lb": 73.1,
+    "rocker_wall_height_at_pads_in": 11.39,
+    "rocker_wall_height_horns_in": 12.82,
+    "rocker_overall_height_in": 15.88,
+    "rocker_inside_width_in": 22.63,
+    "rocker_box_clearance_in": 0.48,
+    "rocker_floor_in": [
+      24.05,
+      27.42
+    ],
+    "rocker_end_height_in": [
+      4.0,
+      4.22
+    ],
+    "bearing_chord_offset_in": 3.62,
+    "bearing_above_box_top_ring_in": 10.11,
+    "bearing_lb_each": 6.56,
+    "min_altitude_deg": 15,
+    "mirror_face_below_axis_in": 13.49,
+    "tube_weight_lb": 77.2,
     "net_moment_lb_in": 0.0,
-    "dobstuff_layout_counterweight_lb": 32.7,
+    "dobstuff_layout_counterweight_lb": 30.6,
     "counterweight_lb_at_mirror_end": 0.0,
-    "counterweight_arm_in": 19.2,
+    "counterweight_arm_in": 18.8,
     "alt_external_ratio": 112.0,
     "az_external_ratio": 120.0
   },
-  "frame": {
-    "z_alt": 26.94548431105251,
-    "y_sec": 36.63,
-    "y_mirror": -13.87,
-    "y_ring_hi": 40.755,
-    "y_ring_lo": 32.505,
-    "y_mcage_top": -6.869999999999999,
-    "y_mcage_bot": -19.67,
-    "focuser_x": -11.405,
-    "bearing_x": 11.1935,
+  "rocker": {
+    "ply": 0.709,
     "R": 14.0,
+    "swing": 23.017095820281064,
+    "bearing_t": 1.418,
+    "bearing_x_in": 10.839,
+    "bearing_x_out": 12.257,
+    "bearing_x": 11.548,
+    "pad_angle": 30,
+    "alt_min": 15,
+    "chord_e": 3.6234666314352904,
+    "rim_w": 2.6,
+    "bar_w": 1.2,
+    "web_w": 3.0,
+    "bands": {
+      "bare": [
+        0.0,
+        0.15
+      ],
+      "belt": [
+        0.15,
+        0.51
+      ],
+      "ebony": [
+        0.51,
+        1.15
+      ],
+      "tape": [
+        1.15,
+        1.41
+      ]
+    },
+    "pad_x": 11.669,
+    "pad_w": 0.55,
+    "wall_in": 11.3145,
+    "wall_out": 12.0235,
+    "box_clearance": 0.47550000000000026,
+    "inside_w": 22.629,
+    "arm_t": 0.75,
+    "foot_h": 0.75,
+    "ring_z0": 1.5,
+    "ground_top": 2.209,
+    "az_pad_t": 0.15,
+    "floor_z0": 2.359,
+    "floor_top": 3.068,
+    "z_alt": 26.585095820281065,
+    "h_alt": 23.517095820281064,
+    "arc_r": 14.4,
+    "lam_t": 0.06,
+    "pad_seat_r": 14.25,
+    "pad_len": 1.6,
+    "horn_angle": 42,
+    "depth": 26.0,
+    "L": 27.418,
+    "end_h": 4.0,
+    "h_pad": 11.392740167298921,
+    "h_dip": 9.117095820281063,
+    "h_horn": 12.815810333406587,
+    "y_horn": 9.63548073156756,
+    "y_pad": 6.999999999999999,
+    "end_h_max": 4.222709807566674,
+    "floor_w": 24.047,
+    "floor_l": 27.418,
+    "ring_od": 30.0,
+    "ring_id": 23.0,
+    "foot_r": 14.0,
+    "az_pad_r": 12.75,
+    "ground_angles": [
+      90,
+      210,
+      330
+    ],
+    "pivot_d": 0.375,
+    "pinion_pd": 0.5,
+    "cap_z": 12.245095820281065,
+    "alt_head_angle": -50,
+    "lateral_stop_angle": 37,
+    "az_y": 8.5,
+    "az_pinion_r": 15.34,
+    "az_pinion_xy": [
+      12.769714170646107,
+      8.5
+    ],
+    "az_ratio": 120.48,
+    "alt_ratio": 112.48,
+    "rocker_top": 15.883810333406586
+  },
+  "rocker_holes": {
+    "drive": [
+      [
+        8.666136333389495,
+        10.016744475600047
+      ],
+      [
+        8.666136333389495,
+        11.016744475600047
+      ],
+      [
+        -1.3,
+        6.377095820281066
+      ],
+      [
+        -1.3,
+        7.9770958202810665
+      ],
+      [
+        1.3,
+        6.377095820281066
+      ],
+      [
+        1.3,
+        7.9770958202810665
+      ],
+      [
+        -11.031039980913283,
+        6.807905166703295
+      ],
+      [
+        -11.031039980913283,
+        7.807905166703295
+      ],
+      [
+        7.6,
+        1.6
+      ],
+      [
+        7.6,
+        3.6
+      ],
+      [
+        9.4,
+        1.6
+      ],
+      [
+        9.4,
+        3.6
+      ]
+    ],
+    "plain": [
+      [
+        8.666136333389495,
+        10.016744475600047
+      ],
+      [
+        8.666136333389495,
+        11.016744475600047
+      ],
+      [
+        4.5,
+        1.5
+      ],
+      [
+        4.5,
+        4.5
+      ],
+      [
+        9.5,
+        1.5
+      ],
+      [
+        9.5,
+        4.5
+      ]
+    ]
+  },
+  "frame": {
+    "z_alt": 26.585095820281065,
+    "y_sec": 37.01,
+    "y_mirror": -13.49,
+    "y_ring_hi": 41.135,
+    "y_ring_lo": 32.885,
+    "y_mcage_top": -6.49,
+    "y_mcage_bot": -19.29,
+    "focuser_x": -11.405,
+    "bearing_x": 11.548,
+    "R": 14.0,
+    "bearing_x_in": 10.839,
+    "bearing_x_out": 12.257,
     "stub_xz": {
       "90": [
         6.276314845630185e-16,
