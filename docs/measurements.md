@@ -88,7 +88,7 @@ cage in the model, so these are for the record only; nothing in the rebuild depe
 | Item | Value | How | Status |
 | --- | --- | --- | --- |
 | Construction | shield-shaped top ring and mirror board, six aluminium spacer tubes, a black tube baffle inside, a narrow vertical ply strip on each side between the rings where the bearings bolt (not a full side panel) | photos | confirmed |
-| Strut holes | three 1.25" holes through the top ring and the mirror board; seen from above they sit at about 30° and 150° from the bearing axis and at 270° on the point, i.e. the model's 120° pattern with one tube on the plane square to the bearings | photo from above | read from photo; confirm with hole-to-hole and hole-to-flat distances |
+| Strut holes | three 45 mm holes through the top ring and the mirror board; seen from above they sit at about 30° and 150° from the bearing axis and at 270° on the point, i.e. the model's 120° pattern with one tube on the plane square to the bearings | photo from above | read from photo; confirm with hole-to-hole and hole-to-flat distances |
 | Bearing attachment | studs through the side strips, bearing goes on with knobs/wingnuts | photo | confirmed |
 | Strings | two eye hooks on the top ring | photo | confirmed |
 | Mirror | 16" with centre spot, sits in the baffle tube; cell is a round plywood plate with three large round openings showing the grey sandwich back, hung on three spring knobs through the mirror board | photos | confirmed |
@@ -104,8 +104,8 @@ cage in the model, so these are for the record only; nothing in the rebuild depe
 | Spacer tubes | SEVEN short tubes, 1 1/4" OD, 11 3/8" long: three at the back of the box and two on each side near the front (model assumed six at 1" OD, 60° apart) | Nick, tape | confirmed |
 | Spacer tube positions | on a circle just inside the ring's outer edge. In the model frame (bearings at 0/180, point hole at 270, back holes at 30/150): three across the back between the 30° and 150° holes at roughly 60/90/120; two per side toward the front at roughly 200/240 and 300/340, the pair nearest the point carrying the string eye bolts | overhead photo | read from photo, good to about 10° |
 | Point of the top ring | faces the front (eyepiece side); the string eye bolts flank it | photo | likely, confirm when assembled |
-| Long struts | about 1 5/8" OD (eyeballed 1 3/4 first; the ring holes are 1 5/8 so the tube is 1 5/8 or a hair under; model assumed 1.25"), 50 1/2" long, plain tube ends (no fittings) | Nick, tape | length and ends confirmed; OD to caliper |
-| Strut hole diameter | 1 5/8" | Nick, tape | confirmed |
+| Long struts | **45 mm OD x 40 mm ID aluminium (1.772" x 1.575", 2.5 mm wall)**, 50 1/2" long, plain tube ends (no fittings). Earlier tape/eyeball readings of 1 5/8 and 1 3/4 superseded | Nick, calipers 2026-10-19 | confirmed |
+| Strut hole diameter | 45 mm (the 1 5/8" tape reading was wrong; a caliper photo with the outside jaws in the hole reads 43.5 mm, which is 45–46 mm once the jaw tips are added) | Nick, calipers 2026-10-19 | confirmed |
 | Top ring top face to mirror face | about 7" (the 3 3/4" photo reading was the tape bending over the baffle, not the glass) | Nick | confirmed, roughly |
 | Mirror face to the bottom of the cell (the triangle) | about 3" (glass 1.65" + disc + pads). The model's `cell_depth` of 3.5 counts down to the mirror board; with the springs it is about 7" top ring to mirror face + 3" cell = 10" from the top ring to the cell bottom, leaving about 1 3/8" of spring and board gap above the 11 3/8" inside height | Nick | confirmed, roughly |
 | Mirror | 16", centre spot, held in a black baffle tube | photo | confirmed |
@@ -135,7 +135,7 @@ cage in the model, so these are for the record only; nothing in the rebuild depe
 The one real consequence: the box's top ring is 7" below the altitude axis, not 1" above it as assumed, so truss
 sockets on stubs at the ring put the base nodes 7" lower and the poles grow from 30" to 38.5". Truss drift roughly
 doubles; the total budget is still about 0.3 mm against 0.5 mm. Raising the sockets on taller stubs does not help
-(a 7" cantilever of 1 5/8" tube is about 7,600 lb/in, worse than the joints). Options are to accept it, go to 1.25"
+(a 7" cantilever of 1 5/8" tube was put at 7,600 lb/in; with the measured 45 × 2.5 mm tube it is about 16,000 lb/in, still in series with the joints). Options are to accept it, go to 1.25"
 aluminium or carbon poles, or bridge the sockets to the new bearings. Decision pending.
 
 **Bearing attachment, as built.** The D bearings are located by the long struts: each strut passes through the clamp

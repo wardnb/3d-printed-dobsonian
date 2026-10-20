@@ -25,7 +25,7 @@ Y_NODE = Y_STUB_TOP + 0.6                      # cone apex (FE node) height
 NODE_OFF = 0.8                                 # the two cups at a socket sit +/-0.8" tangentially
 POLE_OD, POLE_WALL = PR["truss_pole_od"], 0.062   # 1.25 x 0.062 carbon
 BORE = POLE_OD - 2 * POLE_WALL
-STUB_OD, STUB_WALL = PR["mcage_tube_od"], 0.065   # 1 5/8 DobStuff tube
+STUB_OD, STUB_WALL = PR["mcage_tube_od"], PR["mcage_tube_wall"]   # 45 x 2.5 mm DobStuff strut (measured)
 HALF = math.radians(30)                        # 60 deg included cone
 NOSE_D = 0.40
 S_NOSE = (NOSE_D / 2) / math.tan(HALF)         # apex -> nose along the pole axis
@@ -274,4 +274,5 @@ if __name__ == "__main__":
     L = math.dist(*node_points(30, 1))
     print(json.dumps(dict(pole_node_to_node_in=round(L, 2), tube_len_in=round(L - 0.6 - S_SHOULDER - SHOULDER_L, 2),
                           plug_nose_to_shoulder_in=round(S_SHOULDER - S_NOSE, 3), shank_od_in=round(BORE - 0.006, 3),
-                          cup_depth_in=round(S_SHOULDER, 3), node_offset_in=NODE_OFF), indent=1))
+                          cup_depth_in=round(S_SHOULDER, 3), node_offset_in=NODE_OFF,
+                          spigot_od_in=round(STUB_OD - 2 * STUB_WALL - 0.006, 3), stub_od_in=STUB_OD), indent=1))

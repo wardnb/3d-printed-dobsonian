@@ -29,7 +29,7 @@ decisions; this file is the working knowledge needed to continue the engineering
   Hubble lists 406 mm, about 42 mm thick, about 10.5 kg (23 lb).
 - DobStuff 16" strut kit (Dennis Steele, 2022): 9-point non-flotation cell (triangular 3/4" plate, nine fixed pads,
   hung on three spring knobs through the bottom ring), mirror cage = two 3/4" ply rings + six short spacer tubes +
-  two ply side panels; three 1.25" strut tubes slide through holes in the top ring and mount on the bottom ring;
+  two ply side panels; three 45 × 2.5 mm aluminium strut tubes (measured 2026-10-19, 50.5" long) slide through 45 mm holes in the top ring and mount on the bottom ring;
   originally strings and a single upper ring "pre-installed for a 3-vane spider". Ebony Star on Teflon bearings,
   detachable D bearings with wingnuts. DobStuff closed 2024-12-31 (densteele@gmail.com).
 - SiTech Servo Controller II; Nexus DSC Pro.
@@ -54,8 +54,8 @@ decisions; this file is the working knowledge needed to continue the engineering
 | Secondary holder | Mirror bonded face-down in a jig to a carrier on three 0.012" pads (RTV in wells); carrier doweled to a 45° body; push screws tapped in the hub at r 1.1", pull screws in ±4° arc slots at r 0.8" for clocking; 1/4-20 centre retainer; Kapton heater + NTC on the Pegasus | Solves "glued it on twisted"; clocking is a normal collimation step. Offset built into the dowel pattern (0.317" along the major axis for 3.5"). |
 | Focal plane | L (secondary centre to focus) = 11.9" | FTF2015 + coma corrector (needs ~0.75" in-travel) sits mid-travel; racked-out shoulder-plane eyepieces still focus; drawtube clears the 8" beam when in use. |
 | Coma corrector | Always in. Explore Scientific HR 2" (~$200 on sale) chosen on price; Paracorr 2 (~$577) equivalent for this use | Reducers and refractor flatteners are wrong for this scope. Extender stacks eyepiece → extender → corrector. |
-| Truss | Wide-pair octahedron: three pre-joined pairs of **1.25" × 0.062" roll-wrapped carbon poles, ~38.5" long** (decided 2026-10-18 after measuring: the box's top ring sits 7" below the altitude axis, not 1" above). Pair blocks under the cage's lower ring at 30/150/270°; each pair spreads ±60° to cone sockets on two neighbouring 1 5/8" stubs at 90/210/330° on a 10.68" radius (measured) | Narrow pairs (±30°) were 2× softer. Truss FE at 38.5", wide pairs, ideal joints: 1" Al 0.086 mm, 1.25" Al 0.070, 1.25" carbon 0.042 (lateral mode 88 Hz vs 62). With 20,000 lb/in base joints carbon still drifts 0.32 mm, so the joints, not the poles, set the result: cone plugs must be bonded into the pole bore with zero play. Raising the sockets on taller stubs rejected (7" cantilever of 1 5/8" tube ≈ 7,600 lb/in). |
-| Truss joints | Bonded 6061 plugs with 60° cone ends into countersunk sockets; side knob presses a brass pad (only to stop lift-off). Base sockets plug into 1.25" stubs of the DobStuff tubes left in the cage's holes, 1" proud. Nine knobs total | Zero play by construction; loads go straight to the bottom ring. No aluminium plate on the cage top ring needed. |
+| Truss | Wide-pair octahedron: three pre-joined pairs of **1.25" × 0.062" roll-wrapped carbon poles, ~38.5" long** (decided 2026-10-18 after measuring: the box's top ring sits 7" below the altitude axis, not 1" above). Pair blocks under the cage's lower ring at 30/150/270°; each pair spreads ±60° to cone sockets on two neighbouring 45 mm stubs at 90/210/330° on a 10.68" radius (measured) | Narrow pairs (±30°) were 2× softer. Truss FE at 38.5", wide pairs, ideal joints: 1" Al 0.086 mm, 1.25" Al 0.070, 1.25" carbon 0.042 (lateral mode 88 Hz vs 62). With 20,000 lb/in base joints carbon still drifts 0.32 mm, so the joints, not the poles, set the result: cone plugs must be bonded into the pole bore with zero play. Raising the sockets on taller stubs rejected (7" cantilever of the 45 × 2.5 mm tube ≈ 16,000 lb/in, still in series with the joints). |
+| Truss joints | Bonded 6061 plugs with 60° cone ends into countersunk sockets; side knob presses a brass pad (only to stop lift-off). Base sockets have a 1.569" spigot bonded into the 40 mm bore of the DobStuff stubs left in the cage's holes, 1" proud. Nine knobs total | Zero play by construction; loads go straight to the bottom ring. No aluminium plate on the cage top ring needed. |
 | Mirror cell | Keep DobStuff 9-point cell. Replace spring knobs with push-pull (3 × 5/16-24 + lock). If silicone-bonded: keep, no sling. If loose: 1/2" × 0.010" stainless strap at the CG plane | Sandwich is stiff (Hubble uses 6 points). Springs move with altitude. |
 | Altitude bearings | Rebuilt: 14" radius D, two laminated 3/4" Baltic birch layers, cut with dowel holes in one AltMill setup; Ebony Star on PTFE pads at ±35°; drive-side rim = 0.6" Ebony Star band + 0.4" GT2 belt band + 0.3" sealed tape band | Concentric rim for the belt and encoder; dowels for repeatable detach. Aluminium rejected (edge too narrow, heavier). |
 | Drives | Belt-on-rim on both axes: 9 mm GT2 glued teeth-out, sprung 20T pinion (0.5" PD), 2:1 GT2 stage. Alt GM9413 112:1; Az GM9213 on the ROCKER driving a fixed 30" ground ring (cut to 480 teeth), 120:1 | 1.9× torque margin each axis, ~10–11°/s slew, ~0.28"/motor count. Friction capstan rejected (μ≈0.2 → 150 lb preload). Az motor on the rocker so no cable crosses the az axis. Cable drive is the fallback. Ron's DobStuff GoTo uses SiTech + "gear and rack", confirming the approach. |
@@ -90,7 +90,7 @@ measured 38.5" (truss_fe.py) · cell ~0.05–0.12 mm · total ≈ 0.25 mm. Colli
   focus reflected by the deflected secondary, minus eyepiece motion, swept 0–90°.
 - `truss_fe.py`: truss FE (cage rigid); reads `out/params.json`, run from `goto-rebuild/`.
 - `truss_joints.py`: joint detail (60° cone plugs bonded in the carbon poles, socket blocks with a spigot bonded into the
-  1 5/8" stubs and two cups at ±0.8" on the tangent, pair blocks bonded to both poles with two dowels and one knob under
+  45 mm stubs and two cups at ±0.8" on the tangent, pair blocks bonded to both poles with two dowels and one knob under
   the cage ring). Reads `out/params.json`; writes GLBs and STEPs to `out/truss_joints/`. Plug shank sized for a
   1.126" bore: re-run after measuring the real tube.
 - `wire_geo2.py`, `wire_geo3.py`: wire-spider layout studies (historical).
@@ -114,7 +114,7 @@ measured 38.5" (truss_fe.py) · cell ~0.05–0.12 mm · total ≈ 0.25 mm. Colli
 
 ## Open measurements (replace ASSUMED values)
 
-- [~] Mirror cage: long struts about 1 5/8" OD in 1 5/8" ring holes (not 1.25"); seven 1 1/4" spacer tubes (three at the back, two per side at the front). Tube holes confirmed at the model's 120° pattern (one square to the bearings); hole circle radius 10.7" (18.5" chords, tape),
+- [x] Mirror cage: long struts 45 mm OD × 40 mm ID aluminium in 45 mm ring holes (calipers); seven 1 1/4" spacer tubes (three at the back, two per side at the front). Tube holes confirmed at the model's 120° pattern (one square to the bearings); hole circle radius 10.7" (18.5" chords, tape),
       ring ID 18", box 11 3/8" between the boards, mirror face about 7" below the top ring (photo readings, see `docs/measurements.md`).
       The bearings are the box's sides (narrow ply strips, no side panels).
 - [~] Cell: 1/4" spring studs; mirror sits on a thin ply disc over the 3/4" triangle; bond still unconfirmed (no RTV visible at the edge)

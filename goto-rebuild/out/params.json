@@ -29,7 +29,8 @@
     "truss_pole_od": 1.25,
     "truss_top_radius": 9.6,
     "truss_bottom_radius": 10.68,
-    "mcage_tube_od": 1.625,
+    "mcage_tube_od": 1.772,
+    "mcage_tube_wall": 0.098,
     "mcage_tube_angles": [
       90,
       210,

@@ -58,7 +58,8 @@ P = dict(
     truss_pole_od=1.25,           # DECIDED 2026-10-18: 1.25" x 0.062" roll-wrapped carbon poles
     truss_top_radius=9.6,
     truss_bottom_radius=10.68,    # measured: strut holes 18.5" apart centre to centre = 10.68" radius
-    mcage_tube_od=1.625,          # measured: the ring holes are 1 5/8"; the DobStuff struts are 1 5/8" or a hair under
+    mcage_tube_od=1.772,          # measured 2026-10-19 (calipers): DobStuff struts 45 mm OD x 40 mm ID, ring holes 45 mm
+    mcage_tube_wall=0.098,        # 2.5 mm wall
     mcage_tube_angles=(90, 210, 330),   # measured: one hole square to the bearings (the ring's point), two 30 deg off the bearing axis
     mcage_spacer_od=1.25,         # measured: seven short tubes between the two rings
     mcage_spacer_angles=(60, 90, 120, 200, 240, 300, 340),   # from the overhead photo, +/-10 deg
@@ -281,7 +282,7 @@ def truss_assy(name, poles_list, bottom_angles, blk_w):
         y_top = y_mcage_top + P["stub_proud"]
         blk = (cq.Workplane("XY").box(1.6 * IN, 1.2 * IN, blk_w * IN)
                .rotate((0, 0, 0), (0, 1, 0), -b).translate(v(x, y_top + 0.6, z)))
-        blk = blk.union(cyl_y(y_top - 1.5, 1.5, P["mcage_tube_od"] / 2 - 0.07, x, z))   # plug into the stub tube
+        blk = blk.union(cyl_y(y_top - 1.5, 1.5, P["mcage_tube_od"] / 2 - P["mcage_tube_wall"] - 0.003, x, z))   # spigot into the stub bore
         blocks = blk if blocks is None else blocks.union(blk)
     a.add(blocks, name="truss_sockets_lower", color=ALU)
     poles = None
