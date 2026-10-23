@@ -1,4 +1,4 @@
-"""Rocker, ground board and bearing cut files (DXF per part for Aspire), fit checks and a cut sheet.
+"""Rocker, ground board and bearing cut files (DXF per part for Aspire), fit checks and a cut layout on AltMill-sized blanks (24.4 x 48, ripped from 5 x 5 sheets).
 Run dob_model.py first (reads out/params.json), then: .venv/bin/python export_rocker.py"""
 import json
 import math
@@ -19,7 +19,8 @@ D = json.load(open(os.path.join(HERE, "out", "params.json")))
 G = D["rocker"]
 F = D["frame"]
 ALTMILL = (48.6, 24.4)        # AltMill 2x4 cutting area, inches
-SHEET = (60.0, 60.0)          # 5 x 5 Baltic birch
+BLANK = (48.0, 24.4)          # one blank = a 24.4 x 60 strip ripped from a 5 x 5 sheet, crosscut to 48 (fills the AltMill bed)
+MARGIN, GAP = 0.5, 0.5        # part to blank edge, part to part
 
 solids, flats, holes = rocker.build(G)
 report = {}
@@ -89,48 +90,110 @@ report["dims"] = {k: (round(G[k], 2) if isinstance(G[k], float) else G[k]) for k
 report["ev6_ok_under_23in"] = G["rocker_top"] <= 23.0
 report["bearing_lb_each"] = round(rocker.bearing_area_in2(G) * G["bearing_t"] * 0.0243, 2)
 
-# ---- cut sheets (matplotlib)
-def outline_xy(solid):
-    """Sample the bottom face's wires into polylines (inches)."""
-    polys = []
-    for e in solid.faces("<Z").edges().vals():      # one polyline per edge (wire edge order is not contiguous)
-        n = 1 if e.geomType() == "LINE" else 48
-        pts = [(p.x / IN, p.y / IN) for p in e.positions([i / n for i in range(n + 1)], mode="length")]
-        polys.append(pts)
-    return polys
+# ---- cut layout on AltMill-sized blanks (shapely checks every placement)
+from shapely.geometry import Polygon, box as sbox
+from shapely import affinity
 
-def place(ax, name, x, y, rot=0, label=None):
-    fl = flats[name]
-    bb = fl["solid"].val().BoundingBox()
-    for poly in outline_xy(fl["solid"]):
-        xs, ys = zip(*poly)
-        if rot:
-            xs, ys = [-(v_ - bb.ymin / IN) for v_ in ys], [v_ - bb.xmin / IN for v_ in xs]
-            xs = [v_ + (bb.ylen / IN) for v_ in xs]
+def wire_pts(wire):
+    """Ordered points (inches) around a CadQuery wire: sample each edge, then chain the edges by their endpoints."""
+    segs = []
+    for e in wire.Edges():
+        n = 1 if e.geomType() == "LINE" else 64
+        segs.append([(p.x / IN, p.y / IN) for p in e.positions([i / n for i in range(n + 1)], mode="length")])
+    out = segs.pop(0)
+    while segs:
+        for i, sg in enumerate(segs):
+            if abs(sg[0][0] - out[-1][0]) + abs(sg[0][1] - out[-1][1]) < 1e-6:
+                out += sg[1:]; break
+            if abs(sg[-1][0] - out[-1][0]) + abs(sg[-1][1] - out[-1][1]) < 1e-6:
+                out += sg[::-1][1:]; break
         else:
-            xs, ys = [v_ - bb.xmin / IN for v_ in xs], [v_ - bb.ymin / IN for v_ in ys]
-        ax.plot([x + v_ for v_ in xs], [y + v_ for v_ in ys], color="#333", lw=0.8)
-    w, h = (bb.ylen, bb.xlen) if rot else (bb.xlen, bb.ylen)
-    ax.text(x + w / IN / 2, y + h / IN / 2, label or name, ha="center", va="center", fontsize=7, color="#844")
+            raise RuntimeError("open wire")
+        segs.pop(i)
+    return out
 
-fig, axes = plt.subplots(1, 2, figsize=(16, 8.4))
-for ax, title in zip(axes, ("Sheet A: rocker + ground board (60 x 60, 18 mm birch)", "Sheet B: four bearing layers (60 x 60, 18 mm birch)")):
-    ax.add_patch(plt.Rectangle((0, 0), *SHEET, fill=False, lw=1.5, color="#888"))
-    ax.set_xlim(-1, 61); ax.set_ylim(-1, 61); ax.set_aspect("equal"); ax.set_title(title, fontsize=10)
-    ax.set_xlabel("in")
-A, B = axes
-place(A, "ground_ring_half", 0.5, 0.5); place(A, "ground_ring_half", 30.5, 0.5)
-place(A, "rocker_floor", 0.5, 16.0, rot=True)            # 27.4 wide x 24.05 tall
-place(A, "rocker_wall_drive", 29.0, 16.0); place(A, "rocker_wall_plain", 29.0, 30.0)
-place(A, "rocker_end", 0.5, 41.0); place(A, "rocker_end", 0.5, 45.5)
-place(A, "ground_hub", 24.0, 41.0)
-for i in range(3):
-    place(A, "ground_arm", 33.0, 44.5 + i * 4.0)
-for i, (x, y) in enumerate([(1.0, 1.0), (30.5, 1.0), (1.0, 20.0), (30.5, 20.0)]):
-    place(B, "bearing_layer", x, y, label=f"bearing layer {i + 1}")
+def flat_poly(name):
+    f = flats[name]["solid"].faces("<Z").val()
+    return Polygon(wire_pts(f.outerWire()), [wire_pts(w) for w in f.innerWires()])
+
+def placed(name, x, y, rot=0):
+    """Part rotated by rot degrees, then moved so its bounding box starts at (x, y) on the blank."""
+    p = affinity.rotate(flat_poly(name), rot, origin="centroid")
+    bx0, by0, _, _ = p.bounds
+    return affinity.translate(p, x - bx0, y - by0)
+
+# blanks: name -> (size, [(part, x, y, rot)])
+Lw, s_wall = G["L"], 13.0                   # the second wall nests inverted, shifted 13" along the first
+LAYOUT = {
+    "bearing 1 (+ ends, hub)": (BLANK, [("bearing_layer", 0.5, 0.5, 0), ("rocker_end", 29.5, 0.5, 90), ("rocker_end", 34.0, 0.5, 90),
+                                        ("ground_hub", 38.5, 0.5, 0)]),
+    "bearing 2": (BLANK, [("bearing_layer", 0.5, 0.5, 0)]),
+    "bearing 3": (BLANK, [("bearing_layer", 0.5, 0.5, 0)]),
+    "bearing 4": (BLANK, [("bearing_layer", 0.5, 0.5, 0)]),
+    "walls (+ arms)": (BLANK, [("rocker_wall_drive", 0.5, 0.5, 0), ("rocker_wall_plain", 0.5 + s_wall, BLANK[1] - 0.5 - G["h_horn"], 180),
+                               ("ground_arm", 0.5, 13.9, 0), ("ground_arm", 0.5, 17.9, 0), ("ground_arm", 0.5 + s_wall + Lw + 0.6, 0.5, 90)]),
+    "ring thirds": ((32.3, 24.4), [("ground_ring_third", 0.5, 0.5, 0), ("ground_ring_third", 0.5, 6.7, 0), ("ground_ring_third", 0.5, 12.9, 0)]),
+}
+FLOOR_NOTE = ("rocker_floor: rip the 24.4 strip to %.2f and crosscut to %.2f on the table saw; "
+              "the AltMill (or a hand drill from the DXF) does the pivot and pilot holes" % (G["floor_w"], G["floor_l"]))
+
+blank_report, overlaps, polys_by_blank = [], [], {}
+for bname, (size, items) in LAYOUT.items():
+    inner = sbox(MARGIN - 1e-4, MARGIN - 1e-4, size[0] - MARGIN + 1e-4, size[1] - MARGIN + 1e-4)
+    ps = [(n, placed(n, x, y, r)) for n, x, y, r in items]
+    polys_by_blank[bname] = ps
+    inside = all(inner.contains(p) for _, p in ps)
+    for i in range(len(ps)):
+        for j in range(i + 1, len(ps)):
+            d = ps[i][1].distance(ps[j][1])
+            if d < GAP - 1e-6:
+                overlaps.append((bname, ps[i][0], ps[j][0], round(d, 3)))
+    blank_report.append(dict(blank=bname, size_in=size, parts=[n for n, _ in ps], inside_margin=inside,
+                             fits_altmill=size[0] <= ALTMILL[0] and size[1] <= ALTMILL[1]))
+placed_counts = {}
+for _, (_, items) in LAYOUT.items():
+    for n, *_ in items:
+        placed_counts[n] = placed_counts.get(n, 0) + 1
+missing = {n: f["qty"] - placed_counts.get(n, 0) for n, f in flats.items() if placed_counts.get(n, 0) != f["qty"]}
+report["blanks"] = blank_report
+report["blank_overlaps"] = overlaps
+report["blank_parts_unplaced"] = missing            # rocker_floor is table-sawn (see floor_note)
+report["floor_note"] = FLOOR_NOTE
+report["sheets_5x5"] = "3: each ripped into two 24.4 x 60 strips; sheet 3 strip B = floor (27.4) + ring thirds blank (32.3)"
+report["layout_ok"] = all(b["inside_margin"] and b["fits_altmill"] for b in blank_report) and not overlaps and missing == {"rocker_floor": 1}
+
+fig, axes = plt.subplots(2, 4, figsize=(22, 11.5))
+axes = axes.ravel()
+for ax, (bname, (size, _)) in zip(axes, LAYOUT.items()):
+    ax.add_patch(plt.Rectangle((0, 0), *size, fill=False, lw=1.5, color="#888"))
+    ax.add_patch(plt.Rectangle((MARGIN, MARGIN), size[0] - 2 * MARGIN, size[1] - 2 * MARGIN, fill=False, lw=0.5, ls=":", color="#aaa"))
+    for n, p in polys_by_blank[bname]:
+        xs, ys = p.exterior.xy
+        ax.plot(xs, ys, color="#333", lw=0.8)
+        for ring in p.interiors:
+            ax.plot(*ring.xy, color="#333", lw=0.6)
+        c = p.centroid
+        x0_, y0_, x1_, y1_ = p.bounds
+        ax.text(c.x, c.y, n.replace("_", " "), ha="center", va="center", fontsize=7, color="#844",
+                rotation=90 if (y1_ - y0_) > (x1_ - x0_) else 0)
+    ax.set_xlim(-1, 49); ax.set_ylim(-1, 25.4); ax.set_aspect("equal")
+    ax.set_title(f"{bname}  ({size[0]:.1f} x {size[1]:.1f} blank)", fontsize=10); ax.set_xlabel("in")
+ax = axes[len(LAYOUT)]
+axes[-1].axis("off")
+fw, fl_ = G["floor_w"], G["floor_l"]
+ax.add_patch(plt.Rectangle((0, 0), fl_, fw, fill=False, lw=1.5, color="#888"))
+fp = placed("rocker_floor", 0, 0, 90)
+for ring in fp.interiors:
+    ax.plot(*ring.xy, color="#333", lw=0.6)
+ax.text(fl_ / 2, fw / 2, "rocker floor\n(table saw; AltMill drills)", ha="center", va="center", fontsize=8, color="#844")
+ax.set_xlim(-1, 49); ax.set_ylim(-1, 25.4); ax.set_aspect("equal")
+ax.set_title(f"floor  ({fl_:.2f} x {fw:.2f}, ripped from a 24.4 strip)", fontsize=10); ax.set_xlabel("in")
+fig.suptitle("Cut layout, 18 mm Baltic birch: three 5 x 5 sheets ripped into 24.4 x 60 strips; every blank fits the AltMill 2x4 (48.6 x 24.4)", fontsize=11)
 fig.tight_layout()
 fig.savefig(os.path.join(OUT, "cut_sheet_rocker.png"), dpi=110)
 json.dump(report, open(os.path.join(OUT, "fit_report.json"), "w"), indent=2)
-print(json.dumps({k: v_ for k, v_ in report.items() if k not in ("parts", "bracket_holes_yh_in")}, indent=1))
+print(json.dumps({k: v_ for k, v_ in report.items() if k not in ("parts", "bracket_holes_yh_in", "blanks")}, indent=1))
+for b in blank_report:
+    print(f"{b['blank']:28s} {b['size_in'][0]:5.1f} x {b['size_in'][1]:4.1f}  inside={b['inside_margin']}  {b['parts']}")
 for p in parts:
     print(f"{p['part']:20s} x{p['qty']}  {p['size_in'][0]:6.2f} x {p['size_in'][1]:6.2f}  {'ok' if p['fits_altmill'] else 'TOO BIG'}")

@@ -88,14 +88,14 @@
       "fits_altmill": true
     },
     {
-      "part": "ground_ring_half",
-      "qty": 2,
+      "part": "ground_ring_third",
+      "qty": 3,
       "size_in": [
-        30.0,
-        15.0
+        25.98,
+        9.25
       ],
       "stock": "18 mm Baltic birch",
-      "dxf": "ground_ring_half_18mm-birch.dxf",
+      "dxf": "ground_ring_third_18mm-birch.dxf",
       "fits_altmill": true
     },
     {
@@ -212,5 +212,95 @@
     "cap_z": 12.25
   },
   "ev6_ok_under_23in": true,
-  "bearing_lb_each": 6.56
+  "bearing_lb_each": 6.56,
+  "blanks": [
+    {
+      "blank": "bearing 1 (+ ends, hub)",
+      "size_in": [
+        48.0,
+        24.4
+      ],
+      "parts": [
+        "bearing_layer",
+        "rocker_end",
+        "rocker_end",
+        "ground_hub"
+      ],
+      "inside_margin": true,
+      "fits_altmill": true
+    },
+    {
+      "blank": "bearing 2",
+      "size_in": [
+        48.0,
+        24.4
+      ],
+      "parts": [
+        "bearing_layer"
+      ],
+      "inside_margin": true,
+      "fits_altmill": true
+    },
+    {
+      "blank": "bearing 3",
+      "size_in": [
+        48.0,
+        24.4
+      ],
+      "parts": [
+        "bearing_layer"
+      ],
+      "inside_margin": true,
+      "fits_altmill": true
+    },
+    {
+      "blank": "bearing 4",
+      "size_in": [
+        48.0,
+        24.4
+      ],
+      "parts": [
+        "bearing_layer"
+      ],
+      "inside_margin": true,
+      "fits_altmill": true
+    },
+    {
+      "blank": "walls (+ arms)",
+      "size_in": [
+        48.0,
+        24.4
+      ],
+      "parts": [
+        "rocker_wall_drive",
+        "rocker_wall_plain",
+        "ground_arm",
+        "ground_arm",
+        "ground_arm"
+      ],
+      "inside_margin": true,
+      "fits_altmill": true
+    },
+    {
+      "blank": "ring thirds",
+      "size_in": [
+        32.3,
+        24.4
+      ],
+      "parts": [
+        "ground_ring_third",
+        "ground_ring_third",
+        "ground_ring_third"
+      ],
+      "inside_margin": true,
+      "fits_altmill": true
+    }
+  ],
+  "blank_overlaps": [],
+  "blank_parts_unplaced": {
+    "rocker_floor": 1
+  },
+  "floor_note": "rocker_floor: rip the 24.4 strip to 24.05 and crosscut to 27.42 on the table saw; the AltMill (or a hand drill from the DXF) does the pivot and pilot holes",
+  "sheets_5x5": "3: each ripped into two 24.4 x 60 strips; sheet 3 strip B = floor (27.4) + ring thirds blank (32.3)",
+  "layout_ok": true
 }

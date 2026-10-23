@@ -326,10 +326,19 @@ def build(G):
     for dx in (-arm_l / 2 + 1.0, arm_l / 2 - 1.5):
         arm = arm.cut(cq.Workplane("XY").center(dx * IN, 0).circle(0.1 * IN).extrude(0.1 * IN))
     F["ground_arm"] = dict(solid=arm, stock="18 mm Baltic birch", qty=3, size=(arm_l, 3.5))
-    half = (cq.Workplane("XY").moveTo(-G["ring_od"] / 2 * IN, 0).threePointArc((0, G["ring_od"] / 2 * IN), (G["ring_od"] / 2 * IN, 0))
-            .lineTo(G["ring_id"] / 2 * IN, 0).threePointArc((0, G["ring_id"] / 2 * IN), (-G["ring_id"] / 2 * IN, 0)).close()
-            .extrude(0.1 * IN))
-    F["ground_ring_half"] = dict(solid=half, stock="18 mm Baltic birch", qty=2, size=(G["ring_od"], G["ring_od"] / 2))
+    # ring in three 120-degree segments (a 30 x 15 half ring will not share an AltMill blank with anything);
+    # the joints sit on the arms at G["ground_angles"], each end screwed to the arm through two pilot holes
+    ro, ri = G["ring_od"] / 2, G["ring_id"] / 2
+    s60, c60 = math.sin(math.radians(60)), math.cos(math.radians(60))
+    third = (cq.Workplane("XY").moveTo(-ro * s60 * IN, ro * c60 * IN).threePointArc((0, ro * IN), (ro * s60 * IN, ro * c60 * IN))
+             .lineTo(ri * s60 * IN, ri * c60 * IN).threePointArc((0, ri * IN), (-ri * s60 * IN, ri * c60 * IN)).close()
+             .extrude(0.1 * IN))
+    for sgn in (-1, 1):
+        for r_, da in ((12.3, 4.0), (14.2, 3.5)):          # 2 pilots per end, 0.86-0.99" in from the joint, on the arm
+            a = math.radians(60 - da)
+            third = third.cut(cq.Workplane("XY").center(sgn * r_ * math.sin(a) * IN, r_ * math.cos(a) * IN)
+                              .circle(0.07 * IN).extrude(0.1 * IN))
+    F["ground_ring_third"] = dict(solid=third, stock="18 mm Baltic birch", qty=3, size=(2 * ro * s60, ro - ri * c60))
     bl = bearing_outline(G, 0.1)
     # bring the YZ-built D into the XY plane: (X, Y) = (z, y), straight edge at the top
     bl = bl.rotate((0, 0, 0), (0, 1, 0), 90).translate((0, 0, 0.1 * IN))

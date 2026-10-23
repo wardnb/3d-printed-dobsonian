@@ -9,11 +9,11 @@ Design doc: [`../docs/design.md`](../docs/design.md) (exported) · living doc: h
 
 ## Run
 
-    pip install cadquery numpy matplotlib
+    pip install cadquery numpy matplotlib shapely
     python dob_model.py        # whole scope -> out/*.glb, out/dob16_alt45.step, out/params.json
     python export_cage.py      # upper cage fit checks + DXF/STEP -> out/upper_cage/
     python export_holder.py    # secondary holder, carrier, gluing jig -> out/secondary_holder/
-    python export_rocker.py    # rocker, ground board, bearing layers: fit checks + DXFs + cut sheet -> out/rocker/
+    python export_rocker.py    # rocker, ground board, bearing layers: fit checks + DXFs + cut layout on 24.4 x 48 AltMill blanks -> out/rocker/
     python cage_fe.py quad     # cage + spider collimation-drift FE
     python truss_fe.py         # truss FE (layouts, joint stiffness)
     python build_site.py       # viewer -> dist/ (GLBs base64 as .txt for the artifact host)
