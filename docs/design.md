@@ -1,8 +1,5 @@
 # 16" f/3.9 GoTo Dobsonian Rebuild — Design Doc
 
-> Exported from the living design doc (https://claude.ai/code/artifact/a2bd133b-cebf-4c55-a572-9a930c1ab10f) on 2026-10-30. The doc is the source of truth; re-export after changes.
-
-
 Oct 18, 2026 · @Nickolous Ward
 
 ## Goals and requirements
@@ -322,7 +319,17 @@ The upper cage is detailed to part level and passes fit checks: no part clashes,
 - **Heater lead:** a fine twisted pair taped along one wire to the hub.
 - **File:** `wire_spider_option.step`.
 
-**Waypoint finder mount:** a riser bracket on the upper ring at 150° (30° up from the focuser), cut from 6061 and fixed with 2× 1/4-20. A bought Synta-style finder shoe bolts to its outer face; the UniGuide 50 slides in as it does on your other scopes. Struts moved from 140°/220° to 130°/230° to make room. Adding the finder (about 1.4 lb with camera) moved the balance point again: mirror face 14.2" below the axis, eyepiece about 60.4" at zenith, nested transport height 19.4". The cage hub is not yet in the weight.
+**Waypoint finder mount (v3.1, 2026-10-30): an adjustable cradle between the two rings.** The first design, a riser on the upper ring at 150°, twisted the 1/4" ring locally: the finder pointing moved 2.2′ horizon to zenith (1.2′ after a sync at 45°), and a perfectly rigid bracket still gave 2.0′, so the ring, not the bracket, was the weak part. The cradle ties to both rings and rides on the triangulated cage: 0.57′ horizon to zenith, 0.31′ after a sync at 45° (cage\_fe.py `finder`). It still sits at 150°, 30° up from the focuser.
+
+- **Cradle bar:** 3/8" × 1.25" × 8.0" 6061, 0.55" outside the rings' OD. It bolts with 2× #10 countersunk screws to an angle block at each ring.
+- **Angle blocks (2, the same part, one flipped):** cut from 3/4" 6061. Each is held by 2× #10-32 countersunk screws through its ring at r 9.15" and 9.85". The ring is solid there (the lower ring's slots end at 130° and start at 170°). On the lower ring the heads sit flush under the truss pair block's seat.
+- **Tilt plate:** 1/4" × 1.10" × 6.0" 6061, carrying a bought metal Synta-style shoe. The UniGuide 50's slide base goes in it.
+- **Pivot (mirror end):** a #10 screw through a DIN 6319 spherical washer set, with a Belleville stack under the head.
+- **Pitch (sky end):** a 10-32 push-pull pair, 23′ per turn, ±1.0°.
+- **Yaw (sky end):** a yoke wrapped around the bar with two opposed 10-32 screws, 29′ per turn, ±1.15°. Tightening the pull screw locks both axes.
+- **Alignment:** an eighth of a turn moves the finder about 3′. Centre a star in the eyepiece, then centre it on the Waypoint's crosshair, and the plate solver's offset handles what's left.
+
+Shroud: slit it around the two angle blocks; the bar and the finder sit outside it. Metal in the cradle: about 1.0 lb, against 0.3 lb for the riser. ASSUMED: the shoe's hole spacing (drill the plate to the shoe you buy) and the G3M662C at 0.2 lb. Upper cage mass in the balance solve goes from 12.0 to 12.7 lb. Mirror face 12.7" below the axis, axis 25.95" high, rocker walls 0.35" taller (10.76" at the pads, 15.25" overall), eyepiece 63.7" at zenith. The rocker DXFs were regenerated, and every check passes: swing, bearing clearance, the EV6 and the AltMill layout. Main-scope collimation: 0.013 mm after collimating at 45° (0.007 mm with the old bracket, because the finder's mass now sits mid-gap). Both are negligible.
 
 **Hardware:** 18× 1/4-20 × 5/8" SHCS (struts, rails, connectors); 6× 1/4-20 × 3/4" SHCS (spider blocks); 3× #10-32 × 1" SHCS (pull); 3× #10-32 × 1/2" nylon-tip set screws (push); 4× #8-32 focuser screws (pending base plate).
 
@@ -378,7 +385,7 @@ The cage and spider now use about a quarter of the 0.5 mm coma budget over the f
 
 | Source | Horizon to zenith, mm | Basis |
 | --- | --- | --- |
-| Upper cage v3 (triangulated) with the quad spider | 0.007 | cage\_fe.py |
+| Upper cage v3 (triangulated) with the quad spider | 0.013 (with the finder cradle) | cage\_fe.py |
 | Focuser board flexure | < 0.02 | 1/4" plate, 6 lb at 3.5", 0.1 mrad |
 | Thermal, 20°C drop | \~0 | wire tension falls 2.6 lb; geometry unchanged |
 | Truss pole pairs and apex connectors | not yet modelled; target ≤ 0.2 | needs the connector design and pole clamps |

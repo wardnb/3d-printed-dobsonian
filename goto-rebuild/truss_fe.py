@@ -37,7 +37,7 @@ F_P = np.array([0.0, Y_MIRROR + FL, 0.0])          # primary's focus (rigid to t
 N0 = np.array([-1, -1, 0]) / math.sqrt(2)
 E_AL, G_AL = 10.0e6, 3.8e6
 
-CAGE_LB, EYEPIECE_LB = 12.0, 3.3   # v3 triangulated cage
+CAGE_LB, EYEPIECE_LB = 12.7, 3.3   # v3 triangulated cage
 
 
 def tube_props(od, wall, E=E_AL, G=G_AL):

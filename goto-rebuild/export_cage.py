@@ -58,13 +58,18 @@ secs = {
     "ring_lower": flat_dxf(flats["lower"], "ring_lower_quarter-inch-6061"),
     "ring_upper": flat_dxf(flats["upper"], "ring_upper_quarter-inch-6061"),
     "focuser_board": flat_dxf(flats["board"], "focuser_board_quarter-inch-6061", uc.TB),
+    "finder_block": flat_dxf(flats["finder_block"], "finder_cradle_angle-block_x2_three-quarter-inch-6061", uc.FC["blk_w"]),
+    "finder_bar": flat_dxf(flats["finder_bar"], "finder_cradle_bar_three-eighths-inch-6061", uc.FC["bar_t"]),
+    "finder_plate": flat_dxf(flats["finder_plate"], "finder_tilt_plate_quarter-inch-6061", uc.FC["plate_t"]),
+    "finder_yoke": flat_dxf(flats["finder_yoke"], "finder_yaw_yoke_three-quarter-inch-6061", uc.FC["yoke_y"][1] - uc.FC["yoke_y"][0]),
 }
+report["finder_cradle"] = {k: v for k, v in info["finder_cradle"].items()}
 
 asm = cq.Assembly(name="upper_cage")
 colors = dict(ring_lower=(0.74, 0.76, 0.79), ring_upper=(0.74, 0.76, 0.79), struts=(0.6, 0.62, 0.65),
               board_rails=(0.6, 0.62, 0.65), focuser_board=(0.74, 0.76, 0.79),
               spider_blocks=(0.12, 0.12, 0.13), pair_connectors_concept=(0.85, 0.55, 0.25),
-              finder_bracket=(0.74, 0.76, 0.79), waypoint_finder=(0.55, 0.12, 0.12),
+              finder_cradle=(0.74, 0.76, 0.79), finder_adjuster=(0.6, 0.62, 0.65), waypoint_finder=(0.55, 0.12, 0.12),
               diagonal_tubes=(0.6, 0.62, 0.65), diagonal_nodes=(0.74, 0.76, 0.79))
 for k, p in parts.items():
     asm.add(p, name=k, color=cq.Color(*colors[k]))
@@ -174,9 +179,9 @@ def draw(ax, sec, title, dims):
 
 fig, axs = plt.subplots(1, 3, figsize=(16, 7.4), gridspec_kw=dict(width_ratios=[1, 1, 0.55]))
 draw(axs[0], secs["ring_lower"], "Lower ring (truss end)",
-     "1/4\" 6061 · ID 17.50\" · OD 20.50\" · arc lightening slots\n4 strut + 2 rail + 6 pair-block + 4 diagonal-node holes, 0.257\" (1/4-20 clr)")
+     "1/4\" 6061 · ID 17.50\" · OD 20.50\" · arc lightening slots\n4 strut + 2 rail + 6 pair-block + 4 diagonal-node holes, 0.257\" (1/4-20 clr)\n2 finder-cradle #10 csk at 150°, 0.201\"")
 draw(axs[1], secs["ring_upper"], "Upper ring (sky end)",
-     "1/4\" 6061 · ID 17.50\" · OD 20.50\" · arc lightening slots\n4 strut/extension + 2 rail + 12 spider-seat + 2 finder holes, 0.257\"\nSpider seats: curved 0/120/240°, quad 0/90/180/270° · finder 150°")
+     "1/4\" 6061 · ID 17.50\" · OD 20.50\" · arc lightening slots\n4 strut/extension + 2 rail + 12 spider-seat holes, 0.257\" · 2 finder-cradle #10 csk, 0.201\"\nSpider seats: curved 0/120/240°, quad 0/90/180/270° · finder 150°")
 draw(axs[2], secs["focuser_board"], "Focuser board",
      "1/4\" 6061 · 7.30\" × 6.40\" · R0.25\" corners\n2.50\" drawtube hole · 4× #8-32 on 3.00\" BC (INPUT)\n3× #10-32 pull holes (tap 0.159\")")
 for ax in axs:
@@ -184,6 +189,26 @@ for ax in axs:
 fig.suptitle("16\" Dob upper cage v3 — flat parts (assumed inputs marked)", fontsize=13, x=0.01, ha="left")
 fig.tight_layout(rect=(0, 0.06, 1, 0.97))
 fig.savefig(os.path.join(OUT, "cut_sheet_v3.png"), dpi=150)
+
+# finder cradle parts
+fi = info["finder_cradle"]
+fig, axs = plt.subplots(2, 2, figsize=(14, 10), gridspec_kw=dict(width_ratios=[1.6, 1]))
+draw(axs[0, 0], secs["finder_bar"], "Cradle bar (1 off)",
+     "3/8\" 6061 · 8.00\" × 1.25\" · R0.12\" corners\n4× #10 FHCS csk (0.201\") to the angle blocks · 1× #10 FHCS csk to the yoke\n"
+     "#10-32 taps (0.159\"): pivot y = %.2f, pitch pull y = %.2f (from the bar centre; + = sky end)" % (uc.FC["pivot_y"], uc.FC["pull_y"]))
+draw(axs[1, 0], secs["finder_plate"], "Tilt plate (1 off)",
+     "1/4\" 6061 · 6.00\" × 1.10\" · pivot 0.250\" · pull slot 0.20 × 0.45\" across · push #10-32 tap\n"
+     "2× #8-32 shoe taps at ±0.55\" ASSUMED: drill to the shoe you buy\n"
+     "pitch %.0f′/turn, ±%.1f° · yaw %.0f′/turn, ±%.1f° (10-32 screws)" % (fi["pitch_arcmin_per_turn"], fi["pitch_range_deg"], fi["yaw_arcmin_per_turn"], fi["yaw_range_deg"]))
+draw(axs[0, 1], secs["finder_block"], "Angle block (2 off, side profile)",
+     "3/4\" 6061 · ring face down at y = 0\n2× #10-32 tap 0.4\" deep into the ring face (r 9.15 / 9.85\")\n2× #10-32 tap 0.45\" deep into the outer leg (bar screws)\nlower block = same part, flipped")
+draw(axs[1, 1], secs["finder_yoke"], "Yaw yoke (1 off, end profile)",
+     "3/4\" 6061 · wraps the bar\n#10-32 tap into the base (bar screw)\n2× 10-32 yaw screws through the arms, opposed")
+fig.suptitle("Waypoint finder cradle — flat parts (6061; secondary ops in the notes)", fontsize=13, x=0.01, ha="left")
+for ax in axs.flat:
+    ax.texts[-1].set_y(-0.2)
+fig.tight_layout(rect=(0, 0.05, 1, 0.96), h_pad=8, w_pad=3)
+fig.savefig(os.path.join(OUT, "cut_sheet_finder_cradle.png"), dpi=150)
 
 json.dump(report, open(os.path.join(OUT, "fit_report.json"), "w"), indent=2)
 print(json.dumps(report, indent=2))

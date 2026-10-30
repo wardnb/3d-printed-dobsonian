@@ -38,7 +38,7 @@ decisions; this file is the working knowledge needed to continue the engineering
 - Feather Touch FTF2015BCR focuser: 1.4" racked in, 3.0" out, 1.5" travel, 1.55" of drawtube below the
   mounting face when racked in, 3 lb.
 - Pegasus Pocket Powerbox (two RCA dew outputs; cuts out above about 14–14.5 V, so regulate LiFePO4 to 12 V).
-- WO UniGuide 50 + ToupTek G3M662C = "Waypoint" plate-solving finder (standard Synta-style finder foot).
+- WO UniGuide 50 + ToupTek G3M662C = "Waypoint" plate-solving finder (WO slide base, 515 g, 265 mm; goes in a Synta-style shoe).
 - ZWO ASI533 and an OAG (imaging only; OAG not used for Waypoint).
 - 2" eyepieces: Apertura Panorama 21 and 28 mm (82°), Celestron E-Lux 26/32/40 mm (56°); 1.25" SVBONY 6/9/15/20 mm.
   ES 2" 2× Focal Extender (telecentric). Filters: Optolong L-Pro, Astronomik OIII 12 nm (2"). ES field flattener
@@ -49,6 +49,7 @@ decisions; this file is the working knowledge needed to continue the engineering
 | Topic | Decision | Why / rejected alternatives |
 | --- | --- | --- |
 | Upper cage | **v3 (2026-10-30): triangulated.** Two 1/4" 6061 rings with arc lightening slots, ID 17.5", OD 20.5", 7.5" clear gap; four 3/4" square 6061 posts at 45/135/225/315° (carry the spider studs); six 5/8" × 0.058" 6061 diagonals in inverted Vs from node blocks on the lower ring at 0/90/270° up to clevis blocks on the side faces of the neighbouring posts near the top; focuser bay (135–225°) left open; 1/4" focuser board on two 1/2"×3/4" rails, 3-point push-pull. Cage metal 9.3 lb | Idea from the iOptron Photron 16" RC truss cage. cage_fe.py: 0.007 mm drift after 45° collimation vs 0.024 mm for the v2 3/8" solid post-only cage, and 2 lb lighter. Inverted V beat upright V and X (3–4×) because its lower ends land at the truss pair-block supports; bracing the focuser bay made the light rings worse (loads the rails). Slots are only acceptable because the cage is triangulated. The 3D-printed cage failed and is retired. |
+| Finder mount | **Adjustable cradle between the rings at 150° (2026-10-30)**: 3/8 × 1.25" bar 0.55" outside the OD on an angle block at each ring (#10 FHCS countersunk through the ring at r 9.15/9.85"); 1/4" tilt plate with a bought metal Synta-style shoe; pivot on a spherical washer set at the mirror end, 10-32 push-pull (pitch, 23′/turn) and a yaw yoke with opposed 10-32s (29′/turn) at the sky end, ±1°. Cradle metal 1.0 lb; `upper_cage_lb` 12.7 | A riser on the upper ring twisted the 1/4" ring: Waypoint moved 2.2′ horizon→zenith (2.0′ even with a rigid bracket). Cradle 0.57′ (`cage_fe.py finder`). The 135° post mount was as stiff but sits further from the eyepiece next to a vane stud. Shroud is slit around the blocks. Shoe hole spacing ASSUMED. |
 | Spider | Straight 4-vane, 0.020" stainless × 1.5" tall, vanes at 45/135/225/315° anchored on the POSTS between the rings (#10-32 studs through the posts, nut outside = tension). Hub (2.6" dia, 2.0" bore) = secondary holder top plate, just under the upper ring | Cage+spider FE: 0.02 mm drift. Anchoring on blocks above the ring was 0.08 mm. Wire spider (8 × 0.025", long hub) reached 0.12 mm and obstructs more; shelved. Destiny curved needs towers on the ring and ~0.3 mm drift (curved vanes bend); kept only as a drawn alternative. Nick explicitly wants load-bearing anchors between the rings, not cantilevered off one ring. |
 | Secondary | 3.5" minor axis (not 3.1") | At L = 11.9" the 3.1" has only ~0.05" fully illuminated; 3.5" gives ~0.45", obstruction 21.9% (invisible visually). |
 | Secondary holder | Mirror bonded face-down in a jig to a carrier on three 0.012" pads (RTV in wells); carrier doweled to a 45° body; push screws tapped in the hub at r 1.1", pull screws in ±4° arc slots at r 0.8" for clocking; 1/4-20 centre retainer; Kapton heater + NTC on the Pegasus | Solves "glued it on twisted"; clocking is a normal collimation step. Offset built into the dowel pattern (0.317" along the major axis for 3.5"). |
@@ -68,7 +69,7 @@ decisions; this file is the working knowledge needed to continue the engineering
 
 ## Error budget (focal-plane drift horizon→zenith, 0.5 mm tolerance)
 
-Cage + quad spider 0.007 mm with the v3 triangulated cage (cage_fe.py; 0.024 mm for the old 3/8" post-only cage) · truss 0.04 mm ideal, ~0.1–0.15 mm with real cone joints, 1.25" carbon at the
+Cage + quad spider 0.013 mm with the v3 triangulated cage and finder cradle (0.007 with the old ring bracket) (cage_fe.py; 0.024 mm for the old 3/8" post-only cage) · truss 0.04 mm ideal, ~0.1–0.15 mm with real cone joints, 1.25" carbon at the
 measured 38.5" (truss_fe.py) · cell ~0.05–0.12 mm · total ≈ 0.25 mm. Collimate at 45° and the visible error halves.
 
 ## Model code (`goto-rebuild/`)
@@ -82,7 +83,7 @@ measured 38.5" (truss_fe.py) · cell ~0.05–0.12 mm · total ≈ 0.25 mm. Colli
   truss (`truss` narrow, `truss_zig` = chosen wide pairs), bearings, drives; writes `out/*.glb`, `out/dob16_alt45.step`,
   `out/params.json`. Key params: `L_secondary_to_focus=11.9`, `secondary_minor=3.5`, `mcage_tube_angles`, `stub_proud`.
 - `upper_cage.py`: INPUTS dict (plate 0.25, board_t 0.25, lighten True); STRUTS, QUAD, TOPS (Destiny seats), DIAG_LO + `diagonals()` (v3),
-  APEX (truss pair blocks), FINDER=150°; `quad_spider()`, `spider_blocks()`, `wire_spider()`, `alignment_bar()`,
+  APEX (truss pair blocks), FINDER=150°, FC + `finder_cradle()` (adjustable Waypoint cradle); `quad_spider()`, `spider_blocks()`, `wire_spider()`, `alignment_bar()`,
   `centering_gauge()` (X-bars with a plug into the hub bore), `build()`.
 - `secondary_holder.py`: P (minor 3.5, thick 0.70 ASSUMED), `carrier_flat()`, `jig_flat()`, `build()`.
   Jig standoff = mirror thickness − 0.11" (5/8" for 0.70").
@@ -95,7 +96,7 @@ measured 38.5" (truss_fe.py) · cell ~0.05–0.12 mm · total ≈ 0.25 mm. Colli
 - `export_rocker.py`: reads `params.json`; swing-circle clearance of every rocker piece inside the box's width, bearing-vs-rocker
   interference at 15/45/90°, pad-inside-Ebony-band check, AltMill size check; DXF per part (`out/rocker/*_18mm-birch.dxf`),
   `cut_sheet_rocker.png` (one panel per 24.4 × 48 AltMill blank, placements in `LAYOUT`, overlap/margin check with shapely → `layout_ok`), `fit_report.json`. Run after `dob_model.py`.
-- `cage_fe.py`: 3D frame FE (custom `Frame` class) of the cage + spider; defaults = v3 (quad spider, diagonals="vinv0", ring_t from upper_cage); `python cage_fe.py tri` compares bracing patterns. Metric = primary's
+- `cage_fe.py`: 3D frame FE (custom `Frame` class) of the cage + spider; defaults = v3 (quad spider, diagonals="vinv0", ring_t from upper_cage); `python cage_fe.py tri` compares bracing patterns; `python cage_fe.py finder` compares Waypoint mounts (finder tilt in arcmin; default finder="cradle"). Metric = primary's
   focus reflected by the deflected secondary, minus eyepiece motion, swept 0–90°.
 - `truss_fe.py`: truss FE (cage rigid); reads `out/params.json`, run from `goto-rebuild/`.
 - `truss_joints.py`: joint detail (60° cone plugs bonded in the carbon poles, socket blocks with a spigot bonded into the

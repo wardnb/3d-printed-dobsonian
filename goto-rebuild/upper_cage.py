@@ -45,7 +45,19 @@ STRUTS = [45, 135, 225, 315]         # 3/4" square posts between the rings; also
 CLOCK_DEG = 4                        # secondary clocking range (+/- deg) from the hub's pull-screw slots
 STRUT_SQ = 0.75
 QUAD = [0, 90, 180, 270]             # straight 4-vane spider blocks (0 deg shared with the curved set)
-FINDER = 150                         # Waypoint finder (UniGuide 50) bracket on the upper ring
+FINDER = 150                         # Waypoint finder (UniGuide 50) cradle, spanning both rings
+# Finder cradle (v3.1): a 3/8" x 1.25" 6061 bar outside the rings at FINDER, on an angle block at each
+# ring; a 1/4" tilt plate on the bar carries the finder shoe. Pivot (spherical washer set) at the mirror
+# end; at the sky end a push-pull pair sets pitch and a yoke with two opposed screws sets yaw.
+FC = dict(ring_screw_r=(9.15, 9.85),  # #10 FHCS through each ring into its angle block (radial line at FINDER)
+          blk_x0=8.9, blk_x1=10.80, blk_leg_x0=10.35, blk_t=0.5, blk_leg_drop=1.5, blk_w=0.75,
+          bar_t=0.375, bar_w=1.25, bar_screw_y=(2.85, 3.65),
+          gap=0.16,                   # DIN 6319 C+D spherical washer set (M5/#10) under the plate at the pivot
+          plate_t=0.25, plate_w=1.10, plate_len=6.0,
+          pivot_y=-2.2, pull_y=2.0, push_y=2.45, yoke_y=(1.15, 1.90), yoke_w=2.0, yoke_base=0.35, yoke_top=0.165,
+          shoe=(2.2, 1.25, 0.55),     # ASSUMED bought metal Synta-style finder shoe (long, wide, tall)
+          shoe_holes=(-0.55, 0.55),   # ASSUMED #8-32 hole spacing along the axis: drill to the shoe you buy
+          finder_len=10.43, finder_dia=2.4, cam_len=1.6, cam_dia=1.6, foot=0.25)
 FOCUSER = 180
 RAIL_Z = 2.6                         # focuser board rails at z = +/-2.6
 PP_GAP = 0.06                        # nominal push-pull gap between board and rails
@@ -95,9 +107,9 @@ def ring_holes(kind):
             for d in (-0.3, 0.3):
                 x, z = pol(SPIDER_SEAT_R, a + math.degrees(d / SPIDER_SEAT_R))
                 h.append((x, z, CLR_14, "spider block 1/4-20"))
-        for d in (-0.45, 0.45):              # finder bracket: 2 bolts
-            x, z = pol(R_BOLT, FINDER + math.degrees(d / R_BOLT))
-            h.append((x, z, CLR_14, "finder bracket 1/4-20"))
+    for r in FC["ring_screw_r"]:             # finder cradle angle block: 2x #10-32 FHCS, countersunk on the outer face
+        x, z = pol(r, FINDER)
+        h.append((x, z, CLR_10, "finder cradle #10 FHCS, csk outer face"))
     rail_x = RAIL_X                          # rail centre (rails are 0.5" deep in x)
     for z in (RAIL_Z, -RAIL_Z):
         h.append((rail_x, z, CLR_14, "board rail 1/4-20"))
@@ -452,6 +464,106 @@ def diagonals():
     return dict(tubes=tubes, nodes=nodes, clevises=clev), lens
 
 
+def _local(flat, origin, xdir, normal):
+    """Place an XY sketch solid (thickness along +Z) into the finder's local frame
+    (x radial out, y along the tube axis toward the sky, z tangential)."""
+    pl = cq.Plane(origin=tuple(v * IN for v in origin), xDir=xdir, normal=normal)
+    return cq.Workplane("XY").add(flat.val().moved(cq.Location(pl)))
+
+
+def finder_cradle():
+    """Adjustable Waypoint cradle between the rings at FINDER. Returns dict(parts, flats, info);
+    parts are in the tube frame, flats are XY sketches for the DXFs (thickness along Z).
+    Local frame: x radial (out), y tube axis (+ sky), z tangential."""
+    c = FC
+    yh = y_hi_in
+    x0, x1, lx0, bt, drop, bw = c["blk_x0"], c["blk_x1"], c["blk_leg_x0"], c["blk_t"], c["blk_leg_drop"], c["blk_w"]
+    # angle block profile (upper one, in local x-y; the lower one is its mirror image in y)
+    prof = [(x0, yh - bt), (lx0, yh - bt), (lx0, yh - drop), (x1, yh - drop), (x1, yh + T), (lx0, yh + T),
+            (lx0, yh), (x0, yh)]
+    blk_flat = (cq.Workplane("XY").polyline([(px * IN, (py - yh) * IN) for px, py in prof]).close()
+                .extrude(bw * IN))
+    blk_flat = blk_flat.edges("|Z").edges(">X").fillet(0.06 * IN)
+    blocks = None
+    for sgn in (1, -1):
+        b = _local(blk_flat, (0, yh, -bw / 2), (1, 0, 0), (0, 0, 1))
+        if sgn < 0:
+            b = b.mirror("XZ")
+        for r in c["ring_screw_r"]:                 # #10-32 taps for the ring screws, 0.4" deep
+            y_face = sgn * yh
+            b = b.cut(cq.Workplane("XY").add(cq.Solid.makeCylinder(0.159 / 2 * IN, 0.4 * IN,
+                      cq.Vector(r * IN, y_face * IN, 0), cq.Vector(0, -sgn, 0))))
+        for y in c["bar_screw_y"]:                  # #10-32 taps for the bar screws (radial, into the leg)
+            b = b.cut(cq.Workplane("XY").add(cq.Solid.makeCylinder(0.159 / 2 * IN, 0.45 * IN,
+                      cq.Vector(x1 * IN, sgn * y * IN, 0), cq.Vector(-1, 0, 0))))
+        blocks = b if blocks is None else blocks.union(b)
+
+    # bar: flat in (y, z), thickness along x
+    L = 2 * (yh + T)
+    bar_flat = cq.Workplane("XY").rect(L * IN, c["bar_w"] * IN).extrude(c["bar_t"] * IN)
+    bar_flat = bar_flat.edges("|Z").fillet(0.12 * IN)
+    holes = [(sy * y, 0, 0.201, "#10 FHCS to angle block, csk outer face") for y in c["bar_screw_y"] for sy in (1, -1)]
+    holes += [(c["pivot_y"], 0, 0.159, "#10-32 tap: pivot screw"), (c["pull_y"], 0, 0.159, "#10-32 tap: pitch pull screw"),
+              (sum(c["yoke_y"]) / 2, 0, 0.201, "#10 FHCS to yaw yoke, csk outer face")]
+    for y, z, d, _ in holes:
+        bar_flat = bar_flat.cut(cq.Workplane("XY").center(y * IN, z * IN).circle(d / 2 * IN).extrude(c["bar_t"] * IN))
+    bar = _local(bar_flat, (x1, 0, 0), (0, 1, 0), (1, 0, 0))
+
+    # tilt plate: flat in (y, z), thickness along x, a gap above the bar
+    xp = x1 + c["bar_t"] + c["gap"]
+    pl_flat = cq.Workplane("XY").rect(c["plate_len"] * IN, c["plate_w"] * IN).extrude(c["plate_t"] * IN)
+    pl_flat = pl_flat.edges("|Z").fillet(0.12 * IN)
+    phole = [(c["pivot_y"], 0, 0.25, "pivot: 0.250 clearance (lets the plate rock)"),
+             (c["push_y"], 0, 0.159, "#10-32 tap: pitch push screw (bears on the bar)")]
+    phole += [(y, 0, 0.136, "#8-32 tap: finder shoe (ASSUMED spacing)") for y in c["shoe_holes"]]
+    for y, z, d, _ in phole:
+        pl_flat = pl_flat.cut(cq.Workplane("XY").center(y * IN, z * IN).circle(d / 2 * IN).extrude(c["plate_t"] * IN))
+    pl_flat = pl_flat.cut(cq.Workplane("XY").center(c["pull_y"] * IN, 0).slot2D(0.45 * IN, 0.2 * IN, 90)
+                          .extrude(c["plate_t"] * IN))   # pull-screw slot along z: room for yaw
+    plate = _local(pl_flat, (xp, 0, 0), (0, 1, 0), (1, 0, 0))
+
+    # yaw yoke: U in (z, x) wrapping the bar, thickness along y
+    yw, yb, yt = c["yoke_w"], c["yoke_base"], c["yoke_top"]
+    xb0, xtop = x1 - yb, xp + c["plate_t"] + yt
+    hw = c["bar_w"] / 2
+    u = [(-yw / 2, xb0), (yw / 2, xb0), (yw / 2, xtop), (hw, xtop), (hw, x1), (-hw, x1), (-hw, xtop), (-yw / 2, xtop)]
+    yk_flat = cq.Workplane("XY").polyline([(pz * IN, px * IN) for pz, px in u]).close().extrude((c["yoke_y"][1] - c["yoke_y"][0]) * IN)
+    ys = (c["yoke_y"][1] - c["yoke_y"][0]) / 2
+    yk_profile = yk_flat                              # DXF outline (the cross holes are drilled afterwards)
+    yk_flat = yk_flat.cut(cq.Workplane("XY").add(cq.Solid.makeCylinder(0.159 / 2 * IN, yb * IN,
+                          cq.Vector(0, xb0 * IN, ys * IN), cq.Vector(0, 1, 0))))      # #10-32 tap from the bar screw
+    xm = xp + c["plate_t"] / 2
+    for sz in (1, -1):                               # 10-32 yaw screws through each arm, along z
+        yk_flat = yk_flat.cut(cq.Workplane("XY").add(cq.Solid.makeCylinder(0.159 / 2 * IN, (yw / 2 - hw) * IN,
+                              cq.Vector(sz * yw / 2 * IN, xm * IN, ys * IN), cq.Vector(-sz, 0, 0))))
+    yoke = _local(yk_flat, (0, c["yoke_y"][0], 0), (0, 0, 1), (0, 1, 0))
+
+    # bought shoe + the finder (UniGuide 50 slide base + G3M662C)
+    sl, sw, sh = c["shoe"]
+    xs = xp + c["plate_t"]
+    shoe = cq.Workplane("XY").box(sh * IN, sl * IN, sw * IN).translate(((xs + sh / 2) * IN, 0, 0))
+    xf = xs + sh + c["foot"] + c["finder_dia"] / 2
+    fl = c["finder_len"]
+    scope = cq.Workplane("XY").add(cq.Solid.makeCylinder(c["finder_dia"] / 2 * IN, fl * IN,
+                                   cq.Vector(xf * IN, -fl / 2 * IN, 0), cq.Vector(0, 1, 0)))
+    cam = cq.Workplane("XY").add(cq.Solid.makeCylinder(c["cam_dia"] / 2 * IN, c["cam_len"] * IN,
+                                 cq.Vector(xf * IN, (-fl / 2 - c["cam_len"]) * IN, 0), cq.Vector(0, 1, 0)))
+    foot = cq.Workplane("XY").box(c["foot"] * IN, 2.0 * IN, 1.0 * IN).translate(((xs + sh + c["foot"] / 2) * IN, 0, 0))
+    finder = scope.union(cam).union(foot)
+
+    rot = lambda w: w.rotate((0, 0, 0), (0, 1, 0), -FINDER)
+    parts = {k: rot(v) for k, v in dict(blocks=blocks, bar=bar, plate=plate, yoke=yoke, shoe=shoe, finder=finder).items()}
+    arm_p = c["push_y"] - c["pivot_y"]
+    arm_y = sum(c["yoke_y"]) / 2 - c["pivot_y"]
+    info = dict(finder_axis_r=round(xf, 3), plate_x=(round(xp, 3), round(xp + c["plate_t"], 3)),
+                pitch_arcmin_per_turn=round(math.degrees(0.03125 / arm_p) * 60, 1),
+                yaw_arcmin_per_turn=round(math.degrees(0.03125 / arm_y) * 60, 1),
+                pitch_range_deg=round(math.degrees(c["gap"] * 0.5 / arm_p), 2),
+                yaw_range_deg=round(math.degrees((hw - c["plate_w"] / 2) / arm_y), 2),
+                bar_holes=holes, plate_holes=phole)
+    return dict(parts=parts, flats=dict(block=blk_flat, bar=bar_flat, plate=pl_flat, yoke=yk_profile), info=info)
+
+
 def build():
     parts = {}
     lower, lower_holes, lower_slots = ring_plate("lower")
@@ -491,24 +603,10 @@ def build():
 
     parts["spider_blocks"] = spider_blocks(TOPS)
 
-    # Waypoint finder bracket: riser on the sky face of the upper ring at FINDER deg,
-    # reaching out past the ring OD; a bought Synta-style finder shoe bolts to its outer face.
-    rb0, rb1 = R_BOLT - 0.6, R_OUT + 1.1                # radial span of the riser
-    riser = (cq.Workplane("XY").box((rb1 - rb0) * IN, 0.75 * IN, 1.0 * IN)
-             .translate(((rb0 + rb1) / 2 * IN, (y_hi_in + T + 0.375) * IN, 0)))
-    plate = (cq.Workplane("XY").box(0.375 * IN, 2.75 * IN, 1.4 * IN)        # shoe mounting plate, hangs toward the mirror
-             .translate(((rb1 - 0.1875) * IN, (y_hi_in + T + 0.75 - 1.375) * IN, 0)))
-    bracket = riser.union(plate).rotate((0, 0, 0), (0, 1, 0), -FINDER)
-    parts["finder_bracket"] = bracket
-
-    # UniGuide 50 (265 mm, ~60 mm body) + G3M662C, axis parallel to the tube, objective toward the sky
-    fr = R_OUT + 1.1 + 0.5 + 1.25                       # shoe height + half body
-    fx, fz = pol(fr, FINDER)
-    scope = (cq.Workplane("XZ").center(fx * IN, fz * IN).circle(1.2 * IN)
-             .extrude(-10.4 * IN).translate((0, (y_hi_in + T + 1.6 - 10.4) * IN, 0)))
-    cam = (cq.Workplane("XZ").center(fx * IN, fz * IN).circle(0.8 * IN)
-           .extrude(-1.6 * IN).translate((0, (y_hi_in + T + 1.6 - 10.4 - 1.6) * IN, 0)))
-    parts["waypoint_finder"] = scope.union(cam)
+    fc = finder_cradle()
+    parts["finder_cradle"] = fc["parts"]["blocks"].union(fc["parts"]["bar"])
+    parts["finder_adjuster"] = fc["parts"]["plate"].union(fc["parts"]["yoke"]).union(fc["parts"]["shoe"])
+    parts["waypoint_finder"] = fc["parts"]["finder"]
 
     # pair connectors under the lower ring (concept: needs an angle fixture to drill pole bores)
     conns = None
@@ -521,8 +619,8 @@ def build():
     parts["pair_connectors_concept"] = conns
 
     info = dict(lower_holes=lower_holes, upper_holes=upper_holes,
-                lower_slots=lower_slots, upper_slots=upper_slots)
-    return parts, info, dict(lower=lower, upper=upper, board=board_plate())
+                lower_slots=lower_slots, upper_slots=upper_slots, finder_cradle=fc["info"])
+    return parts, info, dict(lower=lower, upper=upper, board=board_plate(), **{"finder_" + k: v for k, v in fc["flats"].items()})
 
 
 if __name__ == "__main__":

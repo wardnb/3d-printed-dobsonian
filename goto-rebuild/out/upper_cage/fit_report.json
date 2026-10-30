@@ -21,14 +21,15 @@
   ],
   "weights_lb": {
     "ring_lower": 1.64,
-    "ring_upper": 1.71,
+    "ring_upper": 1.72,
     "struts": 1.65,
     "diagonal_tubes": 0.56,
     "diagonal_nodes": 0.55,
     "board_rails": 0.55,
     "focuser_board": 1.01,
     "spider_blocks": 0.37,
-    "finder_bracket": 0.29,
+    "finder_cradle": 0.57,
+    "finder_adjuster": 0.4,
     "pair_connectors_concept": 0.94
   },
   "diagonal_lengths_in": [
@@ -39,7 +40,88 @@
     9.27,
     9.27
   ],
-  "cage_metal_lb": 9.27,
+  "cage_metal_lb": 9.96,
+  "finder_cradle": {
+    "finder_axis_r": 13.585,
+    "plate_x": [
+      11.335,
+      11.585
+    ],
+    "pitch_arcmin_per_turn": 23.1,
+    "yaw_arcmin_per_turn": 28.8,
+    "pitch_range_deg": 0.99,
+    "yaw_range_deg": 1.15,
+    "bar_holes": [
+      [
+        2.85,
+        0,
+        0.201,
+        "#10 FHCS to angle block, csk outer face"
+      ],
+      [
+        -2.85,
+        0,
+        0.201,
+        "#10 FHCS to angle block, csk outer face"
+      ],
+      [
+        3.65,
+        0,
+        0.201,
+        "#10 FHCS to angle block, csk outer face"
+      ],
+      [
+        -3.65,
+        0,
+        0.201,
+        "#10 FHCS to angle block, csk outer face"
+      ],
+      [
+        -2.2,
+        0,
+        0.159,
+        "#10-32 tap: pivot screw"
+      ],
+      [
+        2.0,
+        0,
+        0.159,
+        "#10-32 tap: pitch pull screw"
+      ],
+      [
+        1.525,
+        0,
+        0.201,
+        "#10 FHCS to yaw yoke, csk outer face"
+      ]
+    ],
+    "plate_holes": [
+      [
+        -2.2,
+        0,
+        0.25,
+        "pivot: 0.250 clearance (lets the plate rock)"
+      ],
+      [
+        2.45,
+        0,
+        0.159,
+        "#10-32 tap: pitch push screw (bears on the bar)"
+      ],
+      [
+        -0.55,
+        0,
+        0.136,
+        "#8-32 tap: finder shoe (ASSUMED spacing)"
+      ],
+      [
+        0.55,
+        0,
+        0.136,
+        "#8-32 tap: finder shoe (ASSUMED spacing)"
+      ]
+    ]
+  },
   "quad_block_clashes": [],
   "quad_beam_hit": false,
   "quad_spider": {

@@ -35,7 +35,7 @@ up to a single upper ring.
 | Mirror cage and cell | DobStuff cage kept. The 9-point cell is kept, with push-pull collimation in place of springs. |
 | Altitude bearings | 14" radius D, two laminated layers of 3/4" Baltic birch. Ebony Star running on PTFE pads at ±35°. Doweled. The drive side carries the belt and an encoder tape. |
 | Drives | SiTech Servo II. GT2 belt glued teeth-out on each rim, sprung 20T pinion, 2:1 stage. Altitude: GM9413, 112:1. Azimuth: GM9213 mounted on the rocker, driving a 30" ground ring, 120:1. Magnetic-tape encoders on both axes. |
-| Pointing | Nexus DSC Pro. A mini PC runs ASCOM and plate solving. "Waypoint" plate-solving finder: WO UniGuide 50 with a ToupTek G3M662C. |
+| Pointing | Nexus DSC Pro. A mini PC runs ASCOM and plate solving. "Waypoint" plate-solving finder: WO UniGuide 50 with a ToupTek G3M662C, in an adjustable cradle between the cage rings (pitch/yaw screws to align it with the eyepiece). |
 | Power and wiring | 12 V LiFePO4 through a regulator (the Pegasus trips above about 14 V). A cage hub joins a USB3 + 12 V trunk that crosses the altitude axis at the bearing flat. |
 
 **Predicted collimation hold, horizon to zenith:**

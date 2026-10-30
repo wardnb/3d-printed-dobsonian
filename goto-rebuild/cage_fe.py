@@ -119,7 +119,7 @@ SENSES = dict(same={a: (+1, -1) for a in uc.STRUTS},
 def build(ring_t=T, ring_w=1.5, slotted=True, apex="pinned", wire_dia=0.025,
           focuser_lb=6.0, focuser_arm=3.5, E_ring=E_AL, G_ring=G_AL, rigid_wires=False,
           y_anchor=(6.025, 0.9), rims=(3.11, 5.75), senses="paired", cross=True, offset=50,
-          stud_tang=0.15, v1_layout=False, sec_cg=0.9, diagonals="vinv0", spider="quad", finder="ring"):
+          stud_tang=0.15, v1_layout=False, sec_cg=0.9, diagonals="vinv0", spider="quad", finder="cradle"):
     """y_anchor = (high anchor y, low anchor y) on the posts (above the upper ring = on a
     post extension block); rims = (hub low rim y, hub high rim y); cross: high anchor ->
     low rim and low anchor -> high rim; senses: which side of the hub each post's wires
@@ -378,18 +378,30 @@ def finder_mount(fr, rings, post_nodes, masses, how="ring"):
         fn = ur(uc.R_OUT + 2.85, Y_HI - 4.0)
         fr.beam(n2, fn, RIGID)                               # shoe + foot + finder (same in every variant)
     elif how == "cradle":
-        rb = uc.R_OUT + 0.5
-        ends = []
+        # as drawn (upper_cage.FC): angle blocks from each ring rim to a 1.25 x 0.375 bar; the tilt plate sits
+        # on the bar at the pivot and at the push-pull/yoke end (preloaded screws = rigid links); finder on the plate
+        c = uc.FC
+        rb = c["blk_x1"] + c["bar_t"] / 2
+        bar = rect(c["bar_w"], c["bar_t"])
+        refb = np.array(_xz(1, a, 0))
+        yp, yf = c["pivot_y"], (c["pull_y"] + c["push_y"]) / 2
+        ys = [Y_HI, c["bar_screw_y"][0], yf, 0.0, yp, -c["bar_screw_y"][0], Y_LO]
+        bn = {y: ur(rb, y) for y in ys}
         for kind, y in (("upper", Y_HI), ("lower", Y_LO)):
-            nb = ur(rb, y)
-            fr.beam(rings[kind]["outer"][a], nb, rect(1.0, 0.75), ref=np.array([0, 1, 0.0]))   # angle block
-            ends.append(nb)
-        mid = ur(rb, 0.0)
-        bar = rect(1.0, 0.375)
-        fr.beam(ends[0], mid, bar, ref=np.array([*_xz(1, a, 0)]) )
-        fr.beam(mid, ends[1], bar, ref=np.array([*_xz(1, a, 0)]))
-        fn = ur(rb + 1.95, 0.0)
-        fr.beam(mid, fn, RIGID)
+            fr.beam(rings[kind]["outer"][a], bn[y], rect(c["blk_w"], 0.5), ref=np.array([0, 1, 0.0]))   # block leg
+        for y0, y1 in zip(ys, ys[1:]):
+            fr.beam(bn[y0], bn[y1], bar, ref=refb)
+        xp = c["blk_x1"] + c["bar_t"] + c["gap"] + c["plate_t"] / 2
+        pn = {y: ur(xp, y) for y in (yp, 0.0, yf)}
+        plate = rect(c["plate_w"], c["plate_t"])
+        fr.beam(pn[yp], pn[0.0], plate, ref=refb); fr.beam(pn[0.0], pn[yf], plate, ref=refb)
+        fr.beam(bn[yp], pn[yp], RIGID); fr.beam(bn[yf], pn[yf], RIGID)
+        fn = ur(uc.finder_cradle()["info"]["finder_axis_r"], 0.0)
+        fr.beam(pn[0.0], fn, RIGID)
+        for y in ys:
+            masses.append((bn[y], 0.97 / len(ys)))      # cradle + adjuster metal
+        masses.append((fn, 1.5))                         # UniGuide 50 (515 g) + G3M662C + shoe
+        return fn
     elif how == "post":
         p = 135
         n0 = post_nodes[p][0.0]
