@@ -119,7 +119,7 @@ SENSES = dict(same={a: (+1, -1) for a in uc.STRUTS},
 def build(ring_t=T, ring_w=1.5, slotted=True, apex="pinned", wire_dia=0.025,
           focuser_lb=6.0, focuser_arm=3.5, E_ring=E_AL, G_ring=G_AL, rigid_wires=False,
           y_anchor=(6.025, 0.9), rims=(3.11, 5.75), senses="paired", cross=True, offset=50,
-          stud_tang=0.15, v1_layout=False, sec_cg=0.9, diagonals="vinv0", spider="quad"):
+          stud_tang=0.15, v1_layout=False, sec_cg=0.9, diagonals="vinv0", spider="quad", finder="ring"):
     """y_anchor = (high anchor y, low anchor y) on the posts (above the upper ring = on a
     post extension block); rims = (hub low rim y, hub high rim y); cross: high anchor ->
     low rim and low anchor -> high rim; senses: which side of the hub each post's wires
@@ -283,15 +283,11 @@ def build(ring_t=T, ring_w=1.5, slotted=True, apex="pinned", wire_dia=0.025,
                 px, pz = uc.pol(r, a); nd = fr.node(px, y_c, pz)
                 fr.beam(prev, nd, vane, ref=np.array([0, 1, 0.0])); prev = nd
             fr.beam(prev, post_nodes[a][y_c], RIGID)      # stud through the post at vane height
-        # finder
-        fx, fz = uc.pol(uc.R_OUT + 2.85, uc.FINDER)
-        fn = fr.node(fx, Y_HI - 4.0, fz)
-        fr.beam(rings["upper"]["centre"][uc.FINDER], fn, RIGID)
-        masses.append((fn, 1.7))
+        fn = finder_mount(fr, rings, post_nodes, masses, finder)
         for a in uc.APEX:
             nd = rings["lower"]["centre"][a]
             fr.fix(nd, (0, 1, 2) if apex == "pinned" else (0, 1, 2, 3, 4, 5))
-        return fr, masses, dict(board=board, eyep=eyep, hub=hub, sec=sec, foc=foc)
+        return fr, masses, dict(board=board, eyep=eyep, hub=hub, sec=sec, foc=foc, finder=fn)
 
     # hub + secondary, hung on the 8 wires
     hub_r = 1.2
@@ -354,6 +350,78 @@ def collimation_error(fr, masses, ids, alt_deg):
                 hub_tilt_mrad=th * 1e3)
 
 
+FINDER_LB = 1.7          # UniGuide 50 + G3M662C + rings/shoe
+
+
+def finder_mount(fr, rings, post_nodes, masses, how="ring"):
+    """Waypoint finder mount variants (all 6061, finder body itself rigid). Returns the finder CG node.
+    ring   : riser (0.75 x 1.0) on the upper ring's sky face at FINDER, out past the OD, then a
+             0.375 x 2.75 plate hanging 1.4" toward the mirror with the shoe on it (as drawn).
+    cradle : a 1.0 x 0.375 bar parallel to the tube axis at r = OD/2 + 0.5, tied to BOTH rings' rims by
+             angle blocks at FINDER; shoe (or dovetail) at mid-gap.
+    post   : a standoff block on the outer face of the 135-deg post at mid-gap, shoe on it."""
+    def rect(b, h):
+        A, Ib, Ih, J = rect_props(b, h)
+        return dict(E=E_AL, G=G_AL, A=A, Iy=Ib, Iz=Ih, J=J)
+    a = uc.FINDER
+    ur = lambda r, y, ang=a: fr.node(*_xz(r, ang, y))
+    if how == "rigid":
+        fn = ur(uc.R_OUT + 2.85, Y_HI - 4.0)
+        fr.beam(rings["upper"]["centre"][a], fn, RIGID)
+    elif how == "ring":
+        yr = Y_HI + T / 2 + 0.5                              # riser centroid on the sky face
+        n0 = ur(R_C, yr); fr.beam(rings["upper"]["centre"][a], n0, RIGID)   # 2 bolts + bearing face
+        n1 = ur(uc.R_OUT + 0.9, yr)
+        fr.beam(n0, n1, rect(0.75, 1.0), ref=np.array([0, 1, 0.0]))
+        n2 = ur(uc.R_OUT + 0.9, yr - 1.4)
+        fr.beam(n1, n2, rect(2.75, 0.375))                    # plate, bends radially
+        fn = ur(uc.R_OUT + 2.85, Y_HI - 4.0)
+        fr.beam(n2, fn, RIGID)                               # shoe + foot + finder (same in every variant)
+    elif how == "cradle":
+        rb = uc.R_OUT + 0.5
+        ends = []
+        for kind, y in (("upper", Y_HI), ("lower", Y_LO)):
+            nb = ur(rb, y)
+            fr.beam(rings[kind]["outer"][a], nb, rect(1.0, 0.75), ref=np.array([0, 1, 0.0]))   # angle block
+            ends.append(nb)
+        mid = ur(rb, 0.0)
+        bar = rect(1.0, 0.375)
+        fr.beam(ends[0], mid, bar, ref=np.array([*_xz(1, a, 0)]) )
+        fr.beam(mid, ends[1], bar, ref=np.array([*_xz(1, a, 0)]))
+        fn = ur(rb + 1.95, 0.0)
+        fr.beam(mid, fn, RIGID)
+    elif how == "post":
+        p = 135
+        n0 = post_nodes[p][0.0]
+        n1 = fr.node(*_xz(uc.R_OUT + 0.5, p, 0.0))
+        fr.beam(n0, n1, rect(1.0, 0.75), ref=np.array([0, 1, 0.0]))
+        fn = fr.node(*_xz(uc.R_OUT + 2.45, p, 0.0))
+        fr.beam(n1, fn, RIGID)
+    masses.append((fn, FINDER_LB))
+    return fn
+
+
+def _xz(r, ang, y):
+    x, z = uc.pol(r, ang)
+    return x, y, z
+
+
+def finder_drift(how, **kw):
+    """Finder pointing (tilt of its +Y axis) and the main scope's collimation, 0-90 deg."""
+    fr, masses, ids = build(finder=how, **kw)
+    tilts, errs = [], []
+    for alt in (0, 30, 45, 60, 90):
+        r = collimation_error(fr, masses, ids, alt)
+        th = fr.solve()[ids["finder"], 3:6]
+        tilts.append(np.array([th[0], th[2]]))
+        errs.append(r["err_in"])
+    to_am = 180 / math.pi * 60
+    swing = np.linalg.norm(tilts[0] - tilts[-1]) * to_am
+    resid = max(np.linalg.norm(t - tilts[2]) for t in tilts) * to_am
+    col = max(np.linalg.norm(e - errs[2]) for e in errs) * 25.4
+    return swing, resid, col
+
+
 def sweep(label, **kw):
     fr, masses, ids = build(**kw)
     res = [collimation_error(fr, masses, ids, a) for a in (0, 30, 45, 60, 90)]
@@ -370,6 +438,11 @@ def sweep(label, **kw):
 if __name__ == "__main__":
     import sys
     which = sys.argv[1] if len(sys.argv) > 1 else "tri"
+    if which == "finder":
+        for how in ("rigid", "ring", "cradle", "post"):
+            sw, rs, col = finder_drift(how)
+            print(f"finder {how:7s}: Waypoint tilt 0->90 {sw:5.2f} arcmin | after syncing at 45 {rs:5.2f} arcmin"
+                  f" | main collimation residual {col:5.3f} mm")
     if which == "tri":
         Q = dict(spider="quad")
         sweep("posts only, 3/8 solid (current)", slotted=False, ring_t=0.375, **Q)
