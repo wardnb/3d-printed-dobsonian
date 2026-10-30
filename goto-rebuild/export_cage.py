@@ -45,7 +45,7 @@ dens = 0.0975
 wt = {k: round(p.val().Volume() / IN**3 * dens, 2) for k, p in parts.items() if k != "waypoint_finder"}
 report["weights_lb"] = wt
 report["diagonal_lengths_in"] = uc.diagonals()[1]
-report["cage_metal_lb"] = round(sum(wt.values()), 2)
+report["cage_metal_lb"] = round(sum(v for k, v in wt.items() if k != "spider_blocks"), 2)   # Destiny towers only for the curved option
 
 # ---- cut files
 def flat_dxf(plate, name, t=uc.T):
@@ -58,10 +58,10 @@ secs = {
     "ring_lower": flat_dxf(flats["lower"], "ring_lower_quarter-inch-6061"),
     "ring_upper": flat_dxf(flats["upper"], "ring_upper_quarter-inch-6061"),
     "focuser_board": flat_dxf(flats["board"], "focuser_board_quarter-inch-6061", uc.TB),
-    "finder_block": flat_dxf(flats["finder_block"], "finder_cradle_angle-block_x2_three-quarter-inch-6061", uc.FC["blk_w"]),
-    "finder_bar": flat_dxf(flats["finder_bar"], "finder_cradle_bar_three-eighths-inch-6061", uc.FC["bar_t"]),
+    "finder_block": flat_dxf(flats["finder_block"], "finder_cradle_angle-block_x2_half-inch-6061", uc.FC["blk_w"]),
+    "finder_bar": flat_dxf(flats["finder_bar"], "finder_cradle_bar_quarter-inch-6061", uc.FC["bar_t"]),
     "finder_plate": flat_dxf(flats["finder_plate"], "finder_tilt_plate_quarter-inch-6061", uc.FC["plate_t"]),
-    "finder_yoke": flat_dxf(flats["finder_yoke"], "finder_yaw_yoke_three-quarter-inch-6061", uc.FC["yoke_y"][1] - uc.FC["yoke_y"][0]),
+    "finder_yoke": flat_dxf(flats["finder_yoke"], "finder_yaw_yoke_half-inch-6061", uc.FC["yoke_y"][1] - uc.FC["yoke_y"][0]),
 }
 report["finder_cradle"] = {k: v for k, v in info["finder_cradle"].items()}
 
@@ -194,16 +194,16 @@ fig.savefig(os.path.join(OUT, "cut_sheet_v3.png"), dpi=150)
 fi = info["finder_cradle"]
 fig, axs = plt.subplots(2, 2, figsize=(14, 10), gridspec_kw=dict(width_ratios=[1.6, 1]))
 draw(axs[0, 0], secs["finder_bar"], "Cradle bar (1 off)",
-     "3/8\" 6061 · 8.00\" × 1.25\" · R0.12\" corners\n4× #10 FHCS csk (0.201\") to the angle blocks · 1× #10 FHCS csk to the yoke\n"
-     "#10-32 taps (0.159\"): pivot y = %.2f, pitch pull y = %.2f (from the bar centre; + = sky end)" % (uc.FC["pivot_y"], uc.FC["pull_y"]))
+     "1/4\" 6061 · 8.00\" × 1.00\" · R0.12\" corners\n4× #10 FHCS csk (0.201\") to the angle blocks · 1× #10 FHCS csk to the yoke\n"
+     "#10-32 taps (0.159\"): hinge clamp y = %.2f, pitch pull y = %.2f (from the bar centre; + = sky end)" % (uc.FC["pivot_y"], uc.FC["pull_y"]))
 draw(axs[1, 0], secs["finder_plate"], "Tilt plate (1 off)",
-     "1/4\" 6061 · 6.00\" × 1.10\" · pivot 0.250\" · pull slot 0.20 × 0.45\" across · push #10-32 tap\n"
+     "1/4\" 6061 · 6.00\" × 0.85\" · hinge clamp 0.221\" + 2 ball-point set-screw taps at ±0.30\" · pull slot 0.20 × 0.45\" across · push set-screw tap\n"
      "2× #8-32 shoe taps at ±0.55\" ASSUMED: drill to the shoe you buy\n"
      "pitch %.0f′/turn, ±%.1f° · yaw %.0f′/turn, ±%.1f° (10-32 screws)" % (fi["pitch_arcmin_per_turn"], fi["pitch_range_deg"], fi["yaw_arcmin_per_turn"], fi["yaw_range_deg"]))
 draw(axs[0, 1], secs["finder_block"], "Angle block (2 off, side profile)",
-     "3/4\" 6061 · ring face down at y = 0\n2× #10-32 tap 0.4\" deep into the ring face (r 9.15 / 9.85\")\n2× #10-32 tap 0.45\" deep into the outer leg (bar screws)\nlower block = same part, flipped")
+     "1/2\" 6061 · ring face down at y = 0\n2× #10-32 tap 0.4\" deep into the ring face (r 9.15 / 9.85\")\n2× #10-32 tap 0.45\" deep into the outer leg (bar screws)\nlower block = same part, flipped")
 draw(axs[1, 1], secs["finder_yoke"], "Yaw yoke (1 off, end profile)",
-     "3/4\" 6061 · wraps the bar\n#10-32 tap into the base (bar screw)\n2× 10-32 yaw screws through the arms, opposed")
+     "1/2\" 6061 · wraps the bar\n#10-32 tap into the base (bar screw)\n2× 10-32 yaw screws through the arms, opposed")
 fig.suptitle("Waypoint finder cradle — flat parts (6061; secondary ops in the notes)", fontsize=13, x=0.01, ha="left")
 for ax in axs.flat:
     ax.texts[-1].set_y(-0.2)

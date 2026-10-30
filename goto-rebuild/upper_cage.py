@@ -46,15 +46,17 @@ CLOCK_DEG = 4                        # secondary clocking range (+/- deg) from t
 STRUT_SQ = 0.75
 QUAD = [0, 90, 180, 270]             # straight 4-vane spider blocks (0 deg shared with the curved set)
 FINDER = 150                         # Waypoint finder (UniGuide 50) cradle, spanning both rings
-# Finder cradle (v3.1): a 3/8" x 1.25" 6061 bar outside the rings at FINDER, on an angle block at each
-# ring; a 1/4" tilt plate on the bar carries the finder shoe. Pivot (spherical washer set) at the mirror
-# end; at the sky end a push-pull pair sets pitch and a yoke with two opposed screws sets yaw.
+# Finder cradle (v3.2, lightened): a 1/4" x 1.0" 6061 bar outside the rings at FINDER, on a 1/2" angle block
+# at each ring; a 1/4" tilt plate on the bar carries the finder shoe. The plate stands on three ball-point
+# set screws: two side by side at the mirror end (the pitch hinge, so the plate cannot roll) and one at the
+# sky end (pitch). A clamp screw at each end pulls it down (the sky one through a slot, for yaw); a yoke with
+# two opposed screws sets yaw.
 FC = dict(ring_screw_r=(9.15, 9.85),  # #10 FHCS through each ring into its angle block (radial line at FINDER)
-          blk_x0=8.9, blk_x1=10.80, blk_leg_x0=10.35, blk_t=0.5, blk_leg_drop=1.5, blk_w=0.75,
-          bar_t=0.375, bar_w=1.25, bar_screw_y=(2.85, 3.65),
-          gap=0.16,                   # DIN 6319 C+D spherical washer set (M5/#10) under the plate at the pivot
-          plate_t=0.25, plate_w=1.10, plate_len=6.0,
-          pivot_y=-2.2, pull_y=2.0, push_y=2.45, yoke_y=(1.15, 1.90), yoke_w=2.0, yoke_base=0.35, yoke_top=0.165,
+          blk_x0=8.9, blk_x1=10.80, blk_leg_x0=10.35, blk_t=0.5, blk_leg_drop=1.5, blk_w=0.5,
+          bar_t=0.25, bar_w=1.0, bar_screw_y=(2.85, 3.65),
+          gap=0.12,                   # set-screw stand-off between bar and plate (pitch range ~ +/- gap/2)
+          plate_t=0.25, plate_w=0.85, plate_len=6.0, hinge_z=0.3,
+          pivot_y=-2.2, pull_y=2.0, push_y=2.45, yoke_y=(1.25, 1.75), yoke_w=1.6, yoke_base=0.35, yoke_top=0.165,
           shoe=(2.2, 1.25, 0.55),     # ASSUMED bought metal Synta-style finder shoe (long, wide, tall)
           shoe_holes=(-0.55, 0.55),   # ASSUMED #8-32 hole spacing along the axis: drill to the shoe you buy
           finder_len=10.43, finder_dia=2.4, cam_len=1.6, cam_dia=1.6, foot=0.25)
@@ -503,7 +505,7 @@ def finder_cradle():
     bar_flat = cq.Workplane("XY").rect(L * IN, c["bar_w"] * IN).extrude(c["bar_t"] * IN)
     bar_flat = bar_flat.edges("|Z").fillet(0.12 * IN)
     holes = [(sy * y, 0, 0.201, "#10 FHCS to angle block, csk outer face") for y in c["bar_screw_y"] for sy in (1, -1)]
-    holes += [(c["pivot_y"], 0, 0.159, "#10-32 tap: pivot screw"), (c["pull_y"], 0, 0.159, "#10-32 tap: pitch pull screw"),
+    holes += [(c["pivot_y"], 0, 0.159, "#10-32 tap: hinge clamp screw"), (c["pull_y"], 0, 0.159, "#10-32 tap: pitch pull screw"),
               (sum(c["yoke_y"]) / 2, 0, 0.201, "#10 FHCS to yaw yoke, csk outer face")]
     for y, z, d, _ in holes:
         bar_flat = bar_flat.cut(cq.Workplane("XY").center(y * IN, z * IN).circle(d / 2 * IN).extrude(c["bar_t"] * IN))
@@ -513,8 +515,9 @@ def finder_cradle():
     xp = x1 + c["bar_t"] + c["gap"]
     pl_flat = cq.Workplane("XY").rect(c["plate_len"] * IN, c["plate_w"] * IN).extrude(c["plate_t"] * IN)
     pl_flat = pl_flat.edges("|Z").fillet(0.12 * IN)
-    phole = [(c["pivot_y"], 0, 0.25, "pivot: 0.250 clearance (lets the plate rock)"),
-             (c["push_y"], 0, 0.159, "#10-32 tap: pitch push screw (bears on the bar)")]
+    phole = [(c["pivot_y"], 0, 0.221, "hinge clamp: #10 clearance (Belleville stack under the head)"),
+             (c["push_y"], 0, 0.159, "#10-32 tap: pitch push set screw (ball point, bears on the bar)")]
+    phole += [(c["pivot_y"], s * c["hinge_z"], 0.159, "#10-32 tap: hinge set screw (ball point)") for s in (1, -1)]
     phole += [(y, 0, 0.136, "#8-32 tap: finder shoe (ASSUMED spacing)") for y in c["shoe_holes"]]
     for y, z, d, _ in phole:
         pl_flat = pl_flat.cut(cq.Workplane("XY").center(y * IN, z * IN).circle(d / 2 * IN).extrude(c["plate_t"] * IN))

@@ -65,7 +65,7 @@
     "mcage_lb_per_in": 1.1,
     "bearings_lb": 13.1,
     "poles_lb": 3.6,
-    "upper_cage_lb": 12.7,
+    "upper_cage_lb": 12.2,
     "eyepiece_lb": 3.3
   },
   "assumed": [
@@ -78,16 +78,16 @@
   ],
   "checks": {
     "focal_length_in": 62.4,
-    "z_alt_axis_in": 25.95,
-    "lower_tube_swing_radius_in": 22.38,
-    "secondary_y_in": 37.77,
+    "z_alt_axis_in": 25.7,
+    "lower_tube_swing_radius_in": 22.13,
+    "secondary_y_in": 38.08,
     "truss_pole_length_in": 37.68,
     "truss_zigzag_pole_length_in": 38.66,
-    "eyepiece_height_zenith_in": 63.7,
+    "eyepiece_height_zenith_in": 63.8,
     "nested_transport_height_in": 13.5,
-    "rocker_wall_height_at_pads_in": 10.76,
-    "rocker_wall_height_horns_in": 12.18,
-    "rocker_overall_height_in": 15.25,
+    "rocker_wall_height_at_pads_in": 10.5,
+    "rocker_wall_height_horns_in": 11.93,
+    "rocker_overall_height_in": 14.99,
     "rocker_inside_width_in": 22.63,
     "rocker_box_clearance_in": 0.48,
     "rocker_floor_in": [
@@ -96,25 +96,25 @@
     ],
     "rocker_end_height_in": [
       4.0,
-      4.36
+      4.42
     ],
     "bearing_chord_offset_in": 3.62,
-    "bearing_above_box_top_ring_in": 9.35,
+    "bearing_above_box_top_ring_in": 9.04,
     "bearing_lb_each": 6.56,
     "min_altitude_deg": 15,
-    "mirror_face_below_axis_in": 12.73,
-    "tube_weight_lb": 75.9,
-    "net_moment_lb_in": -0.0,
-    "dobstuff_layout_counterweight_lb": 25.8,
+    "mirror_face_below_axis_in": 12.42,
+    "tube_weight_lb": 75.4,
+    "net_moment_lb_in": 0.0,
+    "dobstuff_layout_counterweight_lb": 24.0,
     "counterweight_lb_at_mirror_end": 0.0,
-    "counterweight_arm_in": 18.0,
+    "counterweight_arm_in": 17.7,
     "alt_external_ratio": 112.0,
     "az_external_ratio": 120.0
   },
   "rocker": {
     "ply": 0.709,
     "R": 14.0,
-    "swing": 22.384000982844867,
+    "swing": 22.128059110550115,
     "bearing_t": 1.418,
     "bearing_x_in": 10.839,
     "bearing_x_out": 12.257,
@@ -156,8 +156,8 @@
     "az_pad_t": 0.15,
     "floor_z0": 2.359,
     "floor_top": 3.068,
-    "z_alt": 25.95200098284487,
-    "h_alt": 22.884000982844867,
+    "z_alt": 25.696059110550117,
+    "h_alt": 22.628059110550115,
     "arc_r": 14.4,
     "lam_t": 0.06,
     "pad_seat_r": 14.25,
@@ -166,12 +166,12 @@
     "depth": 26.0,
     "L": 27.418,
     "end_h": 4.0,
-    "h_pad": 10.759645329862725,
-    "h_dip": 8.484000982844867,
-    "h_horn": 12.18271549597039,
+    "h_pad": 10.503703457567973,
+    "h_dip": 8.228059110550115,
+    "h_horn": 11.926773623675638,
     "y_horn": 9.63548073156756,
     "y_pad": 6.999999999999999,
-    "end_h_max": 4.361940177326738,
+    "end_h_max": 4.4213285323569,
     "floor_w": 24.047,
     "floor_l": 27.418,
     "ring_od": 30.0,
@@ -185,7 +185,7 @@
     ],
     "pivot_d": 0.375,
     "pinion_pd": 0.5,
-    "cap_z": 11.612000982844869,
+    "cap_z": 11.356059110550117,
     "alt_head_angle": -50,
     "lateral_stop_angle": 37,
     "az_y": 8.5,
@@ -196,41 +196,41 @@
     ],
     "az_ratio": 120.48,
     "alt_ratio": 112.48,
-    "rocker_top": 15.25071549597039
+    "rocker_top": 14.994773623675638
   },
   "rocker_holes": {
     "drive": [
       [
         8.666136333389495,
-        9.38364963816385
+        9.127707765869099
       ],
       [
         8.666136333389495,
-        10.38364963816385
+        10.127707765869099
       ],
       [
         -1.3,
-        5.744000982844869
+        5.488059110550117
       ],
       [
         -1.3,
-        7.34400098284487
+        7.088059110550118
       ],
       [
         1.3,
-        5.744000982844869
+        5.488059110550117
       ],
       [
         1.3,
-        7.34400098284487
+        7.088059110550118
       ],
       [
         -11.031039980913283,
-        6.491357747985196
+        6.3633868118378185
       ],
       [
         -11.031039980913283,
-        7.491357747985196
+        7.363386811837819
       ],
       [
         7.6,
@@ -252,11 +252,11 @@
     "plain": [
       [
         8.666136333389495,
-        9.38364963816385
+        9.127707765869099
       ],
       [
         8.666136333389495,
-        10.38364963816385
+        10.127707765869099
       ],
       [
         4.5,
@@ -277,13 +277,13 @@
     ]
   },
   "frame": {
-    "z_alt": 25.95200098284487,
-    "y_sec": 37.769999999999996,
-    "y_mirror": -12.73,
-    "y_ring_hi": 41.769999999999996,
-    "y_ring_lo": 33.769999999999996,
-    "y_mcage_top": -5.73,
-    "y_mcage_bot": -18.53,
+    "z_alt": 25.696059110550117,
+    "y_sec": 38.08,
+    "y_mirror": -12.42,
+    "y_ring_hi": 42.08,
+    "y_ring_lo": 34.08,
+    "y_mcage_top": -5.42,
+    "y_mcage_bot": -18.22,
     "focuser_x": -11.405,
     "bearing_x": 11.548,
     "R": 14.0,

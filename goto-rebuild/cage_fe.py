@@ -399,7 +399,7 @@ def finder_mount(fr, rings, post_nodes, masses, how="ring"):
         fn = ur(uc.finder_cradle()["info"]["finder_axis_r"], 0.0)
         fr.beam(pn[0.0], fn, RIGID)
         for y in ys:
-            masses.append((bn[y], 0.97 / len(ys)))      # cradle + adjuster metal
+            masses.append((bn[y], 0.50 / len(ys)))      # cradle + adjuster metal (v3.2)
         masses.append((fn, 1.5))                         # UniGuide 50 (515 g) + G3M662C + shoe
         return fn
     elif how == "post":

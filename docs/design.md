@@ -331,6 +331,8 @@ The upper cage is detailed to part level and passes fit checks: no part clashes,
 
 Shroud: slit it around the two angle blocks; the bar and the finder sit outside it. Metal in the cradle: about 1.0 lb, against 0.3 lb for the riser. ASSUMED: the shoe's hole spacing (drill the plate to the shoe you buy) and the G3M662C at 0.2 lb. Upper cage mass in the balance solve goes from 12.0 to 12.7 lb. Mirror face 12.7" below the axis, axis 25.95" high, rocker walls 0.35" taller (10.76" at the pads, 15.25" overall), eyepiece 63.7" at zenith. The rocker DXFs were regenerated, and every check passes: swing, bearing clearance, the EV6 and the AltMill layout. Main-scope collimation: 0.013 mm after collimating at 45° (0.007 mm with the old bracket, because the finder's mass now sits mid-gap). Both are negligible.
 
+**Cradle v3.2 (lightened, same day): 0.83 → 0.50 lb of metal.** The FE showed the rings, not the bar, set the finder's stability: going from a 3/8" × 1.25" bar to 1/4" × 1.0" only moves the finder from 0.57′ to 0.70′ horizon to zenith. So the bar is now 1/4" × 1.0" (0.36 → 0.19 lb), the angle blocks and yaw yoke are cut from 1/2" plate instead of 3/4" (0.31 → 0.19 lb), and the tilt plate is 0.85" wide (0.16 → 0.12 lb). The same pass fixed a flaw in v3.1: a single spherical pivot plus a single push point all on the centreline let the plate roll about its own length, held only by friction, and the finder hangs 2" outboard. The plate now stands on three ball-point 10-32 set screws: two side by side at the mirror end (a hinge 0.6" wide, so it cannot roll) and one at the sky end for pitch. It has a #10 clamp screw with Belleville washers at each end (the sky one in the yaw slot), and the spherical washers are gone. Pitch ±0.7°, 23′ per turn; yaw ±1.1°, 29′ per turn. The Destiny towers (0.37 lb, only for the curved-spider option) were wrongly counted in the cage weight, which is now 9.26 lb of metal including the cradle and shoe. Upper cage in the balance solve: 12.2 lb (was 12.7). Mirror face 12.4" below the axis, axis 25.7" high, rocker 15.0" overall (walls 10.5" at the pads), eyepiece 63.8" at zenith. Rocker checks and the AltMill layout pass. Main-scope collimation 0.012 mm after collimating at 45°.
+
 **Hardware:** 18× 1/4-20 × 5/8" SHCS (struts, rails, connectors); 6× 1/4-20 × 3/4" SHCS (spider blocks); 3× #10-32 × 1" SHCS (pull); 3× #10-32 × 1/2" nylon-tip set screws (push); 4× #8-32 focuser screws (pending base plate).
 
 **Inputs to confirm before cutting:** Feather Touch base bolt circle and hole size; Destiny vane-tip hole and tip geometry; truss pole OD; plate thickness (1/4" assumed; 3/8" is stiffer and about 1.6 lb heavier); smallest end mill for aluminum (1/4" assumed, so slots are 0.60" wide and holes are drilled or helix-milled).
@@ -385,7 +387,7 @@ The cage and spider now use about a quarter of the 0.5 mm coma budget over the f
 
 | Source | Horizon to zenith, mm | Basis |
 | --- | --- | --- |
-| Upper cage v3 (triangulated) with the quad spider | 0.013 (with the finder cradle) | cage\_fe.py |
+| Upper cage v3 (triangulated) with the quad spider | 0.012 (with the finder cradle) | cage\_fe.py |
 | Focuser board flexure | < 0.02 | 1/4" plate, 6 lb at 3.5", 0.1 mrad |
 | Thermal, 20°C drop | \~0 | wire tension falls 2.6 lb; geometry unchanged |
 | Truss pole pairs and apex connectors | not yet modelled; target ≤ 0.2 | needs the connector design and pole clamps |
