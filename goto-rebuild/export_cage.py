@@ -18,6 +18,8 @@ report = {}
 # ---- interference: any two parts sharing volume (touching faces are fine)
 clashes = []
 for (a, pa), (b, pb) in itertools.combinations(parts.items(), 2):
+    if {a, b} == {"diagonal_tubes", "diagonal_nodes"}:
+        continue        # tube ends seat into their node and clevis blocks by design
     vol = pa.intersect(pb).val().Volume() if pa.val().BoundingBox().xmax else 0
     if vol > 1.0:  # mm^3
         clashes.append((a, b, round(vol / IN**3, 4)))
@@ -42,6 +44,7 @@ report["rails_at_z"] = [uc.RAIL_Z, -uc.RAIL_Z]
 dens = 0.0975
 wt = {k: round(p.val().Volume() / IN**3 * dens, 2) for k, p in parts.items() if k != "waypoint_finder"}
 report["weights_lb"] = wt
+report["diagonal_lengths_in"] = uc.diagonals()[1]
 report["cage_metal_lb"] = round(sum(wt.values()), 2)
 
 # ---- cut files
@@ -52,8 +55,8 @@ def flat_dxf(plate, name, t=uc.T):
 
 
 secs = {
-    "ring_lower": flat_dxf(flats["lower"], "ring_lower_3-8-inch-6061"),
-    "ring_upper": flat_dxf(flats["upper"], "ring_upper_3-8-inch-6061"),
+    "ring_lower": flat_dxf(flats["lower"], "ring_lower_quarter-inch-6061"),
+    "ring_upper": flat_dxf(flats["upper"], "ring_upper_quarter-inch-6061"),
     "focuser_board": flat_dxf(flats["board"], "focuser_board_quarter-inch-6061", uc.TB),
 }
 
@@ -61,10 +64,11 @@ asm = cq.Assembly(name="upper_cage")
 colors = dict(ring_lower=(0.74, 0.76, 0.79), ring_upper=(0.74, 0.76, 0.79), struts=(0.6, 0.62, 0.65),
               board_rails=(0.6, 0.62, 0.65), focuser_board=(0.74, 0.76, 0.79),
               spider_blocks=(0.12, 0.12, 0.13), pair_connectors_concept=(0.85, 0.55, 0.25),
-              finder_bracket=(0.74, 0.76, 0.79), waypoint_finder=(0.55, 0.12, 0.12))
+              finder_bracket=(0.74, 0.76, 0.79), waypoint_finder=(0.55, 0.12, 0.12),
+              diagonal_tubes=(0.6, 0.62, 0.65), diagonal_nodes=(0.74, 0.76, 0.79))
 for k, p in parts.items():
     asm.add(p, name=k, color=cq.Color(*colors[k]))
-asm.save(os.path.join(OUT, "upper_cage_v2.step"))
+asm.save(os.path.join(OUT, "upper_cage_v3.step"))
 
 # straight quad spider option: its four blocks (0 deg seat is shared with the curved set)
 quad = uc.spider_blocks(uc.QUAD, tip_hole=0.257)
@@ -170,16 +174,16 @@ def draw(ax, sec, title, dims):
 
 fig, axs = plt.subplots(1, 3, figsize=(16, 7.4), gridspec_kw=dict(width_ratios=[1, 1, 0.55]))
 draw(axs[0], secs["ring_lower"], "Lower ring (truss end)",
-     "3/8\" 6061 · ID 17.50\" · OD 20.50\" · solid (no lightening slots)\n4 strut + 2 rail + 6 pair-connector holes, 0.257\" (1/4-20 clr)")
+     "1/4\" 6061 · ID 17.50\" · OD 20.50\" · arc lightening slots\n4 strut + 2 rail + 6 pair-block + 4 diagonal-node holes, 0.257\" (1/4-20 clr)")
 draw(axs[1], secs["ring_upper"], "Upper ring (sky end)",
-     "3/8\" 6061 · ID 17.50\" · OD 20.50\" · solid\n4 strut/extension + 2 rail + 12 spider-seat + 2 finder holes, 0.257\"\nSpider seats: curved 0/120/240°, quad 0/90/180/270° · finder 150°")
+     "1/4\" 6061 · ID 17.50\" · OD 20.50\" · arc lightening slots\n4 strut/extension + 2 rail + 12 spider-seat + 2 finder holes, 0.257\"\nSpider seats: curved 0/120/240°, quad 0/90/180/270° · finder 150°")
 draw(axs[2], secs["focuser_board"], "Focuser board",
      "1/4\" 6061 · 7.30\" × 6.40\" · R0.25\" corners\n2.50\" drawtube hole · 4× #8-32 on 3.00\" BC (INPUT)\n3× #10-32 pull holes (tap 0.159\")")
 for ax in axs:
     ax.set_xlabel("inches", fontsize=7)
-fig.suptitle("16\" Dob upper cage v2 — flat parts (assumed inputs marked)", fontsize=13, x=0.01, ha="left")
+fig.suptitle("16\" Dob upper cage v3 — flat parts (assumed inputs marked)", fontsize=13, x=0.01, ha="left")
 fig.tight_layout(rect=(0, 0.06, 1, 0.97))
-fig.savefig(os.path.join(OUT, "cut_sheet_v2.png"), dpi=150)
+fig.savefig(os.path.join(OUT, "cut_sheet_v3.png"), dpi=150)
 
 json.dump(report, open(os.path.join(OUT, "fit_report.json"), "w"), indent=2)
 print(json.dumps(report, indent=2))

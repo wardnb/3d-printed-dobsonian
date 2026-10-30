@@ -28,7 +28,7 @@ up to a single upper ring.
 | Subsystem | Design |
 | --- | --- |
 | Optics | f/3.9, FL about 62.4". 3.5" secondary, offset 0.22" per axis, 11.9" from the focal plane. A coma corrector is always in the focuser (Explore Scientific HR or Paracorr 2). |
-| Upper cage | Two solid 3/8" 6061 rings (17.5" ID, 20.5" OD, 7.5" clear between them) on four 3/4" square posts at 45/135/225/315°. A 1/4" focuser board on rails with push-pull tilt. Feather Touch FTF2015. |
+| Upper cage | Triangulated, after the iOptron 16" RC truss cage: two 1/4" 6061 rings with lightening slots (17.5" ID, 20.5" OD, 7.5" apart) on four 3/4" square posts, braced by six 5/8" aluminium diagonals in inverted Vs; the focuser bay stays open. 9.3 lb of metal. A 1/4" focuser board on rails with push-pull tilt. Feather Touch FTF2015. |
 | Spider | Straight 4-vane: 0.020" (0.5 mm) stainless vanes, 1.5" tall, anchored on the four posts with #10-32 tension studs. The hub is the secondary holder's top plate. |
 | Secondary holder | Self-aligning. The mirror is bonded to a carrier in a gluing jig, then doweled to a 45° body. Push-pull tilt, ±4° clocking slots, and a dew heater run by the Pegasus Pocket Powerbox. |
 | Truss | Wide-pair octahedron: three pre-joined pairs of 1" × 0.058" 6061 poles about 30" long. Pair blocks under the cage at 30/150/270°; cone sockets on stub tubes in the mirror cage's holes at 90/210/330°. Nine knobs, no tools. |
@@ -42,7 +42,7 @@ up to a single upper ring.
 
 | Source | Drift at the focal plane |
 | --- | --- |
-| Cage and spider | 0.02 mm |
+| Cage and spider | 0.007 mm |
 | Truss (good joints) | about 0.09 mm |
 | Cell | about 0.1 mm |
 | **Total** | **about 0.2 mm** |

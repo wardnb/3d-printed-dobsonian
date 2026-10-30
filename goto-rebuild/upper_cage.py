@@ -13,9 +13,9 @@ import cadquery as cq
 IN = 25.4
 
 INPUTS = dict(
-    plate=0.375,            # ring plate thickness: 3/8" 6061 (v2; the 1/4" v1 rings flexed ~3x more, see cage_fe.py)
+    plate=0.25,             # ring plate thickness: 1/4" 6061 (v3: the inverted-V diagonals carry the load, see cage_fe.py)
     board_t=0.25,           # focuser board plate
-    lighten=False,          # v2: no lightening slots (they cost ~3x in collimation hold for 1.3 lb saved)
+    lighten=True,           # v3: lightening slots back (cheap once the cage is triangulated)
     ring_id=17.5,
     ring_od=20.5,
     ring_gap=7.5,           # clear space between ring inner faces
@@ -38,6 +38,8 @@ TAP_10 = 0.159                       # #10-32 tap drill
 
 # angular layout (degrees from +X toward +Z, looking from the sky end)
 TOPS = [0, 120, 240]                 # Destiny spider tower seats (upper ring)
+DIAG_LO = [0, 90, 270]               # v3 diagonals: lower-ring nodes (mid-bay); each runs up to the two posts beside it
+DIAG_OD, DIAG_WALL = 0.625, 0.058    # 5/8" x 0.058" 6061 tube
 APEX = [30, 150, 270]                # truss pair blocks (lower ring): bases at +/-60 land on the mirror cage's stub tubes at 90/210/330
 STRUTS = [45, 135, 225, 315]         # 3/4" square posts between the rings; also the wire-spider anchors
 CLOCK_DEG = 4                        # secondary clocking range (+/- deg) from the hub's pull-screw slots
@@ -78,6 +80,12 @@ def ring_holes(kind):
         x, z = pol(R_BOLT, a)
         h.append((x, z, CLR_14, "strut 1/4-20"))
     if kind == "lower":
+        for a in DIAG_LO:                    # diagonal node block: 2 bolts, tangential +/-0.35"
+            if a in APEX:
+                continue                     # 270: shares the pair block's bolts
+            for d in (-0.35, 0.35):
+                x, z = pol(R_BOLT, a + math.degrees(d / R_BOLT))
+                h.append((x, z, CLR_14, "diagonal node 1/4-20"))
         for a in APEX:                       # pair block: 2 bolts, tangential +/-0.5"
             for d in (-0.5, 0.5):
                 x, z = pol(R_BOLT, a + math.degrees(d / R_BOLT))
@@ -407,6 +415,43 @@ def centering_gauge():
     return g, None
 
 
+def diagonals():
+    """v3 triangulation (iOptron RC-style): six 5/8" x 0.058" 6061 tubes in inverted Vs. Each runs
+    from a node block on the lower ring's sky face at 0/90/270 deg up to a clevis block bolted to the
+    side face of the neighbouring post near its top. The focuser bay (135-225) stays open.
+    Returns dict(tubes, nodes, clevises) and the list of tube lengths."""
+    tubes = nodes = clev = None
+    lens = []
+    y_lo_node = y_lo_in + 0.5                  # tube end centre above the lower ring
+    y_hi_node = y_hi_in - 0.55                 # tube end centre below the upper ring
+    for m in DIAG_LO:
+        mx, mz = pol(R_BOLT, m)
+        nb = (cq.Workplane("XY").box(0.75 * IN, 1.0 * IN, 1.2 * IN)
+              .rotate((0, 0, 0), (0, 1, 0), -m).translate((mx * IN, (y_lo_in + 0.5) * IN, mz * IN)))
+        nodes = nb if nodes is None else nodes.union(nb)
+        for a in STRUTS:
+            da = ((a - m + 180) % 360) - 180
+            if abs(da) != 45:
+                continue
+            sgn = -1 if da > 0 else 1                       # clevis on the post face that looks toward m
+            tx, tz = pol(1.0, a + 90)
+            px, pz = pol(R_BOLT, a)
+            off = sgn * (STRUT_SQ / 2 + 0.3)
+            ex, ez = px + off * tx, pz + off * tz
+            cb = (cq.Workplane("XY").box(0.75 * IN, 1.1 * IN, 0.6 * IN)
+                  .rotate((0, 0, 0), (0, 1, 0), -a).translate((ex * IN, (y_hi_in - 0.55) * IN, ez * IN)))
+            clev = cb if clev is None else clev.union(cb)
+            p0 = cq.Vector(mx * IN, y_lo_node * IN, mz * IN)
+            p1 = cq.Vector(ex * IN, y_hi_node * IN, ez * IN)
+            d = p1 - p0
+            t_ = cq.Solid.makeCylinder(DIAG_OD / 2 * IN, d.Length, p0, d.normalized())
+            t_ = t_.cut(cq.Solid.makeCylinder((DIAG_OD / 2 - DIAG_WALL) * IN, d.Length, p0, d.normalized()))
+            tw = cq.Workplane("XY").add(t_)
+            tubes = tw if tubes is None else tubes.union(tw)
+            lens.append(round(d.Length / IN, 2))
+    return dict(tubes=tubes, nodes=nodes, clevises=clev), lens
+
+
 def build():
     parts = {}
     lower, lower_holes, lower_slots = ring_plate("lower")
@@ -422,6 +467,9 @@ def build():
              .rotate((0, 0, 0), (0, 1, 0), -a).translate((x * IN, 0, z * IN)))
         struts = s if struts is None else struts.union(s)
     parts["struts"] = struts
+    dg, _ = diagonals()
+    parts["diagonal_tubes"] = dg["tubes"]
+    parts["diagonal_nodes"] = dg["nodes"].union(dg["clevises"])
 
     # board rails: 0.5 (x) x 0.75 (z) 6061 bar between the rings
     rails = None

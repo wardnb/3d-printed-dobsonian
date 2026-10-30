@@ -61,8 +61,8 @@ P = dict(
     # Upper cage (design)
     ring_id=17.5,
     ring_od=20.5,
-    ring_thick=0.375,             # from upper_cage.py (v2: 3/8" solid rings)
-    ring_spacing=8.25,
+    ring_thick=0.25,              # from upper_cage.py (v3: 1/4" slotted rings + inverted-V diagonals)
+    ring_spacing=8.0,
     board_inner_from_axis=8.75,
     focuser_racked_in=1.405,      # Feather Touch 2" spec
     # Truss (design)
@@ -78,7 +78,7 @@ P = dict(
     stub_proud=1.0,               # stub tubes stand this far above the top ring; sockets plug into them
     # Masses for balance (ASSUMED)
     cell_lb=6.0, mcage_lb_per_in=1.1, bearings_lb=13.1, poles_lb=3.6,   # bearings: rocker.bearing_area_in2 x 1.418 x 0.0243 lb/in3   # six 1.25" x 0.062" carbon poles, ~38.5" at 0.48 lb + plugs
-    upper_cage_lb=14.0, eyepiece_lb=3.3,   # cage v2 11.3 lb + wire spider 1.3 + Waypoint 1.4 (cage hub not yet included); 31 Nagler + Paracorr
+    upper_cage_lb=12.0, eyepiece_lb=3.3,   # cage v3 9.3 lb + quad spider 0.6 + holder ~1.0 + Waypoint 1.4 (cage hub not yet included); eyepiece + coma corrector
 )
 
 ASSUMED = [k for k in P if k in (
@@ -340,7 +340,8 @@ import upper_cage
 cage_parts, _, _ = upper_cage.build()
 cage_colors = dict(ring_lower=ALU, ring_upper=ALU, struts=ALU, board_rails=ALU, focuser_board=ALU,
                    spider_blocks=BLACK, pair_connectors_concept=cq.Color(0.85, 0.55, 0.25),
-                   finder_bracket=ALU, waypoint_finder=cq.Color(0.55, 0.12, 0.12))
+                   finder_bracket=ALU, waypoint_finder=cq.Color(0.55, 0.12, 0.12),
+                   diagonal_tubes=cq.Color(0.6, 0.62, 0.65), diagonal_nodes=ALU)
 for k, part in cage_parts.items():
     if k == "spider_blocks":
         continue                                   # spider towers live in the spider assemblies

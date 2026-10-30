@@ -1,6 +1,6 @@
 # 16" f/3.9 GoTo Dobsonian Rebuild — Design Doc
 
-> Exported from the living design doc (https://claude.ai/code/artifact/a2bd133b-cebf-4c55-a572-9a930c1ab10f) on 2026-10-18. The doc is the source of truth; re-export after changes.
+> Exported from the living design doc (https://claude.ai/code/artifact/a2bd133b-cebf-4c55-a572-9a930c1ab10f) on 2026-10-30. The doc is the source of truth; re-export after changes.
 
 
 Oct 18, 2026 · @Nickolous Ward
@@ -46,7 +46,7 @@ Use a 3.5" secondary (decided after the design review; 3.1" was the first choice
 | Aperture / focal ratio | 16" (406 mm) / f/3.9 |
 | Focal length | 62.4" (1,585 mm); confirm from the test report's ROC |
 | Cage ring inside diameter | 17.5" |
-| Focuser board inner face to optical axis | 8.75" (board 1/4" on rails between the 3/8" rings) |
+| Focuser board inner face to optical axis | 8.75" (board 1/4" on rails between the rings) |
 | Feather Touch FTF2015 racked-in / out | 1.4" / 3.0" |
 | Secondary center to focal plane (L) | 11.9" (coma corrector mid-travel) |
 | Primary face to secondary center | 50.5" |
@@ -69,9 +69,9 @@ Mirror (Hubble Optics spec): 406 mm diameter, about 42 mm thick, about 10.5 kg (
 
 ## Upper cage
 
-Two solid 3/8" 6061 rings (round, with the focuser board spanning between them; cage v11/v12 used only as a measurement reference) joined by aluminum struts, with a separately adjustable focuser board, targeting under 8 lb with focuser, secondary and holder.
+Two 1/4" 6061 rings with lightening slots, triangulated with six inverted-V diagonals, (round, with the focuser board spanning between them; cage v11/v12 used only as a measurement reference) joined by aluminum struts, with a separately adjustable focuser board, targeting under 8 lb with focuser, secondary and holder.
 
-- **Rings:** 17.5" ID × 20.5" OD, 3/8" 6061, solid (design review, v2: the 1/4" pocketed rings of v1 were five times floppier out of plane than a 3/4" plywood ring and doubled the collimation drift). About 3.25 lb each.
+- **Rings:** 17.5" ID × 20.5" OD, 1/4" 6061 with arc lightening slots, about 1.7 lb each (v3, 2026-10-30). Thin slotted rings only work because the cage is triangulated; on posts alone they doubled the drift (v2 used 3/8" solid). Diagonals: six 5/8" × 0.058" 6061 tubes, 9.3" long, in inverted Vs from node blocks on the lower ring at 0/90/270° up to clevis blocks on the side faces of the neighbouring posts near the top; the focuser bay (135–225°) stays open.
 - **Ring spacing:** 7.5" clear between the rings.
 - **Struts:** four 3/4" square 6061 posts bolted into both rings at 45/135/225/315°; they also anchor the quad spider's vanes and the alignment bar.
 - **Focuser board:** ¼" aluminum, Feather Touch base pattern machined in, mounted on three push-pull screws for tilt adjustment square to the optical axis.
@@ -294,8 +294,8 @@ The upper cage is detailed to part level and passes fit checks: no part clashes,
 
 | Part | Qty | Stock | Machining | Status |
 | --- | --- | --- | --- | --- |
-| Lower ring (truss end) | 1 | 3/8" 6061 plate | AltMill profile, 12 holes, solid (v2: no lightening slots) | DXF ready, inputs pending |
-| Upper ring (sky end) | 1 | 3/8" 6061 plate | AltMill profile, 12 holes, solid (v2: no lightening slots) | DXF ready, inputs pending |
+| Lower ring (truss end) | 1 | 1/4" 6061 plate | AltMill profile, holes, arc lightening slots with solid lands at every joint (v3) | DXF ready, inputs pending |
+| Upper ring (sky end) | 1 | 1/4" 6061 plate | AltMill profile, holes, arc lightening slots with solid lands at every joint (v3) | DXF ready, inputs pending |
 | Focuser board | 1 | 1/4" 6061 plate | AltMill profile; tap 3× #10-32 and 4× #8-32 | DXF ready, focuser pattern pending |
 | Struts | 4 | 3/4" 6061 square bar | Cut 7.50", mill ends square and to identical length; tap 1/4-20 (bottom) and 5/16-18 (top, takes the extension bolt); two #10-32 clearance holes at 0.9" for the lower wire studs | Drawing only |
 | Post extensions (wire spider v2) | 4 | 1" × 3/4" 6061 bar | Cut 2.30"; 5/16 clearance bore lengthwise; #10-32 clearance hole 1.9" up for the upper wire stud; 1/8" dowel into the ring | Drawing only |
@@ -351,6 +351,8 @@ What passed: the 17.5" ring ID clears a 1.5° true field without vignetting; the
 
 **Spider decision (2026-10-18): straight 4-vane, 0.020" (0.5 mm) stainless vanes 1.5" tall, anchored on the four posts between the rings (not on blocks above the ring), hub = holder top plate just under the upper ring.** Modelled against the alternatives with the secondary's real mass and lever: quad 0.012 mm of focal-point drift horizon to zenith on its own and 0.02 mm with the cage (0.08 mm when it was drawn on the tower blocks above the ring; anchoring on the posts shortens the hub and puts the pull on beams bolted to both rings); wire spider v2 0.05 / 0.12 mm; Destiny curved with a 3/4" stalk about 0.3 mm. The quad also obstructs 0.52 in² of vane against 1.2 in² for the wires and 1.3 in² for the Destiny, and it is the simplest to build and to collimate. Four spikes. The wire spider and the Destiny stay in the model as drawn alternatives; the extension blocks are wire-spider parts only. Secondary: 3.5" (see Optical design). Coma corrector: Explore Scientific HR (about $200 on sale) rather than the $577 Paracorr 2; L = 11.9" suits either.
 
+**Upper cage v3 decision (2026-10-30): triangulate it.** The idea came from the iOptron Photron 16" RC, whose rear cage is two plates braced by tubes in V pairs. In the cage model, with the quad spider, the worst drift after collimating at 45° is 0.007 mm with 1/4" slotted rings plus six inverted-V diagonals, against 0.024 mm for the v2 3/8" solid post-only cage. Cage metal drops from 11.3 lb to 9.3 lb; the balance re-solve lifts the mirror 1.2" and lowers the altitude axis and rocker walls by 1" (rocker DXFs regenerated, all parts still fit the AltMill). Upright Vs and Xs were 3–4× worse, because the inverted Vs land on the lower ring beside the truss pair-block supports; bracing the focuser bay made the light rings worse, so it stays open. Fit checks pass: no clashes, nothing in the beam or the focuser cone.
+
 ## Collimation hold: model results
 
 &#91;embedded content: cage\_fe.py, 2026-10-18 · 7 configurations, each swept 0–90° altitude\]
@@ -376,7 +378,7 @@ The cage and spider now use about a quarter of the 0.5 mm coma budget over the f
 
 | Source | Horizon to zenith, mm | Basis |
 | --- | --- | --- |
-| Wire spider v2 on 3/8" rings (cage + spider together) | 0.12 | cage\_fe.py |
+| Upper cage v3 (triangulated) with the quad spider | 0.007 | cage\_fe.py |
 | Focuser board flexure | < 0.02 | 1/4" plate, 6 lb at 3.5", 0.1 mrad |
 | Thermal, 20°C drop | \~0 | wire tension falls 2.6 lb; geometry unchanged |
 | Truss pole pairs and apex connectors | not yet modelled; target ≤ 0.2 | needs the connector design and pole clamps |

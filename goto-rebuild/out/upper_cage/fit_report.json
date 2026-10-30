@@ -20,16 +20,26 @@
     -2.6
   ],
   "weights_lb": {
-    "ring_lower": 3.25,
-    "ring_upper": 3.24,
+    "ring_lower": 1.64,
+    "ring_upper": 1.71,
     "struts": 1.65,
+    "diagonal_tubes": 0.56,
+    "diagonal_nodes": 0.55,
     "board_rails": 0.55,
     "focuser_board": 1.01,
     "spider_blocks": 0.37,
     "finder_bracket": 0.29,
     "pair_connectors_concept": 0.94
   },
-  "cage_metal_lb": 11.3,
+  "diagonal_lengths_in": [
+    9.27,
+    9.27,
+    9.27,
+    9.27,
+    9.27,
+    9.27
+  ],
+  "cage_metal_lb": 9.27,
   "quad_block_clashes": [],
   "quad_beam_hit": false,
   "quad_spider": {
@@ -55,8 +65,8 @@
   "wire_runs_in": [
     [
       45,
-      6.0249999999999995,
-      8.76
+      5.8999999999999995,
+      8.72
     ],
     [
       45,
@@ -65,8 +75,8 @@
     ],
     [
       135,
-      6.0249999999999995,
-      8.79
+      5.8999999999999995,
+      8.75
     ],
     [
       135,
@@ -75,8 +85,8 @@
     ],
     [
       225,
-      6.0249999999999995,
-      8.76
+      5.8999999999999995,
+      8.72
     ],
     [
       225,
@@ -85,8 +95,8 @@
     ],
     [
       315,
-      6.0249999999999995,
-      8.79
+      5.8999999999999995,
+      8.75
     ],
     [
       315,
@@ -99,10 +109,10 @@
     "wires/studs"
   ],
   "wire_pair_min_gap_in": [
-    0.077,
-    0.077,
-    0.077,
-    0.077
+    0.079,
+    0.078,
+    0.079,
+    0.078
   ],
   "wires_in_focuser_cone": false,
   "extension_tip_deflection_in": 0.000274,

@@ -119,7 +119,7 @@ SENSES = dict(same={a: (+1, -1) for a in uc.STRUTS},
 def build(ring_t=T, ring_w=1.5, slotted=True, apex="pinned", wire_dia=0.025,
           focuser_lb=6.0, focuser_arm=3.5, E_ring=E_AL, G_ring=G_AL, rigid_wires=False,
           y_anchor=(6.025, 0.9), rims=(3.11, 5.75), senses="paired", cross=True, offset=50,
-          stud_tang=0.15, v1_layout=False, sec_cg=0.9, diagonals=False, spider="wire"):
+          stud_tang=0.15, v1_layout=False, sec_cg=0.9, diagonals="vinv0", spider="quad"):
     """y_anchor = (high anchor y, low anchor y) on the posts (above the upper ring = on a
     post extension block); rims = (hub low rim y, hub high rim y); cross: high anchor ->
     low rim and low anchor -> high rim; senses: which side of the hub each post's wires
@@ -145,7 +145,7 @@ def build(ring_t=T, ring_w=1.5, slotted=True, apex="pinned", wire_dia=0.025,
     def in_slot(kind, a):
         return any(a0 <= a <= a1 for a0, a1 in zones[kind])
 
-    feature_angles = set(uc.STRUTS) | set(uc.TOPS) | {uc.FINDER}
+    feature_angles = set(uc.STRUTS) | set(uc.TOPS) | set(uc.APEX) | {uc.FINDER, 0, 90, 270}
     rail_angles = [uc.ang_of(uc.RAIL_X, z) for z in (uc.RAIL_Z, -uc.RAIL_Z)]
     feature_angles |= set(round(a, 3) for a in rail_angles)
     grid = set(np.round(np.arange(0, 360, 3.0), 3)) | feature_angles
@@ -207,12 +207,35 @@ def build(ring_t=T, ring_w=1.5, slotted=True, apex="pinned", wire_dia=0.025,
         for nd in inner:
             masses.append((nd, 1.65 / 4 / len(inner)))
 
-    if diagonals:   # 1/2" round 6061 diagonals: lower-ring apex -> upper-ring post, 4 off
-        Ad = math.pi * 0.25 ** 2; Id = math.pi * 0.5 ** 4 / 64
+    if diagonals:
+        # 5/8" x 0.058" 6061 tube diagonals between the ring centroid nodes (iOptron-style triangulated cage).
+        # Focuser bay (135-225) is split by the board rails at ~164/196: only its outer sub-bays get diagonals.
+        od, wall = 0.625, 0.058
+        idd = od - 2 * wall
+        Ad = math.pi / 4 * (od ** 2 - idd ** 2); Id = math.pi / 64 * (od ** 4 - idd ** 4)
         diag = dict(E=E_AL, G=G_AL, A=Ad, Iy=Id, Iz=Id, J=2 * Id)
-        for lo_a, hi_a in ((0, 45), (0, 315), (120, 135), (240, 225)):
-            fr.beam(rings["lower"]["centre"][lo_a], rings["upper"]["centre"][hi_a], diag)
-            masses.append((rings["upper"]["centre"][hi_a], 0.0975 * Ad * 11.0))
+        ra = sorted(round(uc.ang_of(uc.RAIL_X, z), 3) for z in (uc.RAIL_Z, -uc.RAIL_Z))   # ~164.4, 195.6
+        open_bays = ((315, 45, 0), (45, 135, 90), (225, 315, 270))
+        pairs = []
+        if diagonals in ("v", "v+x"):          # V: both lower posts -> upper mid-bay node
+            for a0, a1, m in open_bays:
+                pairs += [(("lower", a0), ("upper", m)), (("lower", a1), ("upper", m))]
+        if diagonals in ("vinv", "vinv0"):      # inverted V: lower mid-bay -> both upper posts
+            for a0, a1, m in open_bays:
+                pairs += [(("lower", m), ("upper", a0)), (("lower", m), ("upper", a1))]
+        if diagonals in ("x", "v+x"):           # X: post-to-post crossing diagonals across each open bay
+            for a0, a1, m in open_bays:
+                pairs += [(("lower", a0), ("upper", a1)), (("lower", a1), ("upper", a0))]
+        # focuser-bay sub-bays: an X between each post and its neighbouring rail
+        if diagonals != "vinv0":                # vinv0 = leave the focuser bay open
+            for p, r in ((135, ra[0]), (225, ra[1])):
+                pairs += [(("lower", p), ("upper", r)), (("lower", r), ("upper", p))]
+        for (k0, a0), (k1, a1) in pairs:
+            n0, n1 = rings[k0]["centre"][a0], rings[k1]["centre"][a1]
+            L = np.linalg.norm(np.array(fr.nodes[n0]) - np.array(fr.nodes[n1]))
+            fr.beam(n0, n1, diag)
+            masses += [(n0, 0.0975 * Ad * L / 2), (n1, 0.0975 * Ad * L / 2)]
+        globals()["_last_diag_count"] = len(pairs)
 
     # rails
     Ar, Ibr, Ihr, Jr = rect_props(0.5, 0.75)
@@ -265,7 +288,7 @@ def build(ring_t=T, ring_w=1.5, slotted=True, apex="pinned", wire_dia=0.025,
         fn = fr.node(fx, Y_HI - 4.0, fz)
         fr.beam(rings["upper"]["centre"][uc.FINDER], fn, RIGID)
         masses.append((fn, 1.7))
-        for a in uc.TOPS:
+        for a in uc.APEX:
             nd = rings["lower"]["centre"][a]
             fr.fix(nd, (0, 1, 2) if apex == "pinned" else (0, 1, 2, 3, 4, 5))
         return fr, masses, dict(board=board, eyep=eyep, hub=hub, sec=sec, foc=foc)
@@ -300,7 +323,7 @@ def build(ring_t=T, ring_w=1.5, slotted=True, apex="pinned", wire_dia=0.025,
     masses.append((fn, 1.7))
 
     # truss apexes
-    for a in uc.TOPS:
+    for a in uc.APEX:
         nd = rings["lower"]["centre"][a]
         fr.fix(nd, (0, 1, 2) if apex == "pinned" else (0, 1, 2, 3, 4, 5))
     return fr, masses, dict(board=board, eyep=eyep, hub=hub, sec=sec, foc=foc)
@@ -346,8 +369,14 @@ def sweep(label, **kw):
 
 if __name__ == "__main__":
     import sys
-    which = sys.argv[1] if len(sys.argv) > 1 else "quad"
-    if which == "quad":
-        sweep("QUAD spider, 3/8 solid rings, 3.5in secondary", slotted=False, ring_t=0.375, spider="quad")
-        sweep("QUAD spider, 1/4 solid rings", slotted=False, ring_t=0.25, spider="quad")
-        sweep("QUAD spider, 3/8 rings, 8 lb focuser", slotted=False, ring_t=0.375, spider="quad", focuser_lb=8.0)
+    which = sys.argv[1] if len(sys.argv) > 1 else "tri"
+    if which == "tri":
+        Q = dict(spider="quad")
+        sweep("posts only, 3/8 solid (current)", slotted=False, ring_t=0.375, **Q)
+        sweep("posts only, 1/4 solid", slotted=False, ring_t=0.25, **Q)
+        sweep("posts only, 1/4 slotted", slotted=True, ring_t=0.25, **Q)
+        for d in ("v", "vinv", "x", "v+x"):
+            sweep(f"diag {d:4s}, 3/8 solid", slotted=False, ring_t=0.375, diagonals=d, **Q)
+            sweep(f"diag {d:4s}, 1/4 solid", slotted=False, ring_t=0.25, diagonals=d, **Q)
+            sweep(f"diag {d:4s}, 1/4 slotted", slotted=True, ring_t=0.25, diagonals=d, **Q)
+            print("   diagonals:", globals().get("_last_diag_count"))

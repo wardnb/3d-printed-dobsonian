@@ -99,7 +99,7 @@ ul.meas .val { font-family: var(--f-mono); font-size: 13px; white-space: nowrap;
 <div class="wrap">
   <header>
     <h1>16-inch Dob Rebuild</h1>
-    <p class="sub">Model v4 (rocker, ground board and 14″ bearings designed 19 Oct 2026 for the AltMill; 1.25″ carbon truss on 45 mm stubs) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>weights and the ring-edge check still open</b></p>
+    <p class="sub">Model v5 (rocker, ground board and 14″ bearings designed 19 Oct 2026 for the AltMill; 1.25″ carbon truss on 45 mm stubs; upper cage triangulated 30 Oct) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>weights and the ring-edge check still open</b></p>
   </header>
 
   <div class="grid">
@@ -334,7 +334,7 @@ const load = url => fetch(url).then(r => { if (!r.ok) throw new Error("HTTP " + 
 const trussModels = {};
 const spiderModels = {};
 const spiderInfo = {
-  quad: "Chosen after the design review: four 0.020\u2033 (0.5 mm) stainless vanes, 1.5\u2033 tall, anchored on the four posts between the rings (45/135/225/315\u00b0) by #10-32 studs through the posts, so the pull lands on beams bolted to both rings. Short 2.6\u2033 hub = the secondary holder's top plate, just under the upper ring. Four spikes at 45\u00b0 to the altitude axis; vane obstruction 0.5 in\u00b2. Cage FE: 0.02 mm of focal-point drift horizon to zenith on 3/8\u2033 rings.",
+  quad: "Chosen after the design review: four 0.020\u2033 (0.5 mm) stainless vanes, 1.5\u2033 tall, anchored on the four posts between the rings (45/135/225/315\u00b0) by #10-32 studs through the posts, so the pull lands on beams bolted to both rings. Short 2.6\u2033 hub = the secondary holder's top plate, just under the upper ring. Four spikes at 45\u00b0 to the altitude axis; vane obstruction 0.5 in\u00b2. Upper cage triangulated with six inverted-V diagonals (iOptron RC style) on 1/4\u2033 slotted rings: under 0.01 mm of focal-point drift horizon to zenith, 2 lb lighter than the 3/8\u2033 post-only cage.",
   curved: "Destiny 180 Professional: three curved aluminium vanes, 1.5″ tall, each screwed into a tower at 0/120/240°, with a 3/4″ stalk down to the holder. No spikes, but curved vanes carry side loads in bending: the model predicts ~0.3 mm of focal-point drift horizon to zenith (0.45 mm with a 1/4″ stalk).",
   wire: "v2 wire spider: eight 0.025\u2033 music-wire strings in two planes 3\u2033 apart. A 2.4\u2033 hollow hub (also the secondary holder's top plate) runs from the holder up past the upper ring; the upper wires anchor on four blocks standing on the ring at 45/135/225/315\u00b0, the lower wires on the posts between the rings. Each post's pair forms a V landing on one side of the hub, neighbours alternate sides: no gravity load can twist or tilt the hub, and the eight wires project in only two directions, so stars show four spikes. Cage FE: focal point wanders 0.12 mm horizon to zenith (v1 was 1.8 mm).",
 };
