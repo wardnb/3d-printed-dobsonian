@@ -182,3 +182,14 @@ model frame: bearings on 0/180°, point hole at 90°.
 | 1" holes | two at r 10.25", 25° either side of the back (205° and 335°); purpose unknown | from the STEP |
 | Edge vs 45 mm holes | on this outline the back holes sit in the back corners (r 12.56"): 0.6" of ply to the flat, 1.6" to the back arc. No conflict (an earlier note assumed a round back). Holds for the box if its back matches | resolved for the upper ring |
 | Effect on the model | `mcage_tube_radii=(10.25, 10.625, 10.625)`, `mcage_point_radius=12.125`; poles 38.15" to the point socket and 38.20" to the back sockets; pair blocks at 30° and 150° are mirror images; truss FE unchanged (0.042 mm). The outline is drawn (`shield_y`) and the swing radius uses the 12.56" back corners, so the axis is 27.0" up and the eyepiece 63.6". Box back shape ASSUMED = upper ring; measure tip-to-back-edge and tip-to-back-corner on the box | applied, back shape to confirm |
+
+## Cell, 2026-10-30, photos (box on its side, and a close-up under the cell)
+
+| Item | Value | How | Status |
+| --- | --- | --- | --- |
+| Mirror support | the sandwich sits on the 3/4" Baltic birch triangle's pads with a thin dark layer between (glue, possibly over a felt or rubber pad); Nick: the mirror is glued | close-up photo, Nick | confirmed glued; layer thickness and pad area to measure |
+| What the back shows | the light birch "disc" seen through the mirror board's round opening is the cell triangle with three round cooling holes (the glass back shows through them) | photo | confirmed |
+| Collimation | three 1/4" studs from the triangle corners down through holes in the mirror board, each with a stack of coil springs (about 1" tall) between the triangle and the board, a washer on the board, and a three-lobe wing knob on the back | photos | confirmed |
+| Sideways location of the cell | nothing but knob/washer friction and stud bending; the stud's clearance in the board hole decides how far the cell can shift at the horizon | photos | to measure: hole diameter vs stud |
+| Knob positions | about 11, 3–4 and 7 o'clock looking at the back with the box on its side; their angle to the three strut stubs is not readable from this photo | photo | to measure |
+
