@@ -30,7 +30,7 @@ def base_xz(deg):
 TOPS = [30, 150, 270]
 Y_RING_LO = F["y_ring_lo"]                     # cage lower ring, mirror-side face
 Y_STUB_TOP = F["y_mcage_top"] + PR["stub_proud"]
-Y_NODE = Y_STUB_TOP + 0.6                      # cone apex (FE node) height
+Y_NODE = Y_STUB_TOP + PR.get("socket_node_above_stub", 0.6)   # cone apex (FE node) height
 NODE_OFF = 0.8                                 # the two cups at a socket sit +/-0.8" tangentially
 POLE_OD, POLE_WALL = PR["truss_pole_od"], 0.062   # 1.25 x 0.062 carbon
 BORE = POLE_OD - 2 * POLE_WALL
@@ -40,7 +40,15 @@ NOSE_D = 0.40
 S_NOSE = (NOSE_D / 2) / math.tan(HALF)         # apex -> nose along the pole axis
 S_SHOULDER = (POLE_OD / 2) / math.tan(HALF)    # apex -> full diameter
 SHOULDER_L, SHANK_L = 0.40, 1.75
-BLOCK_T, BLOCK_R, BLOCK_H = 3.6, 2.0, 1.7      # socket block: tangential x radial x tall
+BLOCK_T, BLOCK_R, BLOCK_H = 3.6, 2.0, 2.1      # socket block: tangential x radial x tall (2.1: room for the wheel pocket)
+# drawbolt (2026-10-31): a 1/4-20 stainless stud along the pole axis, Loctited 0.6" into the plug nose, passes
+# through the cup apex into a pocket milled in from the block's outside face; a knurled thumbwheel nut in the
+# pocket pulls the cone into its cup (~80-150 lb preload by hand). Poles carry up to ~27 lb TENSION near the
+# horizon (truss_fe), so the old side knob on a brass pad, which only locks by friction, could let a cone lift.
+STUD_D, STUD_BELOW = 0.25, 0.60                # stud dia, length past the cone apex
+WHEEL_D, WHEEL_T = 0.90, 0.30                  # knurled thumbwheel nut
+POCKET_H, POCKET_W, POCKET_TOP = 0.60, 1.0, 0.10   # pocket height (along y), tangential width, top below the apex
+COLLAR_OD, COLLAR_W = 2.75, 0.55               # 45 mm two-piece shaft clamp collars, one each side of the box's top ring
 PAIR_T, PAIR_R, PAIR_H = 3.6, 1.6, 1.6         # pair block under the ring
 
 
@@ -140,26 +148,28 @@ def socket_block(b):
     blk = block(centre, b, BLOCK_T, BLOCK_H, BLOCK_R)
     spigot = cyl(STUB_OD / 2 - STUB_WALL - 0.003, 1.5, (bx, Y_STUB_TOP, bz), (0, -1, 0))
     blk = blk.union(spigot)
-    knobs, pads = None, None
+    wheels, studs = None, None
     for side in (-1, +1):
         t = (b - 60 * side) % 360                       # the apex this cup's pole comes from
         A, B = node_points(t, side)
         d_up = cq.Vector(*[a - c for a, c in zip(A, B)]).normalized()
-        cup = cone(0.0, 3.0 * math.tan(HALF), 3.0, B, d_up)
+        d_dn = d_up * -1
+        blk = blk.cut(cyl(0.145, 3.0, along(B, d_up, 1.5), d_dn))            # stud clearance through the apex
+        cup = cone(0.02, 3.0 * math.tan(HALF), 3.0 - 0.02 / math.tan(HALF), along(B, d_up, 0.02 / math.tan(HALF)), d_up)
         blk = blk.cut(cup)
-        # knob: 1/4-20 from the radial-outside face, aimed at the plug flank at mid-cone height
-        hit = along(B, d_up, (S_NOSE + S_SHOULDER) / 2)
-        outer = (hit[0] + rd[0] * (BLOCK_R / 2 + 0.6), hit[1], hit[2] + rd[2] * (BLOCK_R / 2 + 0.6))
-        bore = cyl(0.14, BLOCK_R + 1.0, outer, (-rd[0], 0, -rd[2]))
-        blk = blk.cut(bore)
-        screw = cyl(0.125, BLOCK_R / 2 + 0.6 - 0.15, outer, (-rd[0], 0, -rd[2]))
-        head = cyl(0.40, 0.45, outer, (rd[0], 0, rd[2]))
-        pad_p = along(hit, (rd[0], 0, rd[2]), 0.12)
-        pad = cyl(0.19, 0.28, pad_p, (rd[0], 0, rd[2]))
-        knobs = screw.union(head) if knobs is None else knobs.union(screw).union(head)
-        pads = pad if pads is None else pads.union(pad)
-    return dict(block=blk, knobs=knobs, pads=pads)
-
+        # pocket under the apex, open to the radial-outside face
+        pc = along(B, d_dn, POCKET_TOP / abs(d_dn.y) + POCKET_H / 2 / abs(d_dn.y))
+        pl = cq.Plane(origin=v(pc[0] + rd[0] * (BLOCK_R / 2 + 0.5), pc[1], pc[2] + rd[2] * (BLOCK_R / 2 + 0.5)),
+                      xDir=cq.Vector(*td), normal=cq.Vector(*rd))
+        pocket = cq.Workplane(pl).box(POCKET_W * IN, POCKET_H * IN, (BLOCK_R + 1.0) * IN)
+        pocket = pocket.translate(v(-rd[0] * 0.5, 0, -rd[2] * 0.5))
+        # keep the pocket on this side of the stud axis line (it must not break into the cup)
+        blk = blk.cut(pocket)
+        stud = cyl(STUD_D / 2, S_NOSE + 0.6 + STUD_BELOW, along(B, d_up, S_NOSE + 0.6), d_dn)
+        wheel = cyl(WHEEL_D / 2, WHEEL_T, along(pc, d_up, WHEEL_T / 2), d_dn)
+        wheels = wheel if wheels is None else wheels.union(wheel)
+        studs = stud if studs is None else studs.union(stud)
+    return dict(block=blk, knobs=wheels, pads=studs)
 
 def pair_block(t):
     ax, az = polar(R_TOP, t)
@@ -192,7 +202,11 @@ def stub_and_ring(b):
     stub = stub.cut(cyl(STUB_OD / 2 - STUB_WALL, 10, (bx, F["y_mcage_top"] - 3, bz), (0, 1, 0)))
     ring = ring_sector(F["y_mcage_top"] - PR["ply"], PR["ply"], PR["mcage_ring_id"] / 2, PR["mcage_ring_od"] / 2, b, 22)
     ring = ring.cut(cyl(STUB_OD / 2 + 0.01, 3, (bx, F["y_mcage_top"] - 2, bz), (0, 1, 0)))
-    return stub, ring
+    collars = None
+    for y0 in (F["y_mcage_top"], F["y_mcage_top"] - PR["ply"] - COLLAR_W):   # above and below the box's top ring
+        c = cyl(COLLAR_OD / 2, COLLAR_W, (bx, y0, bz), (0, 1, 0)).cut(cyl(STUB_OD / 2, COLLAR_W, (bx, y0, bz), (0, 1, 0)))
+        collars = c if collars is None else collars.union(c)
+    return stub, ring.union(collars) if False else ring, collars
 
 
 def cage_ring_sector(t):
@@ -215,11 +229,12 @@ def build_full():
     for b in (90, 210, 330):
         sb = socket_block(b)
         a.add(sb["block"], name=f"socket_{b}", color=ALU)
-        a.add(sb["knobs"], name=f"socket_knobs_{b}", color=KNOB)
-        a.add(sb["pads"], name=f"socket_pads_{b}", color=BRASS)
-        stub, ring = stub_and_ring(b)
+        a.add(sb["knobs"], name=f"thumbwheels_{b}", color=KNOB)
+        a.add(sb["pads"], name=f"drawbolt_studs_{b}", color=BRASS)
+        stub, ring, collars = stub_and_ring(b)
         a.add(stub, name=f"stub_{b}", color=STUB)
         a.add(ring, name=f"box_ring_{b}", color=BIRCH)
+        a.add(collars, name=f"stub_collars_{b}", color=KNOB)
     return a
 
 
@@ -239,11 +254,12 @@ def build_socket_detail(b=90, section=False):
 
     sb = socket_block(b)
     add(sb["block"], "socket_block", ALU)
-    add(sb["knobs"], "knobs", KNOB)
-    add(sb["pads"], "brass_pads", BRASS)
-    stub, ring = stub_and_ring(b)
+    add(sb["knobs"], "thumbwheels", KNOB)
+    add(sb["pads"], "drawbolt_studs", BRASS)
+    stub, ring, collars = stub_and_ring(b)
     add(stub, "stub", STUB)
     add(ring, "box_ring", BIRCH)
+    add(collars, "stub_collars", KNOB)
     for side in (-1, 1):
         t = (b - 60 * side) % 360
         A, B = node_points(t, side)

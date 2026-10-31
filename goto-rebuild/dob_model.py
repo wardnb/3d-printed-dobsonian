@@ -76,6 +76,7 @@ P = dict(
     mcage_spacer_od=1.25,         # measured: seven short tubes between the two rings
     mcage_spacer_angles=(20, 60, 120, 160, 240, 270, 300),   # seven, from the overhead photo (+/-10 deg): three across the back (270 side), two per side
     stub_proud=1.0,               # stub tubes stand this far above the top ring; sockets plug into them
+    socket_node_above_stub=1.0,   # cone apex (truss node) above the stub top: room for the drawbolt thumbwheel pocket (2026-10-31)
     # Masses for balance (ASSUMED)
     cell_lb=4.9, cell_cg_below_face=3.46, mcage_lb_per_in=1.1,   # new 6061 9-point flotation cell (cell.py, 2026-10-30)
     bearings_lb=13.1, poles_lb=3.6,   # bearings: rocker.bearing_area_in2 x 1.418 x 0.0243 lb/in3   # six 1.25" x 0.062" carbon poles, ~38.5" at 0.48 lb + plugs
@@ -164,7 +165,7 @@ for k, t in enumerate(tops):
     tx, tz = polar(P["truss_top_radius"], t)
     for b in (t - 30, t + 30):
         bx, bz = polar(P["truss_bottom_radius"], b)
-        truss.append(((bx, y_mcage_top + P["stub_proud"] + 0.6, bz), (tx, y_ring_lo - 0.6, tz)))
+        truss.append(((bx, y_mcage_top + P["stub_proud"] + P["socket_node_above_stub"], bz), (tx, y_ring_lo - 0.6, tz)))
 pole_len = math.dist(*truss[0])
 
 # alternative: zigzag (octahedral) truss, lower nodes shared by neighbouring pairs
@@ -174,7 +175,7 @@ for t in tops:
     tx, tz = polar(P["truss_top_radius"], t)
     for b in (t - 60, t + 60):
         bx, bz = base_xz(b)
-        truss_zig.append(((bx, y_mcage_top + P["stub_proud"] + 0.6, bz), (tx, y_ring_lo - 0.6, tz)))
+        truss_zig.append(((bx, y_mcage_top + P["stub_proud"] + P["socket_node_above_stub"], bz), (tx, y_ring_lo - 0.6, tz)))
 pole_len_zig = math.dist(*truss_zig[0])
 
 net, tube_lb = net_moment(s)
@@ -302,7 +303,7 @@ def truss_assy(name, poles_list, bottom_angles, blk_w):
         # socket block: blk_w tangential x 1.6 radial x 1.2 tall, square to the radius, on the tube top
         y_top = y_mcage_top + P["stub_proud"]
         blk = (cq.Workplane("XY").box(1.6 * IN, 1.2 * IN, blk_w * IN)
-               .rotate((0, 0, 0), (0, 1, 0), -b).translate(v(x, y_top + 0.6, z)))
+               .rotate((0, 0, 0), (0, 1, 0), -b).translate(v(x, y_top + P["socket_node_above_stub"], z)))
         blk = blk.union(cyl_y(y_top - 1.5, 1.5, P["mcage_tube_od"] / 2 - P["mcage_tube_wall"] - 0.003, x, z))   # spigot into the stub bore
         blocks = blk if blocks is None else blocks.union(blk)
     a.add(blocks, name="truss_sockets_lower", color=ALU)

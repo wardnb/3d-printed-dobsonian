@@ -61,6 +61,7 @@
       300
     ],
     "stub_proud": 1.0,
+    "socket_node_above_stub": 1.0,
     "cell_lb": 4.9,
     "cell_cg_below_face": 3.46,
     "mcage_lb_per_in": 1.1,
@@ -82,8 +83,8 @@
     "z_alt_axis_in": 25.87,
     "lower_tube_swing_radius_in": 22.3,
     "secondary_y_in": 37.87,
-    "truss_pole_length_in": 37.68,
-    "truss_zigzag_pole_length_in": 38.66,
+    "truss_pole_length_in": 37.29,
+    "truss_zigzag_pole_length_in": 38.27,
     "eyepiece_height_zenith_in": 63.7,
     "nested_transport_height_in": 13.5,
     "rocker_wall_height_at_pads_in": 10.68,

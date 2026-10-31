@@ -438,6 +438,28 @@ Nothing is tooled: nine knobs, three pairs, one cage. Transport state: mirror ca
 
 Take-down is the reverse; the trunk cable, if it runs inside a pole, stays with that pair. Pole lengths are set by the plugs, so a pair is never the wrong length; the pairs are interchangeable because all six sockets share one angle.
 
+**Joint review (2026-10-31): the cones need a drawbolt, and the stubs need collars.** Pole forces from `truss_fe.py`, cage and eyepiece 15.5 lb (+ = tension):
+
+| Altitude | Six pole forces, lb | Worst socket uplift |
+| --- | --- | --- |
+| 0° | −18.9, +21.1, +26.9, −24.7, +0.7, −5.1 | 46 lb |
+| 45° | −14.5, +13.3, +16.1, −20.7, −2.3, −5.4 | 28 lb |
+| 90° | all in compression, 1.6–4.7 | none |
+
+Near the horizon two poles pull up to 27 lb in tension. A side knob on a brass pad only locks the cone by friction and gives it no axial preload, so those cones could lift and rattle, and the stub could slide up in its holes.
+
+**Fix: an axial drawbolt.** A 1/4-20 stainless stud is Loctited along the pole axis into the plug nose and runs through the cup apex. A 0.9" knurled thumbwheel nut, in a pocket milled in from the socket block's outside face, pulls the cone into its cup with roughly 80–150 lb by hand, three to five times the worst tension. A pin across the pocket mouth keeps the wheel captive. The nut can't go under the block, because the pole axis below the cup runs into the stub (0.55–0.69" from its centre).
+
+**Geometry change.** The socket block grows to 2.1" tall, and the cone apex (the truss node) sits 1.0" above the stub top instead of 0.6". The poles shorten to 37.88" and 37.93" node to node, with the carbon cut at 35.8".
+
+**Stubs.** Two 45 mm two-piece shaft clamp collars, one each side of the box's top ring, take the 46 lb uplift.
+
+With the cones preloaded the joints are far stiffer than 50,000 lb/in, and above that `mcage_fe.py` shows them costing 0.03 mm or less. The earlier 20,000 lb/in case (0.17 mm) was a clamp-block guess.
+
+**Pair blocks.** They see at most 8 lb of pull and 12 lb of side load, so one knob's clamp friction holds them and the two reamed dowels only locate.
+
+**Setup.** Six thumbwheels and three knobs.
+
 ## Mirror box and cell review
 
 The mirror is heavier than assumed: Hubble Optics lists the [16" f/4 sandwich](https://hubble-optics.com/mirrors) at 406 mm, about 42 mm thick and about 10.5 kg (23 lb), and their own [UL16](https://www.hubble-optics.com/UL16) carries it on a 6-point flotation cell with a sling. With 23 lb at the bottom the balance re-solves to the mirror face 14.6" below the axis (was 16.0"), nested height 19.8", eyepiece 59.8" at zenith, tube 81 lb. Model and viewer updated.

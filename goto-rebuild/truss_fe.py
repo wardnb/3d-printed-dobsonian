@@ -30,7 +30,7 @@ def base_xz(deg, layout):
             if abs((d - a + 180) % 360 - 180) < 1:
                 return xz
     return pol(R_BOT, d)
-Y_APEX, Y_BASE = Y_RING_LO - 0.6, Y_MCAGE_TOP + 1.6
+Y_APEX, Y_BASE = Y_RING_LO - 0.6, Y_MCAGE_TOP + P["params"]["stub_proud"] + P["params"].get("socket_node_above_stub", 0.6)
 FL = P["params"]["aperture"] * P["params"]["focal_ratio"]
 Y_MIRROR = F["y_mirror"]
 F_P = np.array([0.0, Y_MIRROR + FL, 0.0])          # primary's focus (rigid to the box)
