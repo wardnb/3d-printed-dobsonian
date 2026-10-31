@@ -605,3 +605,18 @@ Siderial tracking turns the altitude motor at about 1.5 rpm (51 counts per secon
 - [ ] Magnetic tape and read-head model; confirm the SiTech encoder inputs
 - [ ] Coma corrector: Explore Scientific HR (chosen on price) or Paracorr 2
 - [ ] Imaging (option, not in this build): an equatorial platform under the ground board would be needed for long exposures
+
+## D-bearing joint and encoder use (2026-10-31)
+
+**Encoders are for position only.** The tape heads give pointing and slip recovery; tracking runs on the motor encoders (0.28" per count), with OAG guiding when imaging. AS5311-class heads on 2 mm-pole tape read about 1.1" per count but carry a ±10 µm cyclic error (±6" with a \~19′ period) and \~2" of hysteresis: fine for location, not for tracking at 0.48"/px. This supersedes the "tape encoders close the position loop" line in the bearings review.
+
+**The D's joint to the box was the weak link** (`bearing_fe.py`, plane-stress FE of the D and the box side, glued edges fixed). As first drawn the D met the box through a 4.8 × 1.8" patch on the 3" strip: two 3/8" dowels and two 1/4" bolts.
+
+| Joint | Windup vs the alt pinion, 15° | at 45° | Bolts slipped, 15° | Bolt load in a 3 g jolt |
+| --- | --- | --- | --- | --- |
+| As first drawn | 0.25"/in-lb | 0.09"/in-lb | 0.49"/in-lb | \~400 lb (more than their friction in ply) |
+| Strip + back wing (chosen) | 0.058"/in-lb | 0.021"/in-lb | 0.13"/in-lb | ≤ 146 lb |
+
+Strength was never the issue; stiffness and slip were. Once two bolts slip, dowel-hole play shows as altitude backlash (0.001" ≈ 85"), and the drive torque reverses with direction because friction (\~145 in-lb) is far larger than the planned imbalance. Ribs or a solid D barely helped: the small patch, not the D, set it.
+
+**Fix:** an 18 mm birch back wing on each side, 4.9 × 11.38", glued between the boards beside the strip (z −6.4 to −1.5 from the bearing axis), its top-back corner notched 2.3 × 0.70" around the stub's lower collar, Confirmat screws through both boards at z −2.3 and −3.6. The D sits on two 3/8" steel dowels pressed into the D (one on the rim at z −5.6, one on the web top) running in blind steel drill bushings, plus six 1/4-20 bolts into threaded inserts. Drill the box through the D as a template. The wing cannot run forward of the strip: the boards' edge curves away there. ASSUMED until measured: the boards' side flat runs back to z −6.49 and the 330/210° stubs sit \~0.04" inside the side plane.
