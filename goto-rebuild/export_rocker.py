@@ -90,6 +90,32 @@ report["dims"] = {k: (round(G[k], 2) if isinstance(G[k], float) else G[k]) for k
 report["ev6_ok_under_23in"] = G["rocker_top"] <= 23.0
 report["bearing_lb_each"] = round(rocker.bearing_area_in2(G) * G["bearing_t"] * 0.0243, 2)
 
+# ---- drive modules (drive.py): arm plate DXFs (1/4" 6061, same parts on both axes), numbers, az sweep check
+import drive
+DOUT = os.path.join("out", "drive")
+os.makedirs(DOUT, exist_ok=True)
+for name, fl in drive.flats().items():
+    cq.exporters.export(fl["solid"].section(0.05 * IN), os.path.join(DOUT, f"{name}_x{fl['qty']}_quarter-inch-6061.dxf"))
+drep = drive.numbers()
+drep["arm_plates_lb_per_axis"] = drive.arm_lb()
+drep["arm_plate_size_in"] = drive._size()
+drep["holes_A"] = [(round(u, 3), round(w, 3), round(d, 3), k) for u, w, d, k in drive.arm_holes("A")]
+drep["holes_B"] = [(round(u, 3), round(w, 3), round(d, 3), k) for u, w, d, k in drive.arm_holes("B")]
+ground = {k: solids[k][0] for k in ("ground_board", "ground_ring", "feet", "az_ptfe")}
+azm = {k: s_ for k, (s_, _) in drive.module(G, "az").items() if "pinion" not in k}
+sweep = []
+for ang in range(0, 360, 20):
+    for mk, ms in azm.items():
+        r_ = ms.rotate((0, 0, 0), (0, 0, 1), ang)
+        for gk, gs in ground.items():
+            if bb_overlap(r_, gs) and r_.intersect(gs).val().Volume() / IN ** 3 > 0.002:
+                sweep.append((ang, mk, gk))
+drep["az_module_clears_ground_board_360"] = not sweep
+drep["az_sweep_clashes"] = sweep
+drep["pinion_lift_in"] = drive.LIFT
+report["drive"] = drep
+json.dump(drep, open(os.path.join(DOUT, "drive_report.json"), "w"), indent=1)
+
 # ---- cut layout on AltMill-sized blanks (shapely checks every placement)
 from shapely.geometry import Polygon, box as sbox
 from shapely import affinity

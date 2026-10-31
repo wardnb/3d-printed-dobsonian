@@ -115,7 +115,7 @@ def derive(P, R, swing, panel_x):
     G["cap_z"] = G["z_alt"] - R - 0.09 - G["pinion_pd"] / 2        # alt pinion axis, under the rim at theta = 0
     G["alt_head_angle"] = -50                                      # alt tape read head on the back horn
     G["lateral_stop_angle"] = G["pad_angle"] + 7                   # PTFE stop just ahead of the front pad
-    G["az_y"] = 8.5                                                # az drive station on the drive wall, front (clear of the 330 deg arm)
+    G["az_y"] = 6.0                                                # az pinion station (drive.py): the arm's tail stays outboard of the drive wall
     G["az_pinion_r"] = G["ring_od"] / 2 + 0.09 + G["pinion_pd"] / 2
     G["az_pinion_xy"] = (math.sqrt(G["az_pinion_r"] ** 2 - G["az_y"] ** 2), G["az_y"])
     G["az_ratio"] = ((G["ring_od"] / 2 + 0.06) / (G["pinion_pd"] / 2)) * 2
@@ -198,12 +198,11 @@ def wall_flat(G, drive, thick):
     h_edge = ha - G["arc_r"] * math.cos(math.radians(sa))
     holes += [(ys, h_edge - 2.0), (ys, h_edge - 1.0)]                                # lateral stop bracket
     if drive:
-        hc = G["cap_z"] - G["floor_top"]
-        holes += [(dy, hc - 2.8 + dz) for dy in (-1.3, 1.3) for dz in (0.0, 1.6)]    # alt drive arm
+        import drive
+        holes += [(y_, z_ - G["floor_top"]) for y_, z_ in drive.wall_holes(G)]       # alt base plate + az bracket leg
         yh = G["arc_r"] * math.sin(math.radians(G["alt_head_angle"]))
         hh = (G["h_horn"] + G["end_h"]) / 2
         holes += [(yh, hh - 1.6), (yh, hh - 0.6)]                                   # alt read head bracket
-        holes += [(G["az_y"] + dy, hz) for dy in (-0.9, 0.9) for hz in (1.6, 3.6)]  # az drive bracket
     else:
         holes += [(yb, hz) for yb in (4.5, 9.5) for hz in (1.5, 4.5)]               # electronics box (plain wall)
     for y, h in holes:
@@ -287,17 +286,11 @@ def build(G):
         part = leg.union(up)
         stops = part if stops is None else stops.union(part)
     S["lateral_stops"] = (stops, "ALU")
-    # ---- altitude drive (drive side): sprung pinion in the belt band, arm + GM9413 on the wall's outer face
-    b = G["bands"]["belt"]
+    # ---- drive modules (drive.py, 2026-10-31): the same swing arm on both axes, 2:1 pulleys drawn
+    import drive
+    for _ax in ("alt", "az"):
+        S.update(drive.module(G, _ax))
     xi = G["bearing_x_in"]
-    cz = G["cap_z"]
-    S["alt_pinion"] = (cyl_x(xi + b[0], b[1] - b[0], G["pinion_pd"] / 2, 0, cz), "ALU")
-    S["alt_pinion_shaft"] = (cyl_x(xi + b[1], G["wall_out"] + 1.0 - (xi + b[1]), 0.125, 0, cz), "ALU")
-    xa = G["wall_out"] + 0.3                                        # arm stands 0.06 off the bearing face
-    S["alt_arm"] = (box(xa + 0.125, 0, cz - 1.3, 0.25, 2.8, 4.4), "ALU")
-    S["alt_pulley_32T"] = (cyl_x(xa + 0.4, 0.5, 0.5, 0, cz), "BLACK")
-    S["alt_motor_GM9413"] = (cyl_x(xa + 0.4, 4.6, 0.8, 0, cz - 2.6), "MOTOR")
-    S["alt_pulley_16T"] = (cyl_x(xa + 0.4, 0.5, 0.25, 0, cz - 2.6), "BLACK")
     # alt tape read head on the back horn, over the tape band
     ha = math.radians(G["alt_head_angle"])
     yh, zh = (R + 0.4) * math.sin(ha), za - (R + 0.4) * math.cos(ha)
@@ -308,16 +301,7 @@ def build(G):
     z_lo = ft + h_br - 2.2
     bracket = box(G["wall_out"] + 0.125, y_br, (z_lo + zh) / 2, 0.25, 1.2, zh - z_lo)
     S["alt_read_head"] = (head.union(bracket), "ELEC")
-    # ---- azimuth drive on the drive wall, reaching the ground ring's rim
     px, py = G["az_pinion_xy"]
-    S["az_pinion"] = (cyl_z(G["ground_top"] - 0.36, 0.36, G["pinion_pd"] / 2, px, py), "ALU")
-    S["az_pinion_shaft"] = (cyl_z(G["ring_z0"] - 0.6, 1.6, 0.125, px, py), "ALU")
-    plate = box(G["wall_out"] + 0.125, py, (0.8 + ft + 4.6) / 2, 0.25, 2.6, ft + 4.6 - 0.8)
-    foot = box((G["wall_out"] + px + 1.9) / 2, py, G["floor_z0"] + 0.125, px + 1.9 - G["wall_out"], 2.6, 0.25)
-    S["az_bracket"] = (plate.union(foot), "ALU")
-    S["az_motor_GM9213"] = (cyl_z(G["floor_z0"] + 0.25, 4.6, 0.8, px + 1.25, py), "MOTOR")
-    S["az_pulley_32T"] = (cyl_z(G["ring_z0"] - 0.55, 0.4, 0.5, px, py), "BLACK")
-    S["az_pulley_16T"] = (cyl_z(G["ring_z0"] - 0.55, 0.4, 0.25, px + 1.25, py), "BLACK")
     # az tape read head beside the pinion, on the lower band
     phi = math.degrees(math.atan2(py, px)) + 7
     hx, hy = polar(G["ring_od"] / 2 + 0.3, phi)

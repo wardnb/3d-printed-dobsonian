@@ -115,6 +115,7 @@ Cage + quad spider 0.012 mm (unchanged at L = 12.5") with the v3 triangulated ca
   takes it to 0.044 (0.092 slipped). Since then the box side is meshed too (its own plane-stress part, glued edges fixed), which made the as-drawn
   case worse (0.25 at 15°, 0.49 slipped); the chosen back wing (`WING`, `WING_FASTENERS`) gives 0.058 (0.13 slipped). `python3 bearing_fe.py plots` redraws
   `out/bearing_fe/compare_windup.png`. Not modelled: out-of-plane (lateral) stiffness of the D/strip.
+- `drive.py` (2026-10-31): the drive module, identical on both axes: two 1/4" 6061 arm plates (A pinion side, B motor side, 6.22 × 1.96", 0.43 lb per pair) on three #10 standoffs, 0.80" apart; 8 mm jackshaft in two F608ZZ; 20T flangeless GT2 pinion; 16T on the motor (1/4" bore) to 32T (152 mm loop) or 48T (170 mm loop), both at c ≈ 52 mm, motor holes slotted ±0.1"; motor rides on the arm; 3/8" shoulder-bolt pivot 4.0" from the pinion ON the rim tangent (drive force passes through it); tail 1.3" behind the pinion: alt = compression spring under it (19 lb) + guide rod with an over-centre cam lever on top, az = extension spring to a post on the floor edge + cam pushing it out; lift 0.12" at the pinion (0.16" at the tail). Alt: base plate on the drive wall's outer face, arm plates outboard of the D (plate A 0.16" off its outer face), pinion through the wall notch, motor along +X to ~x 18.3. Az: pinion at y = 6.0 (`az_y`), arm toward −y on the rim tangent, bracket strip from the pivot to an angle on the wall, motor vertical above the arm. `numbers()`, `module(G, axis, ratio, engaged)`, `flats()`, `wall_holes(G)` (used by `rocker.wall_flat`). `export_rocker.py` writes `out/drive/` (arm DXFs, `drive_report.json` with the az 360° sweep check); arm plates are in `cut_plan.py`. ASSUMED: the GM9000 gearbox face screw pattern (two #6 at ±0.62"), motor 1.6" × 4.6". Brackets (alt base plate, az strip/leg, spring post, cam levers) are drawn as plain blocks; detail them once the parts are in hand.
 - `truss_joints.py`: joint detail (60° cone plugs bonded in the carbon poles, socket blocks with a spigot bonded into the
   45 mm stubs and two cups at ±0.8" on the tangent, pair blocks bonded to both poles with two dowels and one knob under
   the cage ring). Reads `out/params.json`; writes GLBs and STEPs to `out/truss_joints/`. Plug shank sized for a
@@ -158,6 +159,7 @@ Cage + quad spider 0.012 mm (unchanged at L = 12.5") with the v3 triangulated ca
 - [ ] Box side flats (for the D-bearing back wings): on both boards, how far the flat side edge runs back from the strip's back edge (model: to z −6.49 from the bearing axis, i.e. 4.99" past the strip), and how the existing strip is fixed to the boards (notched in? glued to the board edges?). Also confirm the 330/210° stubs sit ~0.04" inside the side plane.
 - [ ] ES HR coma corrector (if/when imaging with a rotator): measure the barrel shoulder to the M48 face (d). Superseded by L = 12.5" (see Focal plane): visual and camera share the same main-focuser position, and the worst case now has ≥ 12 mm of in-travel. Train within the 55 mm: ASI533 Pro 6.5 (ZWO figure, not re-checked) + ZWO OAG 16.5 (Nick's, confirmed 2026-10-31; 8×8 mm prism) + Falcon v2 16 + adapters ~3 ≈ 42 mm of the ~57 mm, ~15 mm spare;
       a 20 mm filter drawer does not fit (filter on the CC nose or in a thin M48 cell). Rotator goes before the OAG.
+- [ ] Pittman gearbox face: shaft diameter, pilot boss diameter, mounting screw size and pattern (both motors), and body length/diameter (drive arm plate B holes are ASSUMED)
 - [ ] FTF2015 base bolt circle and hole size
 - [ ] 3.5" secondary thickness when ordered
 - [ ] Mirror ROC from the Hubble test report (confirms f/3.9)
@@ -168,7 +170,6 @@ Cage + quad spider 0.012 mm (unchanged at L = 12.5") with the v3 triangulated ca
 
 Rocker and ground board drawn 2026-10-19 (`out/rocker/`). Before cutting: Nick to confirm the 15° minimum altitude (it sets the
 D's 3.6" chord offset and the 10.1" stand-off above the box; 20° would give 2.4"/8.9"), the pad angle, and tape the box's
-back outline (swing radius → wall height ±0.4"). Bracket parts themselves (sprung alt arm with the 2:1 stage, az bracket, read-head
-brackets, lateral stops) are drawn as envelopes only; detail them once the GT2 pulleys and read heads are in hand. Then socket
+back outline (swing radius → wall height ±0.4"). Drive arms drawn 2026-10-31 (`drive.py`); their brackets, the read-head brackets and the lateral stops are still blocks; detail them once the GT2 pulleys, springs and read heads are in hand. Then socket
 blocks and pair blocks (detail drawings + wedge fixture), push-pull cell conversion, electronics box layout, and a
 cage-on-truss combined FE once the weights are in.

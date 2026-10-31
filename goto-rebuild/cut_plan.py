@@ -48,6 +48,8 @@ PARTS = [
     ("Cell flotation triangle", "out/cell/cell_triangle_x3_quarter-inch-6061.dxf", 0.25, 3, "", False),
     ("Finder cradle bar", "out/upper_cage/finder_cradle_bar_quarter-inch-6061.dxf", 0.25, 1, "", False),
     ("Finder tilt plate", "out/upper_cage/finder_tilt_plate_quarter-inch-6061.dxf", 0.25, 1, "", False),
+    ("Drive arm plate A", "out/drive/drive_arm_plate_A_x2_quarter-inch-6061.dxf", 0.25, 2, "", False),
+    ("Drive arm plate B", "out/drive/drive_arm_plate_B_x2_quarter-inch-6061.dxf", 0.25, 2, "", False),
     ("Secondary carrier", "out/secondary_holder/carrier_quarter-inch-6061.dxf", 0.25, 1, "", False),
     ("Gluing jig bridge", "out/secondary_holder/jig_bridge_quarter-inch.dxf", 0.25, 1, "jig: any material", True),
     ("Cell frame", "out/cell/cell_frame_half-inch-6061-or-MIC6.dxf", 0.5, 1, "cast plate ideal; steel inserts for the 5/16-24 bolts", False),
