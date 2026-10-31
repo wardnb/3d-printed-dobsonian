@@ -20,10 +20,11 @@ for o in plan["options"]:
         s["stock"] = slim(s["stock"])
         for p in s["parts"]:
             p["rings"] = slim(p["rings"])
-for s in plan["half"]:
-    s["stock"] = slim(s["stock"])
-    for p in s["parts"]:
-        p["rings"] = slim(p["rings"])
+for o in plan["half"]:
+    for s in o["sheets"]:
+        s["stock"] = slim(s["stock"])
+        for p in s["parts"]:
+            p["rings"] = slim(p["rings"])
 
 BARS = [
     dict(id="sq34", stock="6061 square bar 3/4\" × 3/4\"", order="36\"", cuts="4 × 7.50\"", parts="Upper cage posts (spider studs through them)"),

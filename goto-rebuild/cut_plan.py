@@ -152,7 +152,7 @@ def run():
     sheetsB = []
     rest = small_q
     for nm, rp in (("lower", ring), ("upper", ring2)):
-        D = 21.25
+        D = 21.0
         stock = Point(D / 2, D / 2).buffer(D / 2, 128)
         off = (D - 2 * R) / 2
         rpl = affinity.translate(rp, off, off)
@@ -160,9 +160,9 @@ def run():
         pl, rest = place(inner, rest)
         pl = [dict(name=f"Upper cage ring ({nm})", poly=rpl)] + pl
         s = sheet(f"1/4\" circle {D}\" dia", stock, pl, 0.25, "circle")
-        s["edge_note"] = "0.37\" all round the ring: hold it with screws through the centre waste, not the rim"
+        s["edge_note"] = "0.25\" all round the ring: hold it with screws through the centre waste; check their circle tolerance is plus-only"
         sheetsB.append(s)
-    plan["options"].append(dict(key="B", title="Circle cuts: same nest on 21 1/4\" discs", sheets=sheetsB,
+    plan["options"].append(dict(key="B", title="Circle cuts: same nest on 21\" discs", sheets=sheetsB,
                                 leftover=[d["name"] for d in rest]))
     # ---- C) rings bought as rings + one small plate for everything else
     sheetsC = []
@@ -182,10 +182,11 @@ def run():
                                 sheets=sheetsC, leftover=[]))
 
     # ---- 1/2": the cell frame with the small 1/2" parts in its open spaces
+    from shapely import minimum_bounding_circle
     frame = [d for d in small_h if d["name"] == "Cell frame"][0]
     others = [d for d in small_h if d["name"] != "Cell frame"]
     fx, fy = frame["poly"].bounds[2], frame["poly"].bounds[3]
-    half = []
+    halfopts = []
     for wv, hv in ((17, 18), (18, 18), (18, 24)):
         stock = box(0, 0, wv, hv)
         if wv - 2 * EDGE < fx or hv - 2 * EDGE < fy:
@@ -193,13 +194,24 @@ def run():
         fpl = affinity.translate(frame["poly"], EDGE, EDGE)
         pl, rest = place(stock, others, fixed=[("Cell frame", fpl)])
         if not rest:
-            half.append(sheet(f"1/2\" plate {wv}\" × {hv}\"", stock, pl, 0.5, "square"))
+            halfopts.append(dict(key="R", title="Rectangle", sheets=[sheet(f"1/2\" plate {wv}\" × {hv}\"", stock, pl, 0.5, "square")]))
             break
-    plan["half"] = half
+    mc = minimum_bounding_circle(frame["poly"])
+    for D in (20.5, 21, 22, 24):
+        if mc.length / math.pi + 2 * EDGE > D:
+            continue
+        stock = Point(D / 2, D / 2).buffer(D / 2, 128)
+        c = mc.centroid
+        fpl = affinity.translate(frame["poly"], D / 2 - c.x, D / 2 - c.y)
+        pl, rest = place(stock, others, fixed=[("Cell frame", fpl)])
+        if not rest:
+            halfopts.append(dict(key="D", title="Circle cut", sheets=[sheet(f"1/2\" circle {D}\" dia", stock, pl, 0.5, "circle")]))
+            break
+    plan["half"] = halfopts
     json.dump(plan, open(os.path.join(OUT, "plan.json"), "w"))
     for o in plan["options"]:
         print(o["key"], [(s["label"], len(s["parts"]), s["lb"]) for s in o["sheets"]], "left:", o["leftover"])
-    print("1/2:", [(s["label"], len(s["parts"]), s["lb"]) for s in half])
+    print("1/2:", [(o["key"], s["label"], len(s["parts"]), s["lb"]) for o in plan["half"] for s in o["sheets"]])
 
 
 if __name__ == "__main__":
