@@ -482,6 +482,19 @@ Verdict: unlike the upper cage, the plywood box is not where collimation is lost
 
 Assumed: plywood E 1.3 Msi and panel shear 100 ksi, rings as an equivalent 1.8" circular section (the shield is wider at the back and the point), spacer wall 0.058", strip joints glued (screws at 20,000 lb/in made little difference), cell stud angles.
 
+**The mirror is glued to the cell (Nick, 2026-10-30).** So item 1 above stands: no sling. But the glue now carries gravity's sideways component in shear, and that number has a wide range until it's measured. The mirror shifts sideways from horizon to zenith by W / (9 G A / t), and a sideways shift of the primary moves its axis at the focal plane one for one.
+
+| RTV shear modulus | Dabs | Shift, horizon to zenith | After collimating at 45° |
+| --- | --- | --- | --- |
+| 90 psi (firm) | 1" dia, 1/16" thick | 0.06 mm | 0.04 mm |
+| 60 psi | 3/4", 1/16" | 0.15 mm | 0.11 mm |
+| 60 psi | 3/4", 1/8" | 0.31 mm | 0.22 mm |
+| 30 psi (soft) | 3/4", 1/8" | 0.61 mm | 0.43 mm |
+
+At the soft end it would be the largest single term in the scope. **Measure it before building anything.** With the box face-up, put a dial indicator on the cell triangle touching the mirror's edge at the bottom side, then roll the box onto that side: the reading is the horizon shift.
+
+**If it is over 0.1 mm, add two edge stops.** In an alt-az mount the sideways load only ever points one way, toward the tube's −z side (the back of the box at the horizon). Two one-sided stops can therefore take it without fighting the glue: at 210° and 330°, ±60° from straight down, which are also the two bottom cell corners after the cell is clocked to the stubs, and at the mirror's centre-of-gravity plane. Each is a short 6061 post on the cell triangle with a Delrin-tipped 10-32 screw, run in until it just touches the edge with the box face-up, then locked. A 1/2" post 1.2" tall is about 50,000 lb/in, so the shift drops to about 0.01–0.03 mm once the post's root in the ply is counted. Thermal: glass shrinks about 0.015 mm more than the ply over 20 °C, so a tiny gap opens in the cold, and nothing binds. The stops ride on the cell, so collimation moves them with the mirror.
+
 ## Bearings and drives review
 
 Verdict: the ratios and motors are right for the job; two layout changes make the drives slip-free and keep every cable off the azimuth axis. Both are now in the model and viewer (v17).

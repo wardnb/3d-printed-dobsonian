@@ -117,7 +117,7 @@ cage in the model, so these are for the record only; nothing in the rebuild depe
 | Mirror | Hubble sandwich, open edge: two glass plates with round glass spacer pucks visible between them | photo | confirmed |
 | Stack, top to bottom | mirror; a thin plywood disc about the mirror's diameter (the round plate with three openings seen from behind); the 3/4" ply triangle; springs on 1/4" studs through the mirror board | photo | confirmed |
 | Collimation studs | 1/4" (1/4-20 assumed) with compression springs | Nick, photo | confirmed, thread to check |
-| Bond | no silicone visible at the edge; Nick can't tell by hand whether the glass moves on the disc | photo, Nick | unresolved; settle it when the cell comes out for the push-pull conversion (lift the glass with the box face-up and a helper, or look for RTV blobs through the disc openings from behind) |
+| Bond | glued (Nick, 2026-10-30); earlier no silicone was visible at the edge | Nick | confirmed glued; dab size and thickness unknown, measure the shear with a dial indicator. Earlier note: settle it when the cell comes out for the push-pull conversion (lift the glass with the box face-up and a helper, or look for RTV blobs through the disc openings from behind) |
 | Pads | not visible; whether the disc sits on nine pads on the triangle or directly on it is unknown | | photo from below through the triangle |
 
 ## Effect on the model (dob_model.py re-run 2026-10-18 with the values above)
