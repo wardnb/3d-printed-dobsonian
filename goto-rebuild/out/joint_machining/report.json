@@ -1,0 +1,369 @@
+{
+ "socket_210_equals_330": true,
+ "stations": [
+  {
+   "station": "socket_point_L",
+   "part": "socket_point",
+   "kind": "cup",
+   "axis_in_block_t_u_r": [
+    0.1907,
+    0.9733,
+    -0.1276
+   ],
+   "tilt_deg": 13.27,
+   "lean_az_deg_from_t": -33.77,
+   "point_in_block_t_u_r": [
+    0.8,
+    1.0,
+    -0.0
+   ],
+   "fixture_tilt_deg": 13.266,
+   "block_rotation_deg": -56.23,
+   "feature_xyz_from_post_corner": [
+    4.0469,
+    4.0953,
+    1.4974
+   ],
+   "block_top_highest_z": 2.886,
+   "fixture_bottom_z": -2.198,
+   "gcode": "socket_point_L.nc",
+   "gcode_lines": 25783
+  },
+  {
+   "station": "socket_point_R",
+   "part": "socket_point",
+   "kind": "cup",
+   "axis_in_block_t_u_r": [
+    -0.1907,
+    0.9733,
+    -0.1276
+   ],
+   "tilt_deg": 13.27,
+   "lean_az_deg_from_t": -146.23,
+   "point_in_block_t_u_r": [
+    -0.8,
+    1.0,
+    0.0
+   ],
+   "fixture_tilt_deg": 13.266,
+   "block_rotation_deg": 56.23,
+   "feature_xyz_from_post_corner": [
+    3.1575,
+    4.0953,
+    1.4974
+   ],
+   "block_top_highest_z": 2.886,
+   "fixture_bottom_z": -2.198,
+   "gcode": "socket_point_R.nc",
+   "gcode_lines": 25783
+  },
+  {
+   "station": "socket_back_L",
+   "part": "socket_back",
+   "kind": "cup",
+   "axis_in_block_t_u_r": [
+    0.1905,
+    0.972,
+    -0.1374
+   ],
+   "tilt_deg": 13.59,
+   "lean_az_deg_from_t": -35.81,
+   "point_in_block_t_u_r": [
+    0.8,
+    1.0,
+    -0.0
+   ],
+   "fixture_tilt_deg": 13.585,
+   "block_rotation_deg": -54.19,
+   "feature_xyz_from_post_corner": [
+    4.1092,
+    4.1396,
+    1.4827
+   ],
+   "block_top_highest_z": 2.88,
+   "fixture_bottom_z": -2.226,
+   "gcode": "socket_back_L.nc",
+   "gcode_lines": 26005
+  },
+  {
+   "station": "socket_back_R",
+   "part": "socket_back",
+   "kind": "cup",
+   "axis_in_block_t_u_r": [
+    -0.1905,
+    0.972,
+    -0.1374
+   ],
+   "tilt_deg": 13.59,
+   "lean_az_deg_from_t": -144.19,
+   "point_in_block_t_u_r": [
+    -0.8,
+    1.0,
+    0.0
+   ],
+   "fixture_tilt_deg": 13.585,
+   "block_rotation_deg": 54.19,
+   "feature_xyz_from_post_corner": [
+    3.1731,
+    4.1396,
+    1.4827
+   ],
+   "block_top_highest_z": 2.88,
+   "fixture_bottom_z": -2.226,
+   "gcode": "socket_back_R.nc",
+   "gcode_lines": 26005
+  },
+  {
+   "station": "pair_30_L",
+   "part": "pair_30",
+   "kind": "bore",
+   "axis_in_block_t_u_r": [
+    -0.2143,
+    -0.972,
+    -0.0963
+   ],
+   "tilt_deg": 13.59,
+   "lean_az_deg_from_t": -155.81,
+   "point_in_block_t_u_r": [
+    -0.736,
+    -0.308,
+    0.029
+   ],
+   "fixture_tilt_deg": 13.585,
+   "block_rotation_deg": -245.81,
+   "feature_xyz_from_post_corner": [
+    3.5167,
+    3.4728,
+    -0.599
+   ],
+   "block_top_highest_z": 0.964,
+   "fixture_bottom_z": -2.149,
+   "gcode": "pair_30_L.nc",
+   "gcode_lines": 6652
+  },
+  {
+   "station": "pair_30_R",
+   "part": "pair_30",
+   "kind": "bore",
+   "axis_in_block_t_u_r": [
+    0.2058,
+    -0.9733,
+    -0.1014
+   ],
+   "tilt_deg": 13.27,
+   "lean_az_deg_from_t": -26.23,
+   "point_in_block_t_u_r": [
+    0.738,
+    -0.308,
+    0.03
+   ],
+   "fixture_tilt_deg": 13.266,
+   "block_rotation_deg": -116.23,
+   "feature_xyz_from_post_corner": [
+    2.8938,
+    3.4783,
+    -0.4302
+   ],
+   "block_top_highest_z": 1.13,
+   "fixture_bottom_z": -1.961,
+   "gcode": "pair_30_R.nc",
+   "gcode_lines": 6652
+  },
+  {
+   "station": "pair_150_L",
+   "part": "pair_150",
+   "kind": "bore",
+   "axis_in_block_t_u_r": [
+    -0.2058,
+    -0.9733,
+    -0.1014
+   ],
+   "tilt_deg": 13.27,
+   "lean_az_deg_from_t": -153.77,
+   "point_in_block_t_u_r": [
+    -0.738,
+    -0.308,
+    0.03
+   ],
+   "fixture_tilt_deg": 13.266,
+   "block_rotation_deg": -243.77,
+   "feature_xyz_from_post_corner": [
+    3.6009,
+    3.4783,
+    -0.5924
+   ],
+   "block_top_highest_z": 0.968,
+   "fixture_bottom_z": -2.123,
+   "gcode": "pair_150_L.nc",
+   "gcode_lines": 6652
+  },
+  {
+   "station": "pair_150_R",
+   "part": "pair_150",
+   "kind": "bore",
+   "axis_in_block_t_u_r": [
+    0.2143,
+    -0.972,
+    -0.0963
+   ],
+   "tilt_deg": 13.59,
+   "lean_az_deg_from_t": -24.19,
+   "point_in_block_t_u_r": [
+    0.736,
+    -0.308,
+    0.029
+   ],
+   "fixture_tilt_deg": 13.585,
+   "block_rotation_deg": -114.19,
+   "feature_xyz_from_post_corner": [
+    2.861,
+    3.4728,
+    -0.445
+   ],
+   "block_top_highest_z": 1.118,
+   "fixture_bottom_z": -1.995,
+   "gcode": "pair_150_R.nc",
+   "gcode_lines": 6652
+  },
+  {
+   "station": "pair_270_L",
+   "part": "pair_270",
+   "kind": "bore",
+   "axis_in_block_t_u_r": [
+    -0.2143,
+    -0.972,
+    -0.0963
+   ],
+   "tilt_deg": 13.59,
+   "lean_az_deg_from_t": -155.81,
+   "point_in_block_t_u_r": [
+    -0.736,
+    -0.308,
+    0.029
+   ],
+   "fixture_tilt_deg": 13.585,
+   "block_rotation_deg": -245.81,
+   "feature_xyz_from_post_corner": [
+    3.5167,
+    3.4728,
+    -0.599
+   ],
+   "block_top_highest_z": 0.964,
+   "fixture_bottom_z": -2.149,
+   "gcode": "pair_270_L.nc",
+   "gcode_lines": 6652
+  },
+  {
+   "station": "pair_270_R",
+   "part": "pair_270",
+   "kind": "bore",
+   "axis_in_block_t_u_r": [
+    0.2143,
+    -0.972,
+    -0.0963
+   ],
+   "tilt_deg": 13.59,
+   "lean_az_deg_from_t": -24.19,
+   "point_in_block_t_u_r": [
+    0.736,
+    -0.308,
+    0.029
+   ],
+   "fixture_tilt_deg": 13.585,
+   "block_rotation_deg": -114.19,
+   "feature_xyz_from_post_corner": [
+    2.861,
+    3.4728,
+    -0.445
+   ],
+   "block_top_highest_z": 1.118,
+   "fixture_bottom_z": -1.995,
+   "gcode": "pair_270_R.nc",
+   "gcode_lines": 6652
+  }
+ ],
+ "pair_top_face_holes_t_r_dia": {
+  "30": [
+   [
+    0,
+    -0.45,
+    0.281
+   ],
+   [
+    0,
+    0.35,
+    0.25
+   ],
+   [
+    -0.736,
+    0.029,
+    0.25
+   ],
+   [
+    0.738,
+    0.03,
+    0.25
+   ]
+  ],
+  "150": [
+   [
+    0,
+    -0.45,
+    0.281
+   ],
+   [
+    0,
+    0.35,
+    0.25
+   ],
+   [
+    -0.738,
+    0.03,
+    0.25
+   ],
+   [
+    0.736,
+    0.029,
+    0.25
+   ]
+  ],
+  "270": [
+   [
+    0,
+    -0.45,
+    0.281
+   ],
+   [
+    0,
+    0.35,
+    0.25
+   ],
+   [
+    -0.736,
+    0.029,
+    0.25
+   ],
+   [
+    0.736,
+    0.029,
+    0.25
+   ]
+  ]
+ },
+ "wedge_washer_max_thickness_in": 0.275,
+ "tube_bond_length_in": 1.33,
+ "ops": {
+  "socket block (x3: 1 point, 2 back), stock 2.0 x 4 flat bar cut 3.70 (faced to 3.6 t x 2.0 r x 3.6 u)": [
+   "Op1 vise: square the stock to 3.60 x 2.00 x 3.60",
+   "Op2 vise, outside (radial) face up: two wheel pockets 1.00 wide x 0.75 tall, 1.25 deep (socket_op2 DXF)",
+   "Op3/Op4 printed fixture, station L then R: 60 deg cup + 0.29 stud hole (.nc files, touch-plate zero on the post corner)",
+   "Op5 vise, underside up: pocket around the 1.569 spigot island, 1.50 deep (socket_op5 DXF); fit to the stub bore, bond with structural epoxy",
+   "Wedge washer x2 per block under the thumbwheels (wedge_washer STEP, 13.4 deg; flat-bottomed, key in the pocket)"
+  ],
+  "pair block (x3: 30, 150 mirror, 270), stock 2 x 2 square bar cut 3.70 (faced to 3.6 t x 1.6 r x 1.6 u)": [
+   "Op1 vise, top (ring) face up: 0.281 stud hole through at r -0.45, 1 x 1/4 dowel hole reamed 0.50 deep at r +0.35 (1/4 x 3/4 dowel; stud + dowel locate it, rotation slop \u00b10.6\u00b0 moves a node 0.008 in), 2 x 1/4 bond vents down to the bore floors (pair_<t> DXF)",
+   "Op2/Op3 printed fixture, block upside down, station L then R: 1.254 blind bore to the tube-end floor (.nc files)",
+   "Bond the tubes to the floor with a length jig (node-to-node 37.30 / 37.35)"
+  ]
+ }
+}

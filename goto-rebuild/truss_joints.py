@@ -47,7 +47,13 @@ BLOCK_T, BLOCK_R, BLOCK_H = 3.6, 2.0, 2.1      # socket block: tangential x radi
 # horizon (truss_fe), so the old side knob on a brass pad, which only locks by friction, could let a cone lift.
 STUD_D, STUD_BELOW = 0.25, 0.60                # stud dia, length past the cone apex
 WHEEL_D, WHEEL_T = 0.90, 0.30                  # knurled thumbwheel nut
-POCKET_H, POCKET_W, POCKET_TOP = 0.60, 1.0, 0.10   # pocket height (along y), tangential width, top below the apex
+POCKET_H, POCKET_W, POCKET_TOP = 0.75, 1.0, 0.10   # pocket height (along y), tangential width, top below the apex
+# the pocket ceiling is flat in the block but the stud leans ~13.4 deg: the thumbwheel bears on an aluminium wedge washer
+# (0.9" dia, 13.4 deg, keyed square in the pocket) so it seats square to the stud
+WEDGE_D, WEDGE_MIN = 0.9, 0.06
+# pair end (2026-10-31 detailing): the carbon tube runs 0.30" PAST the pair node into a blind bonded bore, so ~1.33" of
+# tube is bonded (it was 0.43": the tube stopped 0.6" short of the node); the bore floor locates the tube length
+TUBE_PAST_APEX = 0.30
 COLLAR_OD, COLLAR_W = 2.75, 0.55               # 45 mm two-piece shaft clamp collars, one each side of the box's top ring
 # board pin (2026-10-31): the stubs end flush with the mirror board's underside and a collar on top of the board would
 # hit the bearing wings, so each stub is also pinned at the mirror board by a 1/4" steel dowel drilled radially in from
@@ -56,6 +62,9 @@ COLLAR_OD, COLLAR_W = 2.75, 0.55               # 45 mm two-piece shaft clamp col
 PIN_D = 0.25
 PIN_EDGE_R = {90: 12.125, 210: 12.5, 330: 12.5}
 PAIR_T, PAIR_R, PAIR_H = 3.6, 1.6, 1.6         # pair block under the ring
+PAIR_STUD_R = -0.45                            # knob stud 0.45 inboard of the block centre: on the centre it broke into both bores
+PAIR_DOWEL_R = 0.35                            # one 1/4 dowel 0.35 outboard (t = 0), 0.5 deep; dowels at +/-1.35 t hit the bores' high rims
+PAIR_DOWEL = 0.0                               # (tangential position of the dowel)
 
 
 def v(*a):
@@ -140,7 +149,7 @@ def pole_parts(A, B, full_pole=True):
     plug = plug.union(cyl(POLE_OD / 2, SHOULDER_L, along(B, d_up, S_SHOULDER), d_up))
     plug = plug.union(cyl(BORE / 2 - 0.003, SHANK_L, along(B, d_up, S_SHOULDER + SHOULDER_L), d_up))
     tube_start = S_SHOULDER + SHOULDER_L
-    tube_len = (L - 0.6 - tube_start) if full_pole else 4.0
+    tube_len = (L + TUBE_PAST_APEX - tube_start) if full_pole else 4.0
     tube = cyl(POLE_OD / 2, tube_len, along(B, d_up, tube_start), d_up)
     tube = tube.cut(cyl(BORE / 2, tube_len, along(B, d_up, tube_start), d_up))
     return plug, tube, d_up
@@ -185,16 +194,17 @@ def pair_block(t):
     for side in (-1, +1):
         A, B = node_points(t, side)
         d_dn = cq.Vector(*[c - a for a, c in zip(A, B)]).normalized()
-        blk = blk.cut(cyl(POLE_OD / 2 + 0.002, 3.0, along(A, d_dn, -1.5), d_dn))   # bonded bore
+        blk = blk.cut(cyl(POLE_OD / 2 + 0.002, 3.0, along(A, d_dn, -TUBE_PAST_APEX), d_dn))   # blind bonded bore (floor = tube end)
+        fl = along(A, d_dn, -TUBE_PAST_APEX)
+        blk = blk.cut(cyl(0.125, 2.0, (fl[0], fl[1] - 0.05, fl[2]), (0, 1, 0)))              # 1/4" vertical vent from the floor up through the top
     # stud + knob under the block, two dowels into the ring
-    blk = blk.cut(cyl(0.14, PAIR_H + 1, (ax, Y_RING_LO + 0.5, az), (0, -1, 0)))
-    knob = cyl(0.125, PAIR_H + 0.9, (ax, Y_RING_LO + 0.3, az), (0, -1, 0)).union(
-        cyl(0.45, 0.5, (ax, Y_RING_LO - PAIR_H - 0.05, az), (0, -1, 0)))
-    dowels = None
-    for s in (-1, 1):
-        p = (ax + td[0] * 1.1 * s, Y_RING_LO - 0.6, az + td[2] * 1.1 * s)
-        dw = cyl(0.125, 1.0, p, (0, 1, 0))
-        dowels = dw if dowels is None else dowels.union(dw)
+    sx, sz = ax + rd[0] * PAIR_STUD_R, az + rd[2] * PAIR_STUD_R
+    blk = blk.cut(cyl(0.14, PAIR_H + 1, (sx, Y_RING_LO + 0.5, sz), (0, -1, 0)))
+    knob = cyl(0.125, PAIR_H + 0.9, (sx, Y_RING_LO + 0.3, sz), (0, -1, 0)).union(
+        cyl(0.45, 0.5, (sx, Y_RING_LO - PAIR_H - 0.05, sz), (0, -1, 0)))
+    p = (ax + rd[0] * PAIR_DOWEL_R, Y_RING_LO - 0.5, az + rd[2] * PAIR_DOWEL_R)
+    blk = blk.cut(cyl(0.125, 0.5, p, (0, 1, 0)))
+    dowels = cyl(0.125, 0.75, p, (0, 1, 0))
     return dict(block=blk, knob=knob, dowels=dowels)
 
 
@@ -323,8 +333,8 @@ def build_pair_detail(t=30):
     for side in (-1, 1):
         A, B = node_points(t, side)
         d_dn = cq.Vector(*[c - x for x, c in zip(A, B)]).normalized()
-        tube = cyl(POLE_OD / 2, 6.0, along(A, d_dn, -0.9), d_dn)
-        tube = tube.cut(cyl(BORE / 2, 6.0, along(A, d_dn, -0.9), d_dn))
+        tube = cyl(POLE_OD / 2, 6.0, along(A, d_dn, -TUBE_PAST_APEX), d_dn)
+        tube = tube.cut(cyl(BORE / 2, 6.0, along(A, d_dn, -TUBE_PAST_APEX), d_dn))
         a.add(tube, name=f"pole_{side}", color=CARBON)
     return a
 
@@ -342,7 +352,7 @@ if __name__ == "__main__":
     pole_parts(A, B)[0].val().exportStep(f"{out}/pole_plug.step")
     L = math.dist(*node_points(30, 1))
     lens = {f'{t}->{(t + 60 * s) % 360}': round(math.dist(*node_points(t, s)), 3) for t in TOPS for s in (-1, 1)}
-    print(json.dumps(dict(pole_node_to_node_in=round(L, 2), pole_lengths_in=lens, tube_len_in=round(L - 0.6 - S_SHOULDER - SHOULDER_L, 2),
+    print(json.dumps(dict(pole_node_to_node_in=round(L, 2), pole_lengths_in=lens, tube_len_in=round(L + TUBE_PAST_APEX - S_SHOULDER - SHOULDER_L, 2),
                           plug_nose_to_shoulder_in=round(S_SHOULDER - S_NOSE, 3), shank_od_in=round(BORE - 0.006, 3),
                           cup_depth_in=round(S_SHOULDER, 3), node_offset_in=NODE_OFF,
                           spigot_od_in=round(STUB_OD - 2 * STUB_WALL - 0.006, 3), stub_od_in=STUB_OD,

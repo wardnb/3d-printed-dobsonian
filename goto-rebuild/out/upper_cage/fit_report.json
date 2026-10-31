@@ -20,7 +20,7 @@
     -2.6
   ],
   "weights_lb": {
-    "ring_lower": 1.64,
+    "ring_lower": 1.63,
     "ring_upper": 1.72,
     "struts": 1.65,
     "diagonal_tubes": 0.56,
@@ -40,7 +40,7 @@
     9.27,
     9.27
   ],
-  "cage_metal_lb": 9.26,
+  "cage_metal_lb": 9.25,
   "finder_cradle": {
     "finder_axis_r": 13.42,
     "plate_x": [

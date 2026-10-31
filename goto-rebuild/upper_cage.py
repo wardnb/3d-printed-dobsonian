@@ -32,6 +32,8 @@ T = I["plate"]
 R_IN, R_OUT = I["ring_id"] / 2, I["ring_od"] / 2
 R_BOLT = (R_IN + R_OUT) / 2          # 9.5"
 CLR_14 = 0.257                       # 1/4-20 clearance
+R_PAIR = 9.6                         # truss pair blocks centred at the model's truss_top_radius
+PAIR_DOWEL_R = 0.35                  # truss_joints.PAIR_DOWEL_R (one dowel, radial offset)
 TAP_14 = 0.201                       # 1/4-20 tap drill
 CLR_10 = 0.201                       # #10 clearance
 TAP_10 = 0.159                       # #10-32 tap drill
@@ -100,10 +102,15 @@ def ring_holes(kind):
             for d in (-0.35, 0.35):
                 x, z = pol(R_BOLT, a + math.degrees(d / R_BOLT))
                 h.append((x, z, CLR_14, "diagonal node 1/4-20"))
-        for a in APEX:                       # pair block: 2 bolts, tangential +/-0.5"
-            for d in (-0.5, 0.5):
-                x, z = pol(R_BOLT, a + math.degrees(d / R_BOLT))
-                h.append((x, z, CLR_14, "pair connector 1/4-20"))
+        for a in APEX:                       # truss pair block (truss_joints.pair_block): centre stud + two reamed dowels
+            x, z = pol(R_PAIR - 0.45, a)
+            h.append((x, z, CLR_14, "pair block 1/4-20 stud (knob underneath), 0.45 inboard"))
+            x, z = pol(R_PAIR + PAIR_DOWEL_R, a)
+            h.append((x, z, 0.250, "pair block 1/4 dowel, ream"))
+            if a in DIAG_LO:                 # 270: the diagonal node block sits on top here, own bolts at +/-0.5
+                for d in (-0.5, 0.5):
+                    x, z = pol(R_BOLT, a + math.degrees(d / R_BOLT))
+                    h.append((x, z, CLR_14, "diagonal node 1/4-20"))
     else:
         for a in sorted(set(TOPS) | set(QUAD)):   # spider block seats: curved (0/120/240) + quad (0/90/180/270)
             for d in (-0.3, 0.3):
