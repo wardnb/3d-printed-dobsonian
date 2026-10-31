@@ -159,7 +159,7 @@ def run():
         inner = Point(D / 2, D / 2).buffer(R - 1.5, 128)
         pl, rest = place(inner, rest)
         pl = [dict(name=f"Upper cage ring ({nm})", poly=rpl)] + pl
-        s = sheet(f"1/4\" circle {D}\" dia", stock, pl, 0.25, "circle")
+        s = sheet(f"1/4\" circle {D:g}\" dia", stock, pl, 0.25, "circle")
         s["edge_note"] = "0.25\" all round the ring: hold it with screws through the centre waste; check their circle tolerance is plus-only"
         sheetsB.append(s)
     plan["options"].append(dict(key="B", title="Circle cuts: same nest on 21\" discs", sheets=sheetsB,

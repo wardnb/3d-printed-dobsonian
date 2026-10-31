@@ -97,6 +97,7 @@ td small { display: block; color: var(--muted); font-size: 12.5px; }
 .qty input { width: 5ch; font: 14px var(--f-mono); padding: 4px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--bg); color: var(--ink); text-align: right; }
 .qty { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-mono); white-space: nowrap; }
 .qty small { display: inline; font-size: 12px; color: var(--muted); }
+.seen { display: block; margin-top: 3px; font: 11.5px var(--f-mono); color: var(--muted); }
 .price input { width: 7.5ch; font: 14px var(--f-mono); padding: 4px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--bg); color: var(--ink); text-align: right; }
 .price input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .line-total { font-family: var(--f-mono); white-space: nowrap; }
@@ -151,7 +152,7 @@ td small { display: block; color: var(--muted); font-size: 12.5px; }
       <h3>Ordering notes</h3>
       <ul>
         <li><b>Plate type:</b> ATP-5 or MIC-6 cast plate suits the rings, the focuser board and the cell frame, since it stays flat when the slots and pockets come out. Rolled 6061-T6 works everywhere. Stiffness is the same.</li>
-        <li><b>Circles beat rings on price</b> at every thickness at Midwest, so option B is the default. A 21″ disc leaves 0.25″ round the ring: hold it with screws through the centre waste, cut the ring's OD last, and check that their circle tolerance is plus-only.</li>
+        <li><b>Circles beat rings and squares on price</b> at Midwest (1/4″ cast: $144.54 per 21¼″ disc against $170.74 per 21½″ square), so option B is the default. Their standard cut tolerance is −0.00″/+0.125″, so a 21″ disc is safe: it leaves at least 0.25″ round the ring. Hold it with screws through the centre waste and cut the ring's OD last.</li>
         <li><b>Rings (option C):</b> if you ever buy rings, ask for at least 21″ OD and at most 17.25″ ID and machine both edges to 20.50″ / 17.50″.</li>
         <li><b>Spare discs:</b> extra circles from a quantity break are useful stock: the second 1/4″ disc's 17″ centre and any extra 1/2″ disc can hold later brackets (alt drive arm, read-head mounts, electronics plate).</li>
         <li><b>1/2″ plate:</b> for the cell frame, put steel thread inserts in the three 5/16-24 bolt holes if the frame is cast plate.</li>
@@ -169,8 +170,12 @@ const store = {
 };
 const prices = store.get("prices") || {};
 const qtys = store.get("qtys") || {};
+for (const [id, [p, q]] of Object.entries(DATA.seen || {})) {
+  if (!(id in prices)) prices[id] = p;
+  if (!(id in qtys)) qtys[id] = q;
+}
 let choice = store.get("choice") || "B";
-let halfChoice = store.get("halfChoice") || "D";
+let halfChoice = store.get("halfChoice") || "R";
 
 const fmt = v => "$" + v.toFixed(2);
 function svgFor(sheet) {
@@ -196,7 +201,8 @@ function qtyCell(id, need) {
 }
 function priceCell(id) {
   const v = prices[id] ?? "";
-  return `<span class="price">$<input id="p-${id}" data-id="${id}" inputmode="decimal" value="${v}" aria-label="Unit price"></span>`;
+  const seen = (DATA.seen || {})[id];
+  return `<span class="price">$<input id="p-${id}" data-id="${id}" inputmode="decimal" value="${v}" aria-label="Unit price"></span>` + (seen ? `<small class="seen">Midwest, 31 Oct: ${seen[2]}</small>` : "");
 }
 function sheetFigure(s) {
   const pct = Math.round(100 * s.used_area / s.stock_area);

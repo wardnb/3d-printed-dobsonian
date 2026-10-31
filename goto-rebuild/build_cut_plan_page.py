@@ -17,6 +17,7 @@ def slim(rings):
 
 for o in plan["options"]:
     for s in o["sheets"]:
+        s["label"] = s["label"].replace('.0"', '"')
         s["stock"] = slim(s["stock"])
         for p in s["parts"]:
             p["rings"] = slim(p["rings"])
@@ -52,11 +53,17 @@ def inch(o):
     if isinstance(o, list):
         return [inch(x) for x in o]
     if isinstance(o, dict):
-        return {k: inch(v) for k, v in o.items()}
+        return {inch(k): inch(v) for k, v in o.items()}
     return o
 
 
-data = inch(dict(plan=plan, bars=BARS, other=OTHER))
+# prices Nick saw at Midwest Steel Supply (cast tool & jig plate), 2026-10-31; keys = page line ids
+SEEN = {
+    'A:1/4" plate 21.5" × 21.5"': ["170.74", "2", "$170.74 each at 2, $168.24 at 3"],
+    'B:1/4" circle 21" dia': ["144.54", "2", "$144.54 each at 2 (21.25\" quoted), $142.04 at 3"],
+    'HR:1/2" plate 17" × 18"': ["148.41", "1", "$148.41 for 1, $140.91 each at 2"],
+}
+data = inch(dict(plan=plan, bars=BARS, other=OTHER, seen=SEEN))
 tpl = open("site_cutplan/template.html").read()
 html = tpl.replace("/*__DATA__*/null", json.dumps(data, separators=(",", ":")))
 os.makedirs("out/cut_plan", exist_ok=True)
