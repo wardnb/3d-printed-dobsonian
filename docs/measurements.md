@@ -187,7 +187,7 @@ model frame: bearings on 0/180°, point hole at 90°.
 
 | Item | Value | How | Status |
 | --- | --- | --- | --- |
-| Mirror support | the sandwich sits on the 3/4" Baltic birch triangle's pads with a thin dark layer between (glue, possibly over a felt or rubber pad); Nick: the mirror is glued | close-up photo, Nick | confirmed glued; layer thickness and pad area to measure |
+| Mirror support | the sandwich sits on the 3/4" Baltic birch triangle's pads with a thin dark layer between (glue, possibly over a felt or rubber pad); Nick: the mirror is glued | close-up photo, Nick | confirmed: the glue is the ONLY attachment (no clips, no edge stops, no sling; Nick 2026-10-30); layer thickness and pad area to measure |
 | What the back shows | the light birch "disc" seen through the mirror board's round opening is the cell triangle with three round cooling holes (the glass back shows through them) | photo | confirmed |
 | Collimation | three 1/4" studs from the triangle corners down through holes in the mirror board, each with a stack of coil springs (about 1" tall) between the triangle and the board, a washer on the board, and a three-lobe wing knob on the back | photos | confirmed |
 | Sideways location of the cell | nothing but knob/washer friction and stud bending; the stud's clearance in the board hole decides how far the cell can shift at the horizon | photos | to measure: hole diameter vs stud |
