@@ -53,6 +53,10 @@ def derive(P, R, swing, panel_x):
     G["rim_w"] = 2.6                                           # running rim width (radial)
     G["bar_w"] = 1.2                                           # bar along the straight edge
     G["web_w"] = 3.0                                           # vertical web on the box's side strip
+    # box side the D bolts to: the existing 3" strip (z +/-1.5) + a new 18 mm back wing between the boards (2026-10-31)
+    G["box_inside_h"] = P["mcage_height"] - 2 * ply            # 11.38 (measured 11 3/8)
+    G["wing_z"] = (-6.4, -1.5)                                 # to the end of the boards' side flat (z -6.49, ASSUMED)
+    G["wing_notch"] = (-6.4, -4.1, 0.70)                       # clears the 330/210 deg stub's lower collar (2.75" OD)
     # drive-side rim bands, inboard -> outboard (x from the inner face)
     bands = [("bare", 0.15), ("belt", 0.36), ("ebony", 0.64), ("tape", 0.26)]
     x = 0.0
@@ -122,10 +126,23 @@ def derive(P, R, swing, panel_x):
 
 
 # --------------------------------------------------------------------------
+# D-to-box joint (2026-10-31, bearing_fe.py): the D bolts to the box side = the existing 3" strip + a new 18 mm back
+# wing (z -6.4 .. -1.5, between the boards). Tube-frame (y, z, dia, kind). Dowels: 3/8 steel pins pressed into the D,
+# running in 3/8 ID x 1/2 OD steel drill bushings set blind in the panel. Bolts: 1/4-20 into threaded inserts in the
+# panel (drill the panel through the D as a template). See bearing_fe.WING_FASTENERS for the FE copy.
+def _rim_y(z, r=12.7):
+    return -math.sqrt(r * r - z * z)
+
+
+BEARING_HOLES = [(_rim_y(-5.6), -5.6, 0.375, "dowel"), (-7.0, 0.9, 0.375, "dowel"),
+                 (-7.2, -0.9, 0.26, "bolt"), (-10.0, 0.9, 0.26, "bolt"), (-10.0, -0.9, 0.26, "bolt"),
+                 (-12.6, -1.0, 0.26, "bolt"), (-13.2, 0.9, 0.26, "bolt"), (_rim_y(-3.8), -3.8, 0.26, "bolt")]
+
+
 def bearing_outline(G, thick=None):
     """D bearing in the TUBE frame on a YZ workplane (local (Y, Z)): arc toward -Y (mirror), straight edge at
     y = +chord_e, rim + bar + a web at z = 0 that lands on the box's side strip; two lightening windows;
-    two 3/8 dowel and two 1/4 bolt holes in the web. Extruded +X from x = 0."""
+    the dowel and bolt holes of BEARING_HOLES. Extruded +X from x = 0."""
     R, e, t = G["R"], G["chord_e"], (thick or G["bearing_t"])
     c = math.sqrt(R ** 2 - e ** 2)
     outer = (cq.Workplane("YZ").moveTo(e * IN, -c * IN).threePointArc((-R * IN, 0), (e * IN, c * IN))
@@ -137,8 +154,7 @@ def bearing_outline(G, thick=None):
                                           sz * (r_in + G["web_w"] / 2) / 2 * IN)
                 .rect((r_in + e - G["bar_w"]) * IN, (r_in - G["web_w"] / 2) * IN).extrude(t * IN))
         outer = outer.cut(win.intersect(clip))
-    holes = [(-8.4, 0, 0.375), (-13.2, 0, 0.375), (-10.8, 0.9, 0.26), (-10.8, -0.9, 0.26)]
-    for y, z, d in holes:
+    for y, z, d, _k in BEARING_HOLES:
         outer = outer.cut(cq.Workplane("YZ").center(y * IN, z * IN).circle(d / 2 * IN).extrude(t * IN))
     return outer
 
@@ -344,7 +360,22 @@ def build(G):
     bl = bl.rotate((0, 0, 0), (0, 1, 0), 90).translate((0, 0, 0.1 * IN))
     bl = cq.Workplane("XY").add(bl.val())          # re-home on XY so section()/DXF cut the flat, not the edge
     F["bearing_layer"] = dict(solid=bl, stock="18 mm Baltic birch", qty=4, size=(2 * R, R + G["chord_e"]))
+    F["box_side_wing"] = dict(solid=wing_flat(G), stock="18 mm Baltic birch", qty=2,
+                              size=(G["wing_z"][1] - G["wing_z"][0], G["box_inside_h"]))
     return S, F, dict(drive=holes_d, plain=holes_p)
+
+
+def wing_flat(G, thick=0.1):
+    """New back wing of the box side, as an XY flat: X = z (tube frame), Y = height above the mirror board's top face.
+    Glued to the strip's back edge and between the boards (Confirmat screws down through the top ring and up through
+    the mirror board at z -2.3 and -3.6, clear of the stub collar). The D's dowel bushing and insert holes are drilled
+    through the D as a template, so the flat carries only the outline; it is the same part for both sides (flip it)."""
+    z0, z1 = G["wing_z"]
+    h = G["box_inside_h"]
+    nz0, nz1, nd = G["wing_notch"]
+    pts = [(z0, 0), (z1, 0), (z1, h), (nz1, h), (nz1, h - nd), (z0, h - nd)]
+    return (cq.Workplane("XY").polyline([(a * IN, b * IN) for a, b in pts]).close().extrude(thick * IN)
+            .translate((-(z0 + z1) / 2 * IN, -h / 2 * IN, 0)))
 
 
 def _flat_floor(G):

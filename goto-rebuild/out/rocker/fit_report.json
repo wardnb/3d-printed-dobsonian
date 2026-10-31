@@ -108,6 +108,17 @@
       "stock": "18 mm Baltic birch",
       "dxf": "bearing_layer_18mm-birch.dxf",
       "fits_altmill": true
+    },
+    {
+      "part": "box_side_wing",
+      "qty": 2,
+      "size_in": [
+        4.9,
+        11.38
+      ],
+      "stock": "18 mm Baltic birch",
+      "dxf": "box_side_wing_18mm-birch.dxf",
+      "fits_altmill": true
     }
   ],
   "all_parts_fit_altmill_2x4": true,
@@ -212,7 +223,7 @@
     "cap_z": 11.53
   },
   "ev6_ok_under_23in": true,
-  "bearing_lb_each": 6.56,
+  "bearing_lb_each": 6.55,
   "blanks": [
     {
       "blank": "bearing 1 (+ ends, hub)",
@@ -230,13 +241,15 @@
       "fits_altmill": true
     },
     {
-      "blank": "bearing 2",
+      "blank": "bearing 2 (+ box wings)",
       "size_in": [
         48.0,
         24.4
       ],
       "parts": [
-        "bearing_layer"
+        "bearing_layer",
+        "box_side_wing",
+        "box_side_wing"
       ],
       "inside_margin": true,
       "fits_altmill": true

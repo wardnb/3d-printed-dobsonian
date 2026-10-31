@@ -127,7 +127,7 @@ Lw, s_wall = G["L"], 13.0                   # the second wall nests inverted, sh
 LAYOUT = {
     "bearing 1 (+ ends, hub)": (BLANK, [("bearing_layer", 0.5, 0.5, 0), ("rocker_end", 29.5, 0.5, 90), ("rocker_end", 34.0, 0.5, 90),
                                         ("ground_hub", 38.5, 0.5, 0)]),
-    "bearing 2": (BLANK, [("bearing_layer", 0.5, 0.5, 0)]),
+    "bearing 2 (+ box wings)": (BLANK, [("bearing_layer", 0.5, 0.5, 0), ("box_side_wing", 29.5, 0.5, 0), ("box_side_wing", 35.0, 0.5, 0)]),
     "bearing 3": (BLANK, [("bearing_layer", 0.5, 0.5, 0)]),
     "bearing 4": (BLANK, [("bearing_layer", 0.5, 0.5, 0)]),
     "walls (+ arms)": (BLANK, [("rocker_wall_drive", 0.5, 0.5, 0), ("rocker_wall_plain", 0.5 + s_wall, BLANK[1] - 0.5 - G["h_horn"], 180),

@@ -282,6 +282,12 @@ mc = mc.union(shield_y(y_mcage_top - P["ply"], P["ply"], P["mcage_ring_id"] / 2)
 for sx in (-1, 1):                                                                       # bearing side strips
     mc = mc.union(box(sx * (panel_x + P["ply"] / 2), (y_mcage_top + y_mcage_bot) / 2, 0,
                       P["ply"], y_mcage_top - y_mcage_bot, 3.0))
+    # new back wing between the boards (2026-10-31, bearing_fe.py): widens the box side the D bolts to
+    wz0, wz1 = G["wing_z"]; nz0, nz1, nd_ = G["wing_notch"]
+    yb_, yt_ = y_mcage_bot + P["ply"], y_mcage_top - P["ply"]
+    wing = box(sx * (panel_x + P["ply"] / 2), (yb_ + yt_) / 2, (wz0 + wz1) / 2, P["ply"], yt_ - yb_, wz1 - wz0)
+    wing = wing.cut(box(sx * (panel_x + P["ply"] / 2), yt_ - nd_ / 2 + 0.05, (nz0 + nz1) / 2 - 0.05, P["ply"] + 0.1, nd_ + 0.1, nz1 - nz0 + 0.1))
+    mc = mc.union(wing)
 tubes = None
 for a in P["mcage_spacer_angles"]:                                                       # seven short tubes
     x, z = polar(mc_r - 0.8, a)

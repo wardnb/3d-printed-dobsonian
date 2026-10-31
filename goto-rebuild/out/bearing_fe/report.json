@@ -1,278 +1,314 @@
 {
- "clamped": [
-  {
-   "alt": 15,
-   "grav_pinion_as": 70.79370734159777,
-   "grav_encoder_as": 20.548703281549347,
-   "drive_pinion_as_per_inlb": 0.16829180626845985,
-   "drive_encoder_as_per_inlb": 0.05460290019722621,
-   "fastener_max_lb": 144.07041896265252
-  },
-  {
-   "alt": 30,
-   "grav_pinion_as": 49.784512110565835,
-   "grav_encoder_as": 13.040389254088312,
-   "drive_pinion_as_per_inlb": 0.10133353640167483,
-   "drive_encoder_as_per_inlb": 0.028498287287869937,
-   "fastener_max_lb": 136.42031520490988
-  },
-  {
-   "alt": 45,
-   "grav_pinion_as": 30.610899707475145,
-   "grav_encoder_as": 9.263073995080969,
-   "drive_pinion_as_per_inlb": 0.05758093895575502,
-   "drive_encoder_as_per_inlb": 0.01848694208840935,
-   "fastener_max_lb": 116.85909668952705
-  },
-  {
-   "alt": 60,
-   "grav_pinion_as": 16.44462738609364,
-   "grav_encoder_as": 8.527315090779561,
-   "drive_pinion_as_per_inlb": 0.030471586163515356,
-   "drive_encoder_as_per_inlb": 0.0165794907132507,
-   "fastener_max_lb": 87.901200217657
-  },
-  {
-   "alt": 75,
-   "grav_pinion_as": 6.622419623698281,
-   "grav_encoder_as": 4.9946447686787465,
-   "drive_pinion_as_per_inlb": 0.01670698763870043,
-   "drive_encoder_as_per_inlb": 0.01690900445860553,
-   "fastener_max_lb": 54.39672799273697
-  },
-  {
-   "alt": 90,
-   "grav_pinion_as": -0.0049242368568606955,
-   "grav_encoder_as": -6.8271030382713125,
-   "drive_pinion_as_per_inlb": 0.012502181531770044,
-   "drive_encoder_as_per_inlb": 0.020173550875418927,
-   "fastener_max_lb": 18.071706423960176
-  }
- ],
- "dowels_only": [
-  {
-   "alt": 15,
-   "grav_pinion_as": 173.11952991280032,
-   "grav_encoder_as": 52.13246400345454,
-   "drive_pinion_as_per_inlb": 0.3861857619038306,
-   "drive_encoder_as_per_inlb": 0.1336352189369037,
-   "fastener_max_lb": 96.59611371183317
-  },
-  {
-   "alt": 30,
-   "grav_pinion_as": 120.9214076332292,
-   "grav_encoder_as": 33.723821356552286,
-   "drive_pinion_as_per_inlb": 0.23136935574383136,
-   "drive_encoder_as_per_inlb": 0.07730907732666878,
-   "fastener_max_lb": 88.49010054340451
-  },
-  {
-   "alt": 45,
-   "grav_pinion_as": 72.93827332004679,
-   "grav_encoder_as": 24.271322271750336,
-   "drive_pinion_as_per_inlb": 0.1313841572870893,
-   "drive_encoder_as_per_inlb": 0.05445828593555925,
-   "fastener_max_lb": 72.99819237067399
-  },
-  {
-   "alt": 60,
-   "grav_pinion_as": 37.239604159204895,
-   "grav_encoder_as": 20.41138871680306,
-   "drive_pinion_as_per_inlb": 0.07292328718608393,
-   "drive_encoder_as_per_inlb": 0.048441640427236934,
-   "fastener_max_lb": 53.132406442387506
-  },
-  {
-   "alt": 75,
-   "grav_pinion_as": 14.303520997272066,
-   "grav_encoder_as": 11.777786478370103,
-   "drive_pinion_as_per_inlb": 0.04475469821887242,
-   "drive_encoder_as_per_inlb": 0.04946442782656514,
-   "fastener_max_lb": 31.92559699716258
-  },
-  {
-   "alt": 90,
-   "grav_pinion_as": -0.0039053416377561063,
-   "grav_encoder_as": -11.815211053277157,
-   "drive_pinion_as_per_inlb": 0.03720970767403199,
-   "drive_encoder_as_per_inlb": 0.059410780808496544,
-   "fastener_max_lb": 18.68781738369035
-  }
- ],
- "wood_only": [
-  {
-   "alt": 15,
-   "grav_pinion_as": 32.578411699240185,
-   "grav_encoder_as": 6.187158527560309,
-   "drive_pinion_as_per_inlb": 0.0798757378979492,
-   "drive_encoder_as_per_inlb": 0.018566141626474977,
-   "fastener_max_lb": 92.47942360652722
-  },
-  {
-   "alt": 30,
-   "grav_pinion_as": 22.115639239023807,
-   "grav_encoder_as": 2.0170767058434453,
-   "drive_pinion_as_per_inlb": 0.04713397036507815,
-   "drive_encoder_as_per_inlb": 0.004794077381229161,
-   "fastener_max_lb": 90.21027344023474
-  },
-  {
-   "alt": 45,
-   "grav_pinion_as": 13.622741021667428,
-   "grav_encoder_as": 0.590058009436637,
-   "drive_pinion_as_per_inlb": 0.026193500042998363,
-   "drive_encoder_as_per_inlb": 0.000986155498294127,
-   "fastener_max_lb": 80.35663560536558
-  },
-  {
-   "alt": 60,
-   "grav_pinion_as": 7.110133380828176,
-   "grav_encoder_as": 0.973985354440457,
-   "drive_pinion_as_per_inlb": 0.01193065507831324,
-   "drive_encoder_as_per_inlb": 0.0009111335555083009,
-   "fastener_max_lb": 55.86241130127948
-  },
-  {
-   "alt": 75,
-   "grav_pinion_as": 2.4153233835692656,
-   "grav_encoder_as": -0.3802794685837202,
-   "drive_pinion_as_per_inlb": 0.00418799593485314,
-   "drive_encoder_as_per_inlb": 0.0008783002609523324,
-   "fastener_max_lb": 43.449426780851674
-  },
-  {
-   "alt": 90,
-   "grav_pinion_as": -0.0010822729139394252,
-   "grav_encoder_as": -6.416588226039362,
-   "drive_pinion_as_per_inlb": 0.0022861022903038985,
-   "drive_encoder_as_per_inlb": 0.0014164345476663717,
-   "fastener_max_lb": 24.883104775088846
-  }
- ],
- "spread_slipped": [
-  {
-   "alt": 15,
-   "grav_pinion_as": 85.83829931550062,
-   "grav_encoder_as": 24.443148595250545,
-   "drive_pinion_as_per_inlb": 0.22116369423000384,
-   "drive_encoder_as_per_inlb": 0.08153541962267183,
-   "fastener_max_lb": 65.80366044857271
-  },
-  {
-   "alt": 30,
-   "grav_pinion_as": 62.05692950258054,
-   "grav_encoder_as": 14.818288978631927,
-   "drive_pinion_as_per_inlb": 0.14013980271819332,
-   "drive_encoder_as_per_inlb": 0.048618304721695635,
-   "fastener_max_lb": 60.55560301061746
-  },
-  {
-   "alt": 45,
-   "grav_pinion_as": 39.046985823035676,
-   "grav_encoder_as": 9.414469859457755,
-   "drive_pinion_as_per_inlb": 0.08604810897911276,
-   "drive_encoder_as_per_inlb": 0.03510301125556362,
-   "fastener_max_lb": 50.57156458231604
-  },
-  {
-   "alt": 60,
-   "grav_pinion_as": 20.850195331024928,
-   "grav_encoder_as": 7.381682898388524,
-   "drive_pinion_as_per_inlb": 0.05227302296585344,
-   "drive_encoder_as_per_inlb": 0.032312620300886066,
-   "fastener_max_lb": 37.92388705991296
-  },
-  {
-   "alt": 75,
-   "grav_pinion_as": 8.245484955415941,
-   "grav_encoder_as": 2.027124475464981,
-   "drive_pinion_as_per_inlb": 0.03485087430911073,
-   "drive_encoder_as_per_inlb": 0.032805563421749444,
-   "fastener_max_lb": 25.418065713360704
-  },
-  {
-   "alt": 90,
-   "grav_pinion_as": -0.0002809500692117091,
-   "grav_encoder_as": -11.975520282533639,
-   "drive_pinion_as_per_inlb": 0.02940153072463916,
-   "drive_encoder_as_per_inlb": 0.03771096993499863,
-   "fastener_max_lb": 18.678096558975327
-  }
- ],
- "spread_clamped": [
-  {
-   "alt": 15,
-   "grav_pinion_as": 40.548024959480536,
-   "grav_encoder_as": 10.973880549974627,
-   "drive_pinion_as_per_inlb": 0.10970817227335389,
-   "drive_encoder_as_per_inlb": 0.03395889293272236,
-   "fastener_max_lb": 66.80415137039793
-  },
-  {
-   "alt": 30,
-   "grav_pinion_as": 29.856019111994954,
-   "grav_encoder_as": 6.493574794210288,
-   "drive_pinion_as_per_inlb": 0.06785622673086661,
-   "drive_encoder_as_per_inlb": 0.015735804253621172,
-   "fastener_max_lb": 60.30870614974361
-  },
-  {
-   "alt": 45,
-   "grav_pinion_as": 19.297364364901178,
-   "grav_encoder_as": 4.164134252548823,
-   "drive_pinion_as_per_inlb": 0.039390853827866876,
-   "drive_encoder_as_per_inlb": 0.008881759089679836,
-   "fastener_max_lb": 49.51863518356962
-  },
-  {
-   "alt": 60,
-   "grav_pinion_as": 10.951704697621041,
-   "grav_encoder_as": 4.206393457430654,
-   "drive_pinion_as_per_inlb": 0.020454777295560615,
-   "drive_encoder_as_per_inlb": 0.008118240693675808,
-   "fastener_max_lb": 36.91280775697066
-  },
-  {
-   "alt": 75,
-   "grav_pinion_as": 4.560659227443547,
-   "grav_encoder_as": 1.8498887018176617,
-   "drive_pinion_as_per_inlb": 0.01029390668623035,
-   "drive_encoder_as_per_inlb": 0.008242740531478237,
-   "fastener_max_lb": 25.432265094449818
-  },
-  {
-   "alt": 90,
-   "grav_pinion_as": 0.002409139186746276,
-   "grav_encoder_as": -6.723802984875271,
-   "drive_pinion_as_per_inlb": 0.007046045026332272,
-   "drive_encoder_as_per_inlb": 0.009871363166669358,
-   "fastener_max_lb": 18.027943389301882
-  }
- ],
- "shock_3g_fastener_lb": [
-  [
-   "dowel",
-   -8.4,
-   0.0,
-   72.24898789851217
+ "as_drawn_clamped": {
+  "rows": [
+   {
+    "alt": 15,
+    "grav_pinion_as": 103.07265772123536,
+    "grav_encoder_as": 28.882402868417522,
+    "drive_pinion_as_per_inlb": 0.24641216032329663,
+    "drive_encoder_as_per_inlb": 0.0898107773818021,
+    "fastener_max_lb": 134.29177686964724
+   },
+   {
+    "alt": 30,
+    "grav_pinion_as": 71.38690836090682,
+    "grav_encoder_as": 18.033831582122414,
+    "drive_pinion_as_per_inlb": 0.15208149499166643,
+    "drive_encoder_as_per_inlb": 0.055642877412945095,
+    "fastener_max_lb": 127.352600547878
+   },
+   {
+    "alt": 45,
+    "grav_pinion_as": 42.5850191136234,
+    "grav_encoder_as": 12.896850697518085,
+    "drive_pinion_as_per_inlb": 0.09170594118992031,
+    "drive_encoder_as_per_inlb": 0.04282479841218326,
+    "fastener_max_lb": 109.22448680163487
+   },
+   {
+    "alt": 60,
+    "grav_pinion_as": 21.755324218436865,
+    "grav_encoder_as": 12.00104533974628,
+    "drive_pinion_as_per_inlb": 0.05613202794754734,
+    "drive_encoder_as_per_inlb": 0.0403148769653259,
+    "fastener_max_lb": 82.47908244794256
+   },
+   {
+    "alt": 75,
+    "grav_pinion_as": 8.34150804283363,
+    "grav_encoder_as": 7.783797683373358,
+    "drive_pinion_as_per_inlb": 0.038968497614067614,
+    "drive_encoder_as_per_inlb": 0.04071697612041796,
+    "fastener_max_lb": 51.33680547868887
+   },
+   {
+    "alt": 90,
+    "grav_pinion_as": 0.009753592099957504,
+    "grav_encoder_as": -7.201964879053673,
+    "drive_pinion_as_per_inlb": 0.034012127800143885,
+    "drive_encoder_as_per_inlb": 0.045050418661792165,
+    "fastener_max_lb": 17.353109373765683
+   }
   ],
-  [
-   "dowel",
-   -13.2,
-   0.0,
-   71.2234859635921
-  ],
-  [
-   "bolt",
-   -10.8,
-   0.9,
-   404.06608231631566
-  ],
-  [
-   "bolt",
-   -10.8,
-   -0.9,
-   432.2112568879587
+  "shock_3g_fastener_lb": [
+   [
+    "dowel",
+    -8.4,
+    0.0,
+    108.24541957271215
+   ],
+   [
+    "dowel",
+    -13.2,
+    0.0,
+    75.51655452501706
+   ],
+   [
+    "bolt",
+    -10.8,
+    0.9,
+    376.1323745136728
+   ],
+   [
+    "bolt",
+    -10.8,
+    -0.9,
+    402.8753306089279
+   ]
   ]
- ]
+ },
+ "as_drawn_slipped": {
+  "rows": [
+   {
+    "alt": 15,
+    "grav_pinion_as": 213.89875772696985,
+    "grav_encoder_as": 67.09606253078884,
+    "drive_pinion_as_per_inlb": 0.48774344621089155,
+    "drive_encoder_as_per_inlb": 0.18098764166574896,
+    "fastener_max_lb": 97.14482881391767
+   },
+   {
+    "alt": 30,
+    "grav_pinion_as": 149.72021050850842,
+    "grav_encoder_as": 44.663304226053924,
+    "drive_pinion_as_per_inlb": 0.2974918845679224,
+    "drive_encoder_as_per_inlb": 0.11202623766777205,
+    "fastener_max_lb": 89.0079354164728
+   },
+   {
+    "alt": 45,
+    "grav_pinion_as": 90.37322597773698,
+    "grav_encoder_as": 32.7657597751329,
+    "drive_pinion_as_per_inlb": 0.17446380004568932,
+    "drive_encoder_as_per_inlb": 0.08338123525523235,
+    "fastener_max_lb": 73.44306449435926
+   },
+   {
+    "alt": 60,
+    "grav_pinion_as": 46.26138969662444,
+    "grav_encoder_as": 27.442427256925033,
+    "drive_pinion_as_per_inlb": 0.10293987333212185,
+    "drive_encoder_as_per_inlb": 0.07545405279711608,
+    "fastener_max_lb": 53.47915529555403
+   },
+   {
+    "alt": 75,
+    "grav_pinion_as": 17.93234787918855,
+    "grav_encoder_as": 16.54140196150702,
+    "drive_pinion_as_per_inlb": 0.06861192816874577,
+    "drive_encoder_as_per_inlb": 0.07681200660055737,
+    "fastener_max_lb": 32.15157074656722
+   },
+   {
+    "alt": 90,
+    "grav_pinion_as": 0.018709164172172884,
+    "grav_encoder_as": -12.197510925290528,
+    "drive_pinion_as_per_inlb": 0.059304560415720124,
+    "drive_encoder_as_per_inlb": 0.08965136254819074,
+    "fastener_max_lb": 18.801656124194903
+   }
+  ],
+  "shock_3g_fastener_lb": [
+   [
+    "dowel",
+    -8.4,
+    0.0,
+    291.43448644175413
+   ],
+   [
+    "dowel",
+    -13.2,
+    0.0,
+    183.91216299078238
+   ]
+  ]
+ },
+ "wing_clamped": {
+  "rows": [
+   {
+    "alt": 15,
+    "grav_pinion_as": 24.487113081657693,
+    "grav_encoder_as": 3.3570609731247116,
+    "drive_pinion_as_per_inlb": 0.05798595880162692,
+    "drive_encoder_as_per_inlb": 0.01289343460238888,
+    "fastener_max_lb": 48.619417443382986
+   },
+   {
+    "alt": 30,
+    "grav_pinion_as": 14.491329030257862,
+    "grav_encoder_as": 0.7471806694702969,
+    "drive_pinion_as_per_inlb": 0.03425640617661892,
+    "drive_encoder_as_per_inlb": 0.006068008825454211,
+    "fastener_max_lb": 39.39870292704493
+   },
+   {
+    "alt": 45,
+    "grav_pinion_as": 8.239713945556653,
+    "grav_encoder_as": 0.5505926382351068,
+    "drive_pinion_as_per_inlb": 0.02074537633887282,
+    "drive_encoder_as_per_inlb": 0.005651086677657681,
+    "fastener_max_lb": 29.813650743102833
+   },
+   {
+    "alt": 60,
+    "grav_pinion_as": 3.9740379218143254,
+    "grav_encoder_as": 0.9958624174714061,
+    "drive_pinion_as_per_inlb": 0.011093835279944234,
+    "drive_encoder_as_per_inlb": 0.005777258985103774,
+    "fastener_max_lb": 21.176911207740716
+   },
+   {
+    "alt": 75,
+    "grav_pinion_as": 0.27010576449368545,
+    "grav_encoder_as": -1.5185160237344122,
+    "drive_pinion_as_per_inlb": 0.007477431994381111,
+    "drive_encoder_as_per_inlb": 0.006335970838573208,
+    "fastener_max_lb": 13.697099627615303
+   },
+   {
+    "alt": 90,
+    "grav_pinion_as": -1.1065115728757182,
+    "grav_encoder_as": -9.22570053977597,
+    "drive_pinion_as_per_inlb": 0.008335777622929834,
+    "drive_encoder_as_per_inlb": 0.008605372562021525,
+    "fastener_max_lb": 15.23184441140985
+   }
+  ],
+  "shock_3g_fastener_lb": [
+   [
+    "dowel",
+    -11.399,
+    -5.6,
+    36.25492981856441
+   ],
+   [
+    "dowel",
+    -7.0,
+    0.9,
+    23.632909741270574
+   ],
+   [
+    "bolt",
+    -7.2,
+    -0.9,
+    145.8582523301491
+   ],
+   [
+    "bolt",
+    -10.0,
+    0.9,
+    81.29086271335757
+   ],
+   [
+    "bolt",
+    -10.0,
+    -0.9,
+    6.512578138198027
+   ],
+   [
+    "bolt",
+    -12.6,
+    -1.0,
+    12.191195237049067
+   ],
+   [
+    "bolt",
+    -13.2,
+    0.9,
+    59.22261552844826
+   ],
+   [
+    "bolt",
+    -12.118,
+    -3.8,
+    59.9345413890605
+   ]
+  ]
+ },
+ "wing_slipped": {
+  "rows": [
+   {
+    "alt": 15,
+    "grav_pinion_as": 52.58485358808413,
+    "grav_encoder_as": 13.57380926295921,
+    "drive_pinion_as_per_inlb": 0.13280246950001315,
+    "drive_encoder_as_per_inlb": 0.054819760231153036,
+    "fastener_max_lb": 47.63005676798134
+   },
+   {
+    "alt": 30,
+    "grav_pinion_as": 32.72694441279107,
+    "grav_encoder_as": 9.162830186883651,
+    "drive_pinion_as_per_inlb": 0.08632492888988741,
+    "drive_encoder_as_per_inlb": 0.043491314663387876,
+    "fastener_max_lb": 37.79291119704284
+   },
+   {
+    "alt": 45,
+    "grav_pinion_as": 19.02181275049964,
+    "grav_encoder_as": 6.388594847879057,
+    "drive_pinion_as_per_inlb": 0.05911428137827792,
+    "drive_encoder_as_per_inlb": 0.040287034740133607,
+    "fastener_max_lb": 32.30078387209157
+   },
+   {
+    "alt": 60,
+    "grav_pinion_as": 8.157780580468804,
+    "grav_encoder_as": 2.649148605575866,
+    "drive_pinion_as_per_inlb": 0.04266744058057557,
+    "drive_encoder_as_per_inlb": 0.041016549857699765,
+    "fastener_max_lb": 26.57302114042099
+   },
+   {
+    "alt": 75,
+    "grav_pinion_as": -0.18703923651318047,
+    "grav_encoder_as": -7.077286935510299,
+    "drive_pinion_as_per_inlb": 0.03991957600267781,
+    "drive_encoder_as_per_inlb": 0.04751451342758743,
+    "fastener_max_lb": 20.29129201675315
+   },
+   {
+    "alt": 90,
+    "grav_pinion_as": -6.8837828115914155,
+    "grav_encoder_as": -25.684353879582545,
+    "drive_pinion_as_per_inlb": 0.044679637647657006,
+    "drive_encoder_as_per_inlb": 0.06153723805449907,
+    "fastener_max_lb": 28.15419715156219
+   }
+  ],
+  "shock_3g_fastener_lb": [
+   [
+    "dowel",
+    -11.399,
+    -5.6,
+    110.12215679413667
+   ],
+   [
+    "dowel",
+    -7.0,
+    0.9,
+    142.89017030394422
+   ]
+  ]
+ }
 }
