@@ -53,12 +53,14 @@ def pol(r, deg):
 
 
 def build(layout="pairs", od=1.0, wall=0.058, E=E_AL, G=G_AL, base="pinned", apex="rigid",
-          base_spring=None, n_seg=4, pole_dens=0.0975):
+          base_spring=None, n_seg=4, pole_dens=0.0975, mid_joint=None, mid_lb=0.0):
     """layout: 'pairs' (apex 0/120/240, bases at +/-30 from each apex: 6 base points) or
     'zigzag' (bases at +/-60: 3 shared base points, octahedral).
     base: 'pinned' (translations fixed, free to rotate) or 'clamped' (all 6 fixed).
     apex: 'rigid' (the pair block ties both poles and the cage rigidly) or 'pinned' (ball joints).
-    base_spring: lateral stiffness (lb/in) of each base clamp, None = rigid to the box."""
+    base_spring: lateral stiffness (lb/in) of each base clamp, None = rigid to the box.
+    mid_joint: (axial lb/in, bending lb-in/rad) of a splice at mid-length in every pole (two-piece poles),
+    None = one-piece poles; mid_lb = the splice hardware's weight."""
     fr = Frame()
     props, A = tube_props(od, wall, E, G)
     masses = []
@@ -101,6 +103,17 @@ def build(layout="pairs", od=1.0, wall=0.058, E=E_AL, G=G_AL, base="pinned", ape
                 fr.beam(prev, nd, props)
                 masses.append((nd, pole_dens * A * np.linalg.norm(p1 - p0) / n_seg))
                 prev = nd
+                if mid_joint is not None and abs(s - 0.5) < 1e-9:
+                    # splice: a 0.25" spring element whose EA/L = k_ax and EI/L = k_rot (shear-stiff)
+                    ka, kr = mid_joint
+                    Ls = 0.25
+                    u = (p1 - p0) / np.linalg.norm(p1 - p0)
+                    nd2 = fr.node(*(q + u * Ls))
+                    Ej = ka * Ls
+                    Ij = kr * Ls / Ej
+                    fr.beam(prev, nd2, dict(E=Ej, G=Ej, A=1.0, Iy=Ij, Iz=Ij, J=2 * Ij))
+                    masses.append((nd2, mid_lb))
+                    prev = nd2
     return fr, masses, dict(cage=cage, eyep=eyep, sec=sec)
 
 
@@ -137,6 +150,16 @@ def sweep(label, **kw):
 
 
 if __name__ == "__main__":
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "split":      # two-piece poles: splice stiffness study (2026-10-30)
+        C = dict(layout="zigzag", od=1.25, wall=0.062, E=15e6, G=1.0e6, pole_dens=0.057)
+        for base in (None, 20000):
+            print("base clamps:", base or "ideal")
+            sweep("  one-piece", base_spring=base, **C)
+            for ka, kr, lab in [(500000, 200000, "threaded coupler to a shoulder"), (100000, 50000, "bonded spigot + cross bolts"),
+                                (30000, 20000, "slip spigot + knob clamp"), (10000, 5000, "loose slip joint")]:
+                sweep(f"  split, {lab} ({ka // 1000}k)", base_spring=base, mid_joint=(ka, kr), mid_lb=0.12, **C)
+        sys.exit()
     print(f"apex y {Y_APEX:.1f}, base y {Y_BASE:.1f}, pole length {math.dist(pol(R_BOT,30)+(Y_BASE,), pol(R_TOP,0)+(Y_APEX,)):.1f} in")
     sweep("pairs, 1.0 x 0.058 Al, base pinned (as drawn)")
     sweep("pairs, 1.0 x 0.058 Al, base clamped", base="clamped")
