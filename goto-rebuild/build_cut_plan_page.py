@@ -47,6 +47,87 @@ OTHER = [
     dict(id="carbon", stock="Roll-wrapped carbon tube 1.25\" OD × 0.062\" wall", order="6 × 1 m (39.4\")", cuts="36.11\" ×2 and 36.16\" ×4", parts="Truss poles (carbon supplier, not Midwest)"),
 ]
 
+# Everything else to buy (2026-10-31). when: "now" = drawn and fixed; "measure" = wait for a measurement or the part it
+# fits; "test" = wait for the friction test; "later" = not designed yet. n = quantity the line total multiplies.
+def B(id, item, n, spec, when, src=""):
+    return dict(id="buy:" + id, item=item, n=n, spec=spec, when=when, src=src)
+
+
+BUY = [
+    dict(group="Truss and joints", items=[
+        B("turn", "Turning job: cone plugs + socket spigots", 1, "12 plugs + 3 spigots from the STEP files (pole_plug, socket_spigot), 6061. Plug shank is sized to a 1.126\" bore: send the measured carbon bore with the order", "measure", "local shop / Xometry"),
+        B("collar45", "45 mm two-piece shaft collar", 6, "Aluminium or steel clamp collar, 45 mm bore, ~2.75\" OD; one each side of the box's top ring on every stub", "now", "Ruland / McMaster"),
+        B("pin14x234", "Steel dowel pin 1/4\" × 2-3/4\"", 3, "Board pins, radial through the mirror board's edge and both stub walls", "now", "McMaster"),
+        B("pin14x34", "Steel dowel pin 1/4\" × 3/4\"", 3, "Pair block locating dowels (reamed 0.250\")", "now", "McMaster"),
+        B("stud14", "1/4-20 stainless stud, 1-1/2\" fully threaded", 8, "Drawbolts along the pole axis (6 + 2 spare); Loctite 0.6\" into the plug nose", "now", "McMaster"),
+        B("wheel14", "1/4-20 knurled thumb nut, ~0.9\" dia", 8, "Drawbolt thumbwheels (6 + 2 spare); ≤ 0.30\" thick to fit the 0.75\" pocket with its wedge washer", "now", "McMaster"),
+        B("knob14", "1/4-20 male-thread knob, 2-1/2\" stud", 3, "Pair block to cage ring, from below (check the stud length on the parts)", "now", "McMaster"),
+        B("shcs1474", "1/4-20 × 1-3/4\" SHCS", 3, "Spigot to socket block, from below", "now", "McMaster"),
+        B("rollpin", "1/8\" roll pin × 1\"", 8, "Keeps each thumbwheel captive across its pocket mouth", "now", "McMaster"),
+        B("epoxy", "Structural epoxy + gun + nozzles", 1, "3M DP420 or DP460 (50 ml cartridges, 2–3): plugs in poles, poles in pair blocks, spigots in blocks and stubs", "now", ""),
+    ]),
+    dict(group="Upper cage, spider, finder", items=[
+        B("cage14", "1/4-20 stainless FHCS / SHCS assortment", 1, "~24 screws: 8 ring-to-post, 6 diagonal node, 4 focuser rails, 3 focuser push-pull pairs; buy 5/8\" and 3/4\" lengths", "now", "McMaster / Bolt Depot"),
+        B("cage10", "#10-32 stainless assortment", 1, "~30: 4 vane tension studs (+ nuts, washers), 12 diagonal clevis pins/bolts with nyloc nuts, 6 clevis-to-post, 4 finder ring FHCS + cradle screws", "now", ""),
+        B("setscr", "#10-32 ball-point set screws", 6, "Finder tilt plate (3) and yaw yoke (2) + spare", "now", "McMaster"),
+        B("shoe", "Synta-style metal finder shoe", 1, "For the Waypoint (WO slide base); drill the tilt plate to the shoe you get", "now", ""),
+        B("shroud", "Light shroud (black Lycra/Spandex)", 1, "Around the truss; not drawn yet, size once the truss is up", "later", ""),
+    ]),
+    dict(group="Optics", items=[
+        B("sec", "3.5\" minor axis secondary", 1, "1/10 wave or better, enhanced coating; its thickness sets the holder (0.70\" ASSUMED)", "now", "Antares / Protostar / Hubble"),
+        B("escc", "Explore Scientific HR coma corrector 2\" (HRCC02-01)", 1, "Always in the train", "now", ""),
+        B("ext1", "2\" extension tube, 1\"", 1, "Only for the Paracorr or no-corrector use", "later", ""),
+        B("heater", "Kapton heater ~2\" + 10k NTC", 1, "Secondary dew heater on the Pegasus RCA output", "now", ""),
+        B("rtv", "Neutral-cure RTV silicone", 1, "Secondary bonding pads (not acetic: it attacks the coating)", "now", ""),
+    ]),
+    dict(group="Mirror cell", items=[
+        B("ball38", "3/8\" chrome-steel ball", 6, "Triangle pivots (3 + spare)", "now", "McMaster"),
+        B("bolt516", "5/16-24 bolt + large collimation knob", 3, "Collimation; big knobs (1/16 turn ≈ 0.4 mm at focus)", "now", ""),
+        B("bush516", "Flanged SAE 841 bronze bushing, 5/16\" ID", 3, "In the mirror board around the collimation bolts", "measure", "McMaster"),
+        B("ins516", "5/16-24 steel thread insert", 3, "In the cell frame if it is cast plate", "now", ""),
+        B("push14", "1/4-20 push screws + threaded inserts for ply", 3, "Lock the cell against the bolts", "now", ""),
+        B("fan80", "80 mm 12 V fan + finger guard", 1, "Under the hub, #6 screws", "measure", ""),
+        B("wiresaw", "Debonding line (braided fishing line or 0.010\" piano wire)", 1, "Saw through the 9 old glue dabs", "now", ""),
+    ]),
+    dict(group="Birch, bearings, rocker, ground board", items=[
+        B("birch", "Baltic birch 18 mm, 5 × 5 ft", 3, "D bearings, rocker, ground board, box wings (ripped to 24.4\" strips)", "now", ""),
+        B("ebony", "Ebony Star laminate", 1, "D bearing rims and the rocker floor's underside (az): a 4 × 8 sheet covers both", "now", ""),
+        B("ptfe", "Virgin PTFE sheet 3/16\"", 1, "Alt pads (4), lateral stops (2), az pads (3); 6 × 6\" is plenty", "now", ""),
+        B("dowel38", "Steel dowel pin 3/8\" + drill bushing 3/8\" ID × 1/2\" OD", 4, "D bearing to box (2 per side)", "now", "McMaster"),
+        B("bolt14", "1/4-20 bolts + threaded inserts for ply", 12, "D bearing to box side (6 per side)", "now", ""),
+        B("confirmat", "Confirmat screws + step drill", 1, "Box back wings through both boards (8)", "now", ""),
+        B("pivot", "3/8\" pivot bolt, nyloc, fender + PTFE washers", 1, "Rocker on ground board", "now", ""),
+        B("feet", "Levelling feet", 3, "Ground board feet at r 14\"", "now", ""),
+        B("glue", "Wood glue (Titebond III) + contact cement", 1, "Laminating the D layers; Ebony Star", "now", ""),
+    ]),
+    dict(group="Drives (two identical modules)", items=[
+        B("belt9", "GT2 9 mm open belt, 5 m", 1, "Glued teeth-out on the alt rim (~23\") and around the 30\" ground ring (~95\")", "now", ""),
+        B("pin20", "GT2 20T flangeless pinion, 8 mm bore, ≥ 9 mm wide", 3, "2 + spare", "now", ""),
+        B("p16", "GT2 16T, 6 mm belt, bore to suit the motor shaft", 2, "On the gearmotor (1/4\" ASSUMED: measure the Pittman shaft)", "measure", ""),
+        B("p32", "GT2 32T + 152 mm loop (2:1)", 2, "Buy both ratio sets; they are cheap", "test", ""),
+        B("p48", "GT2 48T + 170 mm loop (3:1)", 2, "", "test", ""),
+        B("shaft8", "8 mm ground shaft, 100 mm + shaft collars", 2, "Jackshafts", "now", ""),
+        B("f608", "F608ZZ flanged bearing", 4, "", "now", ""),
+        B("shoulder", "3/8\" shoulder bolt + flanged bronze bushing 3/8 × 1/2", 2, "Arm pivots", "now", ""),
+        B("stand10", "#10-32 standoff 0.80\"", 6, "Between arm plates A and B", "now", ""),
+        B("springs", "Clutch springs (alt compression ~19 lb, az extension)", 1, "Rate them once the brackets are detailed", "later", ""),
+        B("cam", "Over-centre cam levers", 2, "Clutch", "later", ""),
+    ]),
+    dict(group="Encoders and electronics", items=[
+        B("enc", "Magnetic tape + read heads (2 axes)", 1, "Waiting on the SiTech input decision (or keep the Astro Devices on the Nexus)", "later", ""),
+        B("power", "LiFePO4 battery + 12 V regulator, 24 V boost for the motors", 1, "Pegasus cuts out above ~14 V", "later", ""),
+        B("pc", "Mini PC, USB3 + 12 V trunk, enclosure, connectors", 1, "Electronics box not laid out yet", "later", ""),
+    ]),
+    dict(group="Shop consumables (truss blocks and fixtures)", items=[
+        B("tools", "Carbide end mills", 1, "1/8\" ball, ≥ 1.5\" reach; 1/8\" flat, ≥ 1.5\" reach; 1/4\" 3FL, ≥ 1.25\" LOC; 1/2\" 3FL, ≥ 1.5\" LOC (aluminium geometry)", "now", ""),
+        B("taps", "1/4-20 tap, #7 drill, 0.250\" reamer", 1, "Socket undersides, pair blocks", "now", ""),
+        B("hsi", "1/4-20 heat-set inserts + strap clamps", 1, "16 inserts for the 8 printed fixtures; low-profile straps (≤ 0.35\" above the block)", "now", ""),
+        B("fil", "PETG or ASA filament", 1, "8 wedge fixtures", "now", ""),
+        B("loctite", "Loctite 243 / 263", 1, "Drawbolts, spigot bolts", "now", ""),
+    ]),
+]
+
+
 def inch(o):
     if isinstance(o, str):
         return o.replace('"', "\u2033")
@@ -63,7 +144,7 @@ SEEN = {
     'B:1/4" circle 21" dia': ["144.54", "2", "$144.54 each at 2 (21.25\" quoted), $142.04 at 3"],
     'HR:1/2" plate 17" × 18"': ["148.41", "1", "$148.41 for 1, $140.91 each at 2"],
 }
-data = inch(dict(plan=plan, bars=BARS, other=OTHER, seen=SEEN))
+data = inch(dict(plan=plan, bars=BARS, other=OTHER, buy=BUY, seen=SEEN))
 tpl = open("site_cutplan/template.html").read()
 html = tpl.replace("/*__DATA__*/null", json.dumps(data, separators=(",", ":")))
 os.makedirs("out/cut_plan", exist_ok=True)
