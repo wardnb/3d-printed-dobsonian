@@ -108,6 +108,12 @@ measured 38.5" (truss_fe.py) · mirror box 0.012 mm (mcage_fe.py, cell studs at 
 - `truss_fe.py`: truss FE (cage rigid, box rigid); reads `out/params.json`, run from `goto-rebuild/`. Zigzag apexes at 30/150/270 (fixed 2026-10-30: they were at 0/120/240, so the bases fell back to R_BOT instead of the measured stubs; 0.027 → 0.028 mm). `python truss_fe.py split` = two-piece pole study.
 - `mcage_fe.py`: mirror box (ply rings, spacers, stubs, side strips, bearing-web supports) + truss + mirror + rigid upper cage in one frame; mirror carries the primary's focus (shift and tilt). Options: `spacer_ends`, `stub_axial`, `cell_angles`, `board_plate`, `e_ply`, `hole_k`, `strip_k`, `sock_k`.
 - `cell.py`: new mirror cell (params `C`, `pads()`, `frame_poly()`, `build()` with the mirror face at y = 0, `report()` with weights and edge stiffness); `dob_model.py` places it at `y_mirror`. `export_cell.py`: fit checks (inside the cell, against stubs and spacers) → `out/cell/fit_report.json`, DXFs (frame, triangle ×3, gusset ×2), STEP, cut sheet. `cell_support_fe.py`: plate support optimiser (scikit-fem; `pip install --break-system-packages scikit-fem`).
+- `bearing_fe.py` (2026-10-31): in-plane plane-stress FE (scikit-fem P2 + `triangle` mesher, `pip install --break-system-packages triangle`) of the D bearing
+  and its fasteners to the box's 3" side strip. Metrics: tube rotation vs the alt pinion and vs the rim read head, under gravity (alt sweep) and per in-lb of
+  drive torque; "clamped" (bolt friction holds) vs "slipped" (dowels only). As drawn (2 dowels + 2 bolts in a 4.8 × 1.8" patch): windup 0.17"/in-lb at 15°
+  (0.39 slipped), 0.058 at 45°; fasteners see 144 lb at 1 g, ~430 lb per bolt at 3 g (more than two 1/4" bolts' friction in ply). Half of it is the joint,
+  half the D pivoting about the small patch; ribs or a solid D barely help. A ~13" wide side panel between the boards with dowels on the rim at ±6.2"
+  takes it to 0.044 (0.092 slipped). OPEN: Nick to decide on the side panel / measure the boards' side flats.
 - `truss_joints.py`: joint detail (60° cone plugs bonded in the carbon poles, socket blocks with a spigot bonded into the
   45 mm stubs and two cups at ±0.8" on the tangent, pair blocks bonded to both poles with two dowels and one knob under
   the cage ring). Reads `out/params.json`; writes GLBs and STEPs to `out/truss_joints/`. Plug shank sized for a

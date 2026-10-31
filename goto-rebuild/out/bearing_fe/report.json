@@ -1,0 +1,278 @@
+{
+ "clamped": [
+  {
+   "alt": 15,
+   "grav_pinion_as": 70.79370734159777,
+   "grav_encoder_as": 20.548703281549347,
+   "drive_pinion_as_per_inlb": 0.16829180626845985,
+   "drive_encoder_as_per_inlb": 0.05460290019722621,
+   "fastener_max_lb": 144.07041896265252
+  },
+  {
+   "alt": 30,
+   "grav_pinion_as": 49.784512110565835,
+   "grav_encoder_as": 13.040389254088312,
+   "drive_pinion_as_per_inlb": 0.10133353640167483,
+   "drive_encoder_as_per_inlb": 0.028498287287869937,
+   "fastener_max_lb": 136.42031520490988
+  },
+  {
+   "alt": 45,
+   "grav_pinion_as": 30.610899707475145,
+   "grav_encoder_as": 9.263073995080969,
+   "drive_pinion_as_per_inlb": 0.05758093895575502,
+   "drive_encoder_as_per_inlb": 0.01848694208840935,
+   "fastener_max_lb": 116.85909668952705
+  },
+  {
+   "alt": 60,
+   "grav_pinion_as": 16.44462738609364,
+   "grav_encoder_as": 8.527315090779561,
+   "drive_pinion_as_per_inlb": 0.030471586163515356,
+   "drive_encoder_as_per_inlb": 0.0165794907132507,
+   "fastener_max_lb": 87.901200217657
+  },
+  {
+   "alt": 75,
+   "grav_pinion_as": 6.622419623698281,
+   "grav_encoder_as": 4.9946447686787465,
+   "drive_pinion_as_per_inlb": 0.01670698763870043,
+   "drive_encoder_as_per_inlb": 0.01690900445860553,
+   "fastener_max_lb": 54.39672799273697
+  },
+  {
+   "alt": 90,
+   "grav_pinion_as": -0.0049242368568606955,
+   "grav_encoder_as": -6.8271030382713125,
+   "drive_pinion_as_per_inlb": 0.012502181531770044,
+   "drive_encoder_as_per_inlb": 0.020173550875418927,
+   "fastener_max_lb": 18.071706423960176
+  }
+ ],
+ "dowels_only": [
+  {
+   "alt": 15,
+   "grav_pinion_as": 173.11952991280032,
+   "grav_encoder_as": 52.13246400345454,
+   "drive_pinion_as_per_inlb": 0.3861857619038306,
+   "drive_encoder_as_per_inlb": 0.1336352189369037,
+   "fastener_max_lb": 96.59611371183317
+  },
+  {
+   "alt": 30,
+   "grav_pinion_as": 120.9214076332292,
+   "grav_encoder_as": 33.723821356552286,
+   "drive_pinion_as_per_inlb": 0.23136935574383136,
+   "drive_encoder_as_per_inlb": 0.07730907732666878,
+   "fastener_max_lb": 88.49010054340451
+  },
+  {
+   "alt": 45,
+   "grav_pinion_as": 72.93827332004679,
+   "grav_encoder_as": 24.271322271750336,
+   "drive_pinion_as_per_inlb": 0.1313841572870893,
+   "drive_encoder_as_per_inlb": 0.05445828593555925,
+   "fastener_max_lb": 72.99819237067399
+  },
+  {
+   "alt": 60,
+   "grav_pinion_as": 37.239604159204895,
+   "grav_encoder_as": 20.41138871680306,
+   "drive_pinion_as_per_inlb": 0.07292328718608393,
+   "drive_encoder_as_per_inlb": 0.048441640427236934,
+   "fastener_max_lb": 53.132406442387506
+  },
+  {
+   "alt": 75,
+   "grav_pinion_as": 14.303520997272066,
+   "grav_encoder_as": 11.777786478370103,
+   "drive_pinion_as_per_inlb": 0.04475469821887242,
+   "drive_encoder_as_per_inlb": 0.04946442782656514,
+   "fastener_max_lb": 31.92559699716258
+  },
+  {
+   "alt": 90,
+   "grav_pinion_as": -0.0039053416377561063,
+   "grav_encoder_as": -11.815211053277157,
+   "drive_pinion_as_per_inlb": 0.03720970767403199,
+   "drive_encoder_as_per_inlb": 0.059410780808496544,
+   "fastener_max_lb": 18.68781738369035
+  }
+ ],
+ "wood_only": [
+  {
+   "alt": 15,
+   "grav_pinion_as": 32.578411699240185,
+   "grav_encoder_as": 6.187158527560309,
+   "drive_pinion_as_per_inlb": 0.0798757378979492,
+   "drive_encoder_as_per_inlb": 0.018566141626474977,
+   "fastener_max_lb": 92.47942360652722
+  },
+  {
+   "alt": 30,
+   "grav_pinion_as": 22.115639239023807,
+   "grav_encoder_as": 2.0170767058434453,
+   "drive_pinion_as_per_inlb": 0.04713397036507815,
+   "drive_encoder_as_per_inlb": 0.004794077381229161,
+   "fastener_max_lb": 90.21027344023474
+  },
+  {
+   "alt": 45,
+   "grav_pinion_as": 13.622741021667428,
+   "grav_encoder_as": 0.590058009436637,
+   "drive_pinion_as_per_inlb": 0.026193500042998363,
+   "drive_encoder_as_per_inlb": 0.000986155498294127,
+   "fastener_max_lb": 80.35663560536558
+  },
+  {
+   "alt": 60,
+   "grav_pinion_as": 7.110133380828176,
+   "grav_encoder_as": 0.973985354440457,
+   "drive_pinion_as_per_inlb": 0.01193065507831324,
+   "drive_encoder_as_per_inlb": 0.0009111335555083009,
+   "fastener_max_lb": 55.86241130127948
+  },
+  {
+   "alt": 75,
+   "grav_pinion_as": 2.4153233835692656,
+   "grav_encoder_as": -0.3802794685837202,
+   "drive_pinion_as_per_inlb": 0.00418799593485314,
+   "drive_encoder_as_per_inlb": 0.0008783002609523324,
+   "fastener_max_lb": 43.449426780851674
+  },
+  {
+   "alt": 90,
+   "grav_pinion_as": -0.0010822729139394252,
+   "grav_encoder_as": -6.416588226039362,
+   "drive_pinion_as_per_inlb": 0.0022861022903038985,
+   "drive_encoder_as_per_inlb": 0.0014164345476663717,
+   "fastener_max_lb": 24.883104775088846
+  }
+ ],
+ "spread_slipped": [
+  {
+   "alt": 15,
+   "grav_pinion_as": 85.83829931550062,
+   "grav_encoder_as": 24.443148595250545,
+   "drive_pinion_as_per_inlb": 0.22116369423000384,
+   "drive_encoder_as_per_inlb": 0.08153541962267183,
+   "fastener_max_lb": 65.80366044857271
+  },
+  {
+   "alt": 30,
+   "grav_pinion_as": 62.05692950258054,
+   "grav_encoder_as": 14.818288978631927,
+   "drive_pinion_as_per_inlb": 0.14013980271819332,
+   "drive_encoder_as_per_inlb": 0.048618304721695635,
+   "fastener_max_lb": 60.55560301061746
+  },
+  {
+   "alt": 45,
+   "grav_pinion_as": 39.046985823035676,
+   "grav_encoder_as": 9.414469859457755,
+   "drive_pinion_as_per_inlb": 0.08604810897911276,
+   "drive_encoder_as_per_inlb": 0.03510301125556362,
+   "fastener_max_lb": 50.57156458231604
+  },
+  {
+   "alt": 60,
+   "grav_pinion_as": 20.850195331024928,
+   "grav_encoder_as": 7.381682898388524,
+   "drive_pinion_as_per_inlb": 0.05227302296585344,
+   "drive_encoder_as_per_inlb": 0.032312620300886066,
+   "fastener_max_lb": 37.92388705991296
+  },
+  {
+   "alt": 75,
+   "grav_pinion_as": 8.245484955415941,
+   "grav_encoder_as": 2.027124475464981,
+   "drive_pinion_as_per_inlb": 0.03485087430911073,
+   "drive_encoder_as_per_inlb": 0.032805563421749444,
+   "fastener_max_lb": 25.418065713360704
+  },
+  {
+   "alt": 90,
+   "grav_pinion_as": -0.0002809500692117091,
+   "grav_encoder_as": -11.975520282533639,
+   "drive_pinion_as_per_inlb": 0.02940153072463916,
+   "drive_encoder_as_per_inlb": 0.03771096993499863,
+   "fastener_max_lb": 18.678096558975327
+  }
+ ],
+ "spread_clamped": [
+  {
+   "alt": 15,
+   "grav_pinion_as": 40.548024959480536,
+   "grav_encoder_as": 10.973880549974627,
+   "drive_pinion_as_per_inlb": 0.10970817227335389,
+   "drive_encoder_as_per_inlb": 0.03395889293272236,
+   "fastener_max_lb": 66.80415137039793
+  },
+  {
+   "alt": 30,
+   "grav_pinion_as": 29.856019111994954,
+   "grav_encoder_as": 6.493574794210288,
+   "drive_pinion_as_per_inlb": 0.06785622673086661,
+   "drive_encoder_as_per_inlb": 0.015735804253621172,
+   "fastener_max_lb": 60.30870614974361
+  },
+  {
+   "alt": 45,
+   "grav_pinion_as": 19.297364364901178,
+   "grav_encoder_as": 4.164134252548823,
+   "drive_pinion_as_per_inlb": 0.039390853827866876,
+   "drive_encoder_as_per_inlb": 0.008881759089679836,
+   "fastener_max_lb": 49.51863518356962
+  },
+  {
+   "alt": 60,
+   "grav_pinion_as": 10.951704697621041,
+   "grav_encoder_as": 4.206393457430654,
+   "drive_pinion_as_per_inlb": 0.020454777295560615,
+   "drive_encoder_as_per_inlb": 0.008118240693675808,
+   "fastener_max_lb": 36.91280775697066
+  },
+  {
+   "alt": 75,
+   "grav_pinion_as": 4.560659227443547,
+   "grav_encoder_as": 1.8498887018176617,
+   "drive_pinion_as_per_inlb": 0.01029390668623035,
+   "drive_encoder_as_per_inlb": 0.008242740531478237,
+   "fastener_max_lb": 25.432265094449818
+  },
+  {
+   "alt": 90,
+   "grav_pinion_as": 0.002409139186746276,
+   "grav_encoder_as": -6.723802984875271,
+   "drive_pinion_as_per_inlb": 0.007046045026332272,
+   "drive_encoder_as_per_inlb": 0.009871363166669358,
+   "fastener_max_lb": 18.027943389301882
+  }
+ ],
+ "shock_3g_fastener_lb": [
+  [
+   "dowel",
+   -8.4,
+   0.0,
+   72.24898789851217
+  ],
+  [
+   "dowel",
+   -13.2,
+   0.0,
+   71.2234859635921
+  ],
+  [
+   "bolt",
+   -10.8,
+   0.9,
+   404.06608231631566
+  ],
+  [
+   "bolt",
+   -10.8,
+   -0.9,
+   432.2112568879587
+  ]
+ ]
+}
