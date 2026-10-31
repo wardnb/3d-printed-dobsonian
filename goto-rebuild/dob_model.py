@@ -77,7 +77,8 @@ P = dict(
     mcage_spacer_angles=(20, 60, 120, 160, 240, 270, 300),   # seven, from the overhead photo (+/-10 deg): three across the back (270 side), two per side
     stub_proud=1.0,               # stub tubes stand this far above the top ring; sockets plug into them
     # Masses for balance (ASSUMED)
-    cell_lb=6.0, mcage_lb_per_in=1.1, bearings_lb=13.1, poles_lb=3.6,   # bearings: rocker.bearing_area_in2 x 1.418 x 0.0243 lb/in3   # six 1.25" x 0.062" carbon poles, ~38.5" at 0.48 lb + plugs
+    cell_lb=4.9, cell_cg_below_face=3.46, mcage_lb_per_in=1.1,   # new 6061 9-point flotation cell (cell.py, 2026-10-30)
+    bearings_lb=13.1, poles_lb=3.6,   # bearings: rocker.bearing_area_in2 x 1.418 x 0.0243 lb/in3   # six 1.25" x 0.062" carbon poles, ~38.5" at 0.48 lb + plugs
     upper_cage_lb=12.2, eyepiece_lb=3.3,   # cage metal 9.26 (fit_report: incl. finder cradle + shoe 0.64, pair blocks 0.94) + quad spider 0.6 + holder ~1.0 + Waypoint 1.35 (cage hub not yet included); eyepiece + coma corrector
 )
 
@@ -101,7 +102,7 @@ def net_moment(s_):
     ring_lo = y_sec_rel - s_ - 4.5
     m = [
         (P["mirror_lb"], -s_ - P["mirror_thick"] / 2),
-        (P["cell_lb"], -s_ - P["mirror_thick"] - 1.0),
+        (P["cell_lb"], -s_ - P["cell_cg_below_face"]),
         (P["mcage_lb_per_in"] * mc_len, (top + bot) / 2),
         (P["bearings_lb"], -4 * R / (3 * math.pi)),
         (P["poles_lb"], (top + ring_lo) / 2),
@@ -265,11 +266,11 @@ tube = cq.Assembly(name="tube")
 # primary mirror + cell
 tube.add(cyl_y(y_mirror - P["mirror_thick"], P["mirror_thick"], P["mirror_dia"] / 2),
          name="primary_mirror", color=MIRROR)
-cell = ring_y(y_mirror - P["mirror_thick"] - 1.6, 0.25, 0, P["mirror_dia"] / 2 - 0.3)
-for a in (90, 210, 330):
-    x, z = polar(5.5, a)
-    cell = cell.union(box(x, y_mirror - P["mirror_thick"] - 0.7, z, 2.4, 1.6, 0.5))
-tube.add(cell, name="mirror_cell_9pt", color=ALU)
+import cell as _cell                                     # new 9-point flotation cell (cell.py)
+_cp, _ = _cell.build()
+for _k, _col in (("frame", ALU), ("triangles", ALU), ("edge_posts", ALU), ("guard_posts", ALU),
+                 ("pivots", BLACK), ("pads", cq.Color(0.95, 0.95, 0.9)), ("collimation_bolts", BLACK), ("fan", BLACK)):
+    tube.add(_cp[_k].translate(v(0, y_mirror, 0)), name="cell_" + _k, color=_col)
 
 # mirror cage as DobStuff built it (measured 2026-10-18): an 18 mm shield-shaped top ring and mirror board,
 # seven 1.25" spacer tubes between them, a narrow 18 mm strip on each side that the bearings bolt to (no

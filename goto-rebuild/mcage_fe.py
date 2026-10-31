@@ -38,7 +38,7 @@ E_PLY, G_PLY = 1.3e6, 0.10e6                             # Baltic birch, ASSUMED
 E_AL, G_AL = 10.0e6, 3.8e6
 Y_MIR = F["y_mirror"]
 MIR_CG = Y_MIR - PP["mirror_thick"] / 2
-CELL_Y = Y_MIR - PP["mirror_thick"] - 0.7
+CELL_Y = Y_MIR - PP.get("cell_cg_below_face", PP["mirror_thick"] + 0.7)
 
 
 def rect(b, h, E, G):

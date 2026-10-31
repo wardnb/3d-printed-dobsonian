@@ -1,0 +1,76 @@
+{
+ "levels": {
+  "face": 0.0,
+  "back": -1.65,
+  "tri_top": -1.962,
+  "tri_bot": -2.212,
+  "post_top": -2.333,
+  "frame_top": -3.982,
+  "frame_bot": -4.482,
+  "board_top": -5.082,
+  "cg": -0.825
+ },
+ "weights_lb": {
+  "frame": 2.47,
+  "triangles": 0.89,
+  "pivots": 0.1,
+  "edge_posts": 0.5,
+  "guard_posts": 0.31,
+  "pads": 0.11,
+  "collimation_bolts": 0.13,
+  "fan": 0.0
+ },
+ "cell_lb": 4.91,
+ "pivot_r": 4.143,
+ "pads_in": [
+  [
+   [
+    0.0,
+    3.448
+   ],
+   [
+    2.927,
+    4.49
+   ],
+   [
+    -2.927,
+    4.49
+   ]
+  ],
+  [
+   [
+    -2.986,
+    -1.724
+   ],
+   [
+    -5.352,
+    0.29
+   ],
+   [
+    -2.425,
+    -4.78
+   ]
+  ],
+  [
+   [
+    2.986,
+    -1.724
+   ],
+   [
+    2.425,
+    -4.78
+   ],
+   [
+    5.352,
+    0.29
+   ]
+  ]
+ ],
+ "edge_post_k_lbin": 73946,
+ "edge_support_k_lbin": 73946,
+ "mirror_shift_horizon_mm": 0.0079,
+ "clashes_in3": [],
+ "box_clashes": [],
+ "frame_r_max_in": 10.82,
+ "bolt_circle_r_in": 6.5
+}

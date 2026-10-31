@@ -501,6 +501,45 @@ At the soft end it would be the largest single term in the scope. **Measure it b
 
 **Two readings with one dial indicator, box face-up, then rolled onto the side that faces down at the horizon:** with the indicator's base on the box and its tip on the mirror's edge, you get the total shift (cell slop plus glue). With the tip on the triangle, you get the cell slop alone. The difference is the glue.
 
+### New mirror cell (decided 2026-10-30: debond, all-new 6061 cell; `cell.py`, `export_cell.py`, `cell_support_fe.py`)
+
+The old cell is retired. The mirror is cut free from the glued triangle and floats on a new 9-point cell; nothing is glued.
+
+**Support layout.** A Kirchhoff plate model of the mirror under its own weight, with equal pad loads and focus removed, gives these pad radii as fractions of R = 8":
+
+| Support | Best radii | Surface error, RMS / P-V |
+| --- | --- | --- |
+| 3 points | 0.41 R | 8.3 / 40 nm |
+| 6 points, one ring (as Hubble's own cell) | 0.57 R | 1.2 / 5.0 nm |
+| **9-point flotation (chosen)** | **0.431 R inner (3.45"), 0.670 R outer (5.36") at ±33.1°** | **1.0 / 4.6 nm** |
+| 9 points, outer six evenly spaced | 0.33 / 0.75 R | 1.7 / 8.3 nm |
+
+The magnitudes assume a plate as stiff as the 42 mm sandwich (D ≈ 4×10⁵ N·m, ASSUMED). Any of these is far below what the eye can see (λ/60 P-V wavefront for the chosen layout), so the layout is not critical. What matters for a sandwich is that each pad sits under a puck: after debonding, mark the pucks on the back plate (visible through the plate glass), then clock the triangles and nudge the pads, up to ±0.3", before drilling.
+
+**Parts**, all on the AltMill:
+
+- **Frame:** a Y from 1/2" 6061, or MIC-6, which stays flat after pocketing. Its three arms run to the collimation bolts at r 6.5", clocked to the truss stubs at 90/210/330°. A hub around an 80 mm fan hole; 2.5 lb.
+- **Flotation triangles:** three, from 1/4" 6061, each on a 3/8" steel ball in 90° seats at its centroid (r 4.14"). The ball sits on a 1/2" post screwed into the frame arm. Pad loads are then fixed by statics, however much the triangle bends.
+- **Pads:** nine, 1" Delrin × 1/4" with a 1/16" cork face, screwed from below.
+- **Edge support:** two gussets cut from 1/2" 6061 standing on edge, at 225° and 315° (±45° from straight down at the horizon). Their 1/8" Delrin faces are 1.4" tall, centred on the mirror's mid-thickness, so they bear on both glass plates of the sandwich. They slide in radial slots until they just touch the edge, then clamp. Stiffness is about 74,000 lb/in, so the mirror shifts about 0.008 mm horizon to zenith (the glue was 0.04–0.43 mm).
+- **Guard posts:** three, at 90/210/330°, standing 0.5 mm off the edge. They stop the mirror sliding along the altitude axis in transport, and carry safety tabs 1 mm above the face that never touch the glass in use.
+- **Collimation:** three 5/16-24 bolts through flanged SAE 841 bronze bushings (5/16 ID × 1/2 OD) pressed into the mirror board, threaded into the frame. Three 1/4-20 push screws in threaded inserts in the board bear on the frame. No springs. One sixteenth of a turn moves the focal-plane axis about 0.4 mm, so fit large knobs and expect 1/32-turn moves when collimating.
+
+**Fit:** no clashes inside the cell; the frame clears the stubs and spacers. The mirror face stays where it was (the new stack lands on the board's top face to 0.01"). Cell weight 4.9 lb, against 6.0 lb assumed for the old one. The balance re-solve puts the mirror face 12.63" below the axis and the rocker 15.17" overall, with rocker checks and AltMill layout passing; eyepiece 63.7" at zenith. Cut files are in `out/cell/`: the frame, one triangle (×3) and one gusset (×2) as DXFs, the STEP and a cut sheet.
+
+**Before cutting:**
+
+- Confirm the mirror board's opening (about 10" from a photo) and that the bolt circle at r 6.5" lands on board material away from the old stud holes.
+- Check the black baffle liner clears r 8.0–10.8" at the cell's height, or trim it around the gussets and posts.
+- Map the pucks.
+
+**Debonding:** two people.
+
+1. Lift the cell and mirror out together, onto a padded bench, mirror face up.
+2. Saw each of the nine glue dabs with 0.015–0.020" stainless wire or 50 lb braided line. Hold the wire flat against the triangle, not the glass, and work it in a slow sawing motion.
+3. Lift the mirror off. Never pry against the glass.
+4. Roll the remaining silicone off the back plate with a plastic razor and isopropyl alcohol.
+
 ## Bearings and drives review
 
 Verdict: the ratios and motors are right for the job; two layout changes make the drives slip-free and keep every cable off the azimuth axis. Both are now in the model and viewer (v17).

@@ -99,7 +99,7 @@ ul.meas .val { font-family: var(--f-mono); font-size: 13px; white-space: nowrap;
 <div class="wrap">
   <header>
     <h1>16-inch Dob Rebuild</h1>
-    <p class="sub">Model v5 (rocker, ground board and 14″ bearings designed 19 Oct 2026 for the AltMill; 1.25″ carbon truss on 45 mm stubs; upper cage triangulated and adjustable finder cradle between the rings, 30 Oct) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>weights and the ring-edge check still open</b></p>
+    <p class="sub">Model v5 (rocker, ground board and 14″ bearings designed 19 Oct 2026 for the AltMill; 1.25″ carbon truss on 45 mm stubs; upper cage triangulated, adjustable finder cradle, new 9-point flotation cell, 30 Oct) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>weights and the ring-edge check still open</b></p>
   </header>
 
   <div class="grid">
@@ -235,7 +235,7 @@ const meas = [
   ["Box with mirror, bearing, strut", "bathroom scale"],
   ["Carbon tube bore", "1.126″ until measured"],
   ["Mirror ROC", "from the Hubble test report"],
-  ["Cell depth below mirror face", P.cell_depth + "″, bond unknown"],
+  ["Mirror board opening, stub fixing", "the new cell's bolts sit at r 6.5″ on the board's land (opening about 10″ from a photo); baffle must clear r 8.0–10.8″ at the cell"],
   ["Box back outline", "assumed to match the upper ring (sets the swing radius, ±0.4″ of axis height)"],
   ["FTF2015 base bolt circle", "when the focuser is out"],
 ];
@@ -312,6 +312,7 @@ const tags = [
   { t: "6-pole truss", p: cad(6.0, 20, 6.5), g: pivot },
   { t: "Drive bearing · tape + belt", p: cad(F.bearing_x + 0.6, -F.R * 0.7, -F.R * 0.7), g: pivot },
   { t: "Mirror cage", p: cad(-10.9, -6, 5), g: pivot },
+  { t: "9-point flotation cell", p: cad(0, F.y_mirror - 4.5, -9.5), g: pivot },
   { t: "Alt pinion + GM9413", p: cad(F.bearing_x + 3.5, 0, F.z_alt - F.R - 3.2), g: scene },
   { t: "Az pinion + GM9213 (on the rocker)", p: cad(14.5, 8.5, 4.5), g: scene },
   { t: "SiTech box", p: cad(-13.4, 7, 6.5), g: scene },

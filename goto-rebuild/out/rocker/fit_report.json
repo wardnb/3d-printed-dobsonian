@@ -37,7 +37,7 @@
       "qty": 1,
       "size_in": [
         27.42,
-        11.93
+        12.1
       ],
       "stock": "18 mm Baltic birch",
       "dxf": "rocker_wall_drive_18mm-birch.dxf",
@@ -48,7 +48,7 @@
       "qty": 1,
       "size_in": [
         27.42,
-        11.93
+        12.1
       ],
       "stock": "18 mm Baltic birch",
       "dxf": "rocker_wall_plain_18mm-birch.dxf",
@@ -115,35 +115,35 @@
     "drive": [
       [
         8.67,
-        9.13
+        9.3
       ],
       [
         8.67,
-        10.13
+        10.3
       ],
       [
         -1.3,
-        5.49
+        5.66
       ],
       [
         -1.3,
-        7.09
+        7.26
       ],
       [
         1.3,
-        5.49
+        5.66
       ],
       [
         1.3,
-        7.09
+        7.26
       ],
       [
         -11.03,
-        6.36
+        6.45
       ],
       [
         -11.03,
-        7.36
+        7.45
       ],
       [
         7.6,
@@ -165,11 +165,11 @@
     "plain": [
       [
         8.67,
-        9.13
+        9.3
       ],
       [
         8.67,
-        10.13
+        10.3
       ],
       [
         4.5,
@@ -194,14 +194,14 @@
     "box_clearance": 0.48,
     "floor_w": 24.05,
     "floor_l": 27.42,
-    "h_alt": 22.63,
-    "h_pad": 10.5,
-    "h_dip": 8.23,
-    "h_horn": 11.93,
+    "h_alt": 22.8,
+    "h_pad": 10.68,
+    "h_dip": 8.4,
+    "h_horn": 12.1,
     "y_horn": 9.64,
     "end_h": 4.0,
-    "end_h_max": 4.42,
-    "rocker_top": 14.99,
+    "end_h_max": 4.38,
+    "rocker_top": 15.17,
     "chord_e": 3.62,
     "alt_min": 15,
     "pad_angle": 30,
@@ -209,7 +209,7 @@
     "ring_id": 23.0,
     "foot_r": 14.0,
     "az_pad_r": 12.75,
-    "cap_z": 11.36
+    "cap_z": 11.53
   },
   "ev6_ok_under_23in": true,
   "bearing_lb_each": 6.56,
