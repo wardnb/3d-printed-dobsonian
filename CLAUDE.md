@@ -45,7 +45,7 @@ decisions; this file is the working knowledge needed to continue the engineering
   mounting face when racked in, 3 lb.
 - Pegasus Pocket Powerbox (two RCA dew outputs; cuts out above about 14–14.5 V, so regulate LiFePO4 to 12 V).
 - WO UniGuide 50 + ToupTek G3M662C = "Waypoint" plate-solving finder (WO slide base, 515 g, 265 mm; goes in a Synta-style shoe).
-- ZWO ASI533 and an OAG (imaging only; OAG not used for Waypoint).
+- ZWO ASI533 and the ZWO OAG (16.5 mm thick, 8×8 mm prism; imaging only; OAG not used for Waypoint).
 - 2" eyepieces: Apertura Panorama 21 and 28 mm (82°), Celestron E-Lux 26/32/40 mm (56°); 1.25" SVBONY 6/9/15/20 mm.
   ES 2" 2× Focal Extender (telecentric). Filters: Optolong L-Pro, Astronomik OIII 12 nm (2"). ES field flattener
   (refractor only, not for the Dob).
@@ -159,7 +159,7 @@ measured 38.5" (truss_fe.py) · mirror box 0.012 mm (mcage_fe.py, cell studs at 
 - [ ] Box side flats (for the D-bearing back wings): on both boards, how far the flat side edge runs back from the strip's back edge (model: to z −6.49 from the bearing axis, i.e. 4.99" past the strip), and how the existing strip is fixed to the boards (notched in? glued to the board edges?). Also confirm the 330/210° stubs sit ~0.04" inside the side plane.
 - [ ] ES HR coma corrector (if/when imaging with a rotator): measure the barrel shoulder to the M48 face (d). Camera focus needs the CC's M48 face 55 mm in front of the sensor and the
       sensor ~35 mm outside native focus (one blog source), so the drawtube end sits at native − 20 mm − d; the FTF2015 racked in is 38 mm inside native at L = 11.9", so d ≤ ~18 mm
-      or the camera can't reach focus. Train within the 55 mm: ASI533 Pro 6.5 + ZWO OAG ~16.5 (which OAG Nick owns: ASSUMED) + Falcon v2 16 + adapters ~3 ≈ 42 mm, ~13 mm spare;
+      or the camera can't reach focus. Train within the 55 mm: ASI533 Pro 6.5 + ZWO OAG 16.5 (Nick's, confirmed 2026-10-31; 8×8 mm prism) + Falcon v2 16 + adapters ~3 ≈ 42 mm, ~13 mm spare;
       a 20 mm filter drawer does not fit (filter on the CC nose or in a thin M48 cell). Rotator goes before the OAG.
 - [ ] FTF2015 base bolt circle and hole size
 - [ ] 3.5" secondary thickness when ordered
