@@ -64,7 +64,7 @@ def build(layout="pairs", od=1.0, wall=0.058, E=E_AL, G=G_AL, base="pinned", ape
     fr = Frame()
     props, A = tube_props(od, wall, E, G)
     masses = []
-    tops = [0, 120, 240]
+    tops = [30, 150, 270] if layout == "zigzag" else [0, 120, 240]   # zigzag: pair blocks at upper_cage.APEX, +/-60 to the stubs
     spread = 30 if layout == "pairs" else 60
     cage = fr.node(0, Y_SEC, 0)                       # cage CG on axis at the secondary height
     sec = cage

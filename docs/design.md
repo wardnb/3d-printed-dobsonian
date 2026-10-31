@@ -456,6 +456,32 @@ The primary's own tolerance: its axis must cross the focal plane within 0.5 mm, 
 
 From the DobStuff kit photos: the cell is a triangular 3/4" plate with the nine pads at the corners of three pencilled triangles and three cooling holes, hung on three three-lobe knobs through the bottom ring (spring-loaded bolts, so item 2 applies). Still to measure: tube OD, the three tubes' angle relative to the bearings, the spacing of the two upper rings, how the tubes are fixed in the rings, and silicone dabs or pads on the cell.
 
+**Mirror box FE (2026-10-30, `mcage_fe.py`): this supersedes items 4 and 5 above, which predate the measurements.** The box as measured (two 18 mm birch rings, seven 1.25" spacers, three 45 mm stubs through both boards, 3" side strips carrying the bearing webs, the cell on three studs) is modelled together with the carbon truss, the upper cage and the mirror. The metric is the same as for the cage and truss: the worst focal-plane error after collimating at 45°.
+
+| Case | Residual after 45°, mm |
+| --- | --- |
+| Rigid box (truss\_fe baseline) | 0.028 |
+| As built: ply, spacers bolted tight, stubs held at the mirror board, cell studs under the stubs | 0.040 |
+| Plywood at 0.9 Msi instead of 1.3 | 0.042 |
+| Spacer ends loose (no end moment) | 0.073 |
+| Stubs held only at the top ring | 0.060 |
+| Stubs pinned at both boards | 0.022 |
+| Cell studs between the stubs (30/150/270°) | 0.122 |
+| Cell studs 60° off the stubs | 0.106 |
+| Studs between the stubs + a 1/4 × 1.5" 6061 ring under the mirror board | 0.049 |
+| Truss sockets on the stubs at 20,000 lb/in | 0.167 |
+| Realistic: sockets, stub holes and strip screws all 20,000 lb/in | 0.185 |
+
+Verdict: unlike the upper cage, the plywood box is not where collimation is lost. It adds about 0.012 mm, and aluminium doublers buy nothing. Most of its flex moves the mirror and the truss together, which shows up as pointing, not collimation. What matters at this end, ranked:
+
+1. **The mirror's sideways support in the cell** (not in this model). If the glass is held by silicone dabs, their shear compliance moves the mirror between horizon and zenith by roughly 0.1–0.25 mm, depending on the RTV and the dab thickness. If it is loose, edge clearance shows directly. Settle it when the cell comes out for the push-pull conversion.
+2. **The truss sockets on the stubs:** 0.17 mm at 20,000 lb/in. Bonded spigots and cones with zero play, as already decided.
+3. **Cell stud clocking:** studs under the three stubs give 0.040 mm; between them, 0.12 mm. The mirror board bends between its supports, and the cell must hang where the truss loads come in. At the push-pull conversion, clock the cell triangle so its three corners and the new collimation bolts sit next to the stubs at 90/210/330°. This costs nothing.
+4. **Stub retention along the axis:** pin each stub at both boards (a cross bolt through the board edge into the tube, or a collar above and below) to get 0.022 mm. Held only by friction is not acceptable. How they are held now is still an open measurement.
+5. **Spacer bolts tight:** loose spacer ends almost double the box term.
+
+Assumed: plywood E 1.3 Msi and panel shear 100 ksi, rings as an equivalent 1.8" circular section (the shield is wider at the back and the point), spacer wall 0.058", strip joints glued (screws at 20,000 lb/in made little difference), cell stud angles.
+
 ## Bearings and drives review
 
 Verdict: the ratios and motors are right for the job; two layout changes make the drives slip-free and keep every cable off the azimuth axis. Both are now in the model and viewer (v17).
