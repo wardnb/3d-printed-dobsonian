@@ -157,6 +157,10 @@ measured 38.5" (truss_fe.py) · mirror box 0.012 mm (mcage_fe.py, cell studs at 
       swing radius). Still open: back hole to point hole 18.0" by tape, weights (box with mirror, one bearing, one strut),
       a caliper reading on a spacer tube, how the strut ends were bolted.
 - [ ] Box side flats (for the D-bearing back wings): on both boards, how far the flat side edge runs back from the strip's back edge (model: to z −6.49 from the bearing axis, i.e. 4.99" past the strip), and how the existing strip is fixed to the boards (notched in? glued to the board edges?). Also confirm the 330/210° stubs sit ~0.04" inside the side plane.
+- [ ] ES HR coma corrector (if/when imaging with a rotator): measure the barrel shoulder to the M48 face (d). Camera focus needs the CC's M48 face 55 mm in front of the sensor and the
+      sensor ~35 mm outside native focus (one blog source), so the drawtube end sits at native − 20 mm − d; the FTF2015 racked in is 38 mm inside native at L = 11.9", so d ≤ ~18 mm
+      or the camera can't reach focus. Train within the 55 mm: ASI533 Pro 6.5 + ZWO OAG ~16.5 (which OAG Nick owns: ASSUMED) + Falcon v2 16 + adapters ~3 ≈ 42 mm, ~13 mm spare;
+      a 20 mm filter drawer does not fit (filter on the CC nose or in a thin M48 cell). Rotator goes before the OAG.
 - [ ] FTF2015 base bolt circle and hole size
 - [ ] 3.5" secondary thickness when ordered
 - [ ] Mirror ROC from the Hubble test report (confirms f/3.9)
