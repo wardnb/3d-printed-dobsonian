@@ -88,7 +88,8 @@ td small { display: block; color: var(--muted); font-size: 12px; }
 .callout b { font-weight: 600; }
 ul.meas { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
 ul.meas li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--rule); font-size: 14px; }
-ul.meas .val { font-family: var(--f-mono); font-size: 13px; white-space: nowrap; }
+ul.meas .val { font-family: var(--f-mono); font-size: 13px; text-align: right; max-width: 62%; }
+ul.meas li > span:first-child { min-width: 0; }
 .chip { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--warn); border: 1px solid currentColor; border-radius: 3px; padding: 0 4px; margin-left: 6px; vertical-align: 1px; }
 .chip.ok { color: var(--ok, #4caf7d); }
 .key { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; font-size: 13px; color: var(--muted); }
@@ -99,7 +100,7 @@ ul.meas .val { font-family: var(--f-mono); font-size: 13px; white-space: nowrap;
 <div class="wrap">
   <header>
     <h1>16-inch Dob Rebuild</h1>
-    <p class="sub">Model v5 (rocker, ground board and 14″ bearings designed 19 Oct 2026 for the AltMill; 1.25″ carbon truss on 45 mm stubs; upper cage triangulated, adjustable finder cradle, new 9-point flotation cell, 30 Oct) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>weights and the ring-edge check still open</b></p>
+    <p class="sub">Model v6 (rocker, ground board and 14″ bearings 19 Oct; triangulated upper cage, adjustable finder cradle and 9-point flotation cell 30 Oct; drawbolt truss joints and stub collars 31 Oct) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>box weight, mirror board opening and puck map still to measure</b></p>
   </header>
 
   <div class="grid">
@@ -234,9 +235,10 @@ const meas = [
   ["Mirror weight", P.mirror_lb + " lb (Hubble spec)"],
   ["Box with mirror, bearing, strut", "bathroom scale"],
   ["Carbon tube bore", "1.126″ until measured"],
+  ["Puck map", "after debonding the mirror: the cell pads go under the sandwich's pucks"],
+  ["Baffle liner", "must clear the cell's edge posts at r 8.0–10.8″"],
   ["Mirror ROC", "from the Hubble test report"],
-  ["Mirror board opening, stub fixing", "the new cell's bolts sit at r 6.5″ on the board's land (opening about 10″ from a photo); baffle must clear r 8.0–10.8″ at the cell"],
-  ["Box back outline", "assumed to match the upper ring (sets the swing radius, ±0.4″ of axis height)"],
+  ["Mirror board opening", "about 10″ from a photo; the new cell's bolts sit at r 6.5″ on the board"],
   ["FTF2015 base bolt circle", "when the focuser is out"],
 ];
 document.getElementById("meas").innerHTML = meas.map(([a, b]) =>
@@ -310,6 +312,7 @@ const tags = [
   { t: "Upper cage · 6061 rings", p: cad(0, F.y_ring_hi, 10.4), g: pivot },
   { t: "Feather Touch 2″", p: cad(F.focuser_x - 0.5, F.y_sec, 1.6), g: pivot },
   { t: "6-pole truss", p: cad(6.0, 20, 6.5), g: pivot },
+  { t: "Socket · drawbolt cones", p: cad(9.2, F.y_mcage_top + 2.4, -5.3), g: pivot },
   { t: "Drive bearing · tape + belt", p: cad(F.bearing_x + 0.6, -F.R * 0.7, -F.R * 0.7), g: pivot },
   { t: "Mirror cage", p: cad(-10.9, -6, 5), g: pivot },
   { t: "9-point flotation cell", p: cad(0, F.y_mirror - 4.5, -9.5), g: pivot },
@@ -359,7 +362,7 @@ function tune(obj) {
 }
 const trussInfo = {
   zigzag: { len: C.truss_zigzag_pole_length_in, note: "1.25″ × 0.062″ carbon, three pre-joined pairs on a ±60° base, cone sockets on the 45 mm stubs",
-    text: "Chosen after the truss review. Each pre-joined pair meets at one block under the lower ring and spreads 120° to two cone sockets on the mirror cage; neighbouring pairs share a socket block, so the six poles form a fully triangulated octahedron. Twice as stiff as the narrow layout (0.04 vs 0.09 mm of focal-point drift with ideal joints at the measured 38.5″); the joints, not the poles, decide the rest. Three units to carry, three double sockets, nine knobs." },
+    text: "Chosen after the truss review. Each pre-joined pair meets at one block under the lower ring and spreads 120° to two cone sockets on the mirror cage; neighbouring pairs share a socket block, so the six poles form a fully triangulated octahedron. Twice as stiff as the narrow layout (0.04 vs 0.09 mm of focal-point drift with ideal joints at the measured 38.5″); the joints, not the poles, decide the rest. Each cone is pulled into its cup by a stud and thumbwheel, because two poles go into tension (up to 27 lb) near the horizon; collars on the stubs take the 46 lb uplift. Three units to carry; six thumbwheels and three knobs at setup." },
   pairs: { len: C.truss_pole_length_in, note: "1″ OD, pre-joined pairs on a ±30° base",
     text: "The earlier layout, kept for comparison: slimmer triangles to carry, but a 10″ base gives half the twist stiffness, and six separate sockets." },
 };

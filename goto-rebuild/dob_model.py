@@ -345,8 +345,8 @@ cage_colors = dict(ring_lower=ALU, ring_upper=ALU, struts=ALU, board_rails=ALU, 
                    finder_cradle=ALU, finder_adjuster=ALU, waypoint_finder=cq.Color(0.55, 0.12, 0.12),
                    diagonal_tubes=cq.Color(0.6, 0.62, 0.65), diagonal_nodes=ALU)
 for k, part in cage_parts.items():
-    if k == "spider_blocks":
-        continue                                   # spider towers live in the spider assemblies
+    if k in ("spider_blocks", "pair_connectors_concept"):
+        continue                                   # spider towers live in the spider assemblies; pair blocks in the truss (truss_joints.py)
     tube.add(part.translate(v(0, y_sec, 0)), name="cage_" + k, color=cage_colors[k])
 
 # light baffle opposite the focuser (+X side): a thin curved panel on the ring ID spanning

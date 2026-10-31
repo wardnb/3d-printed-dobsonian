@@ -118,7 +118,9 @@ measured 38.5" (truss_fe.py) · mirror box 0.012 mm (mcage_fe.py, cell studs at 
 
 ## Viewer
 
-- `site/index.html` (three.js 0.160.0 from jsdelivr) + `build_site.py` → `dist/`. GLBs are shipped as base64
+- `site/index.html` (three.js 0.160.0 from jsdelivr) + `build_site.py` → `dist/`. `build_site.py` also rebuilds `out/truss_zigzag.glb` from
+  `truss_joints.build_viewer()` (real socket blocks, drawbolts, collars, pair blocks), so run it after `dob_model.py`; the cage's
+  `pair_connectors_concept` is no longer drawn by `dob_model.py`. GLBs are shipped as base64
   `.glb.txt` because the artifact host does not serve `.glb`; the page decodes them with `GLTFLoader.parse`.
 - Spider radio: Quad (default), Curved, Wire. Truss radio: Wide pairs (default), Narrow pairs.
 - Screenshots: Playwright with `executablePath: /opt/pw-browsers/chromium-1194/chrome-linux/chrome`, routing the

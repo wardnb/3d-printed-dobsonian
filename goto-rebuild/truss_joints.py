@@ -238,6 +238,31 @@ def build_full():
     return a
 
 
+def build_viewer():
+    """The chosen truss as the main 3D viewer shows it: poles, plugs, pair blocks with knobs and dowels, socket
+    blocks with drawbolt studs and thumbwheels, stub collars (the stubs and rings come from dob_model)."""
+    a = cq.Assembly(name="truss_zigzag")
+    poles = plugs = pblk = pk = dw = None
+    U = lambda acc, s: s if acc is None else acc.union(s)
+    for t in TOPS:
+        pb = pair_block(t)
+        pblk, pk, dw = U(pblk, pb["block"]), U(pk, pb["knob"]), U(dw, pb["dowels"])
+        for side in (-1, 1):
+            A, B = node_points(t, side)
+            plug, tube, _ = pole_parts(A, B)
+            plugs, poles = U(plugs, plug), U(poles, tube)
+    sb_ = wh = st = col = None
+    for b in (90, 210, 330):
+        sb = socket_block(b)
+        sb_, wh, st = U(sb_, sb["block"]), U(wh, sb["knobs"]), U(st, sb["pads"])
+        col = U(col, stub_and_ring(b)[2])
+    for name, part, color in (("truss_poles", poles, CARBON), ("pole_plugs", plugs, ALU), ("pair_blocks", pblk, ALU),
+                              ("pair_knobs", pk, KNOB), ("pair_dowels", dw, BRASS), ("socket_blocks", sb_, ALU),
+                              ("thumbwheels", wh, KNOB), ("drawbolt_studs", st, BRASS), ("stub_collars", col, KNOB)):
+        a.add(part, name=name, color=color)
+    return a
+
+
 def build_socket_detail(b=90, section=False):
     a = cq.Assembly(name="socket_detail" + ("_section" if section else ""))
     bx, bz = base_xz(b)
