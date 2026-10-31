@@ -620,3 +620,19 @@ Siderial tracking turns the altitude motor at about 1.5 rpm (51 counts per secon
 Strength was never the issue; stiffness and slip were. Once two bolts slip, dowel-hole play shows as altitude backlash (0.001" ≈ 85"), and the drive torque reverses with direction because friction (\~145 in-lb) is far larger than the planned imbalance. Ribs or a solid D barely helped: the small patch, not the D, set it.
 
 **Fix:** an 18 mm birch back wing on each side, 4.9 × 11.38", glued between the boards beside the strip (z −6.4 to −1.5 from the bearing axis), its top-back corner notched 2.3 × 0.70" around the stub's lower collar, Confirmat screws through both boards at z −2.3 and −3.6. The D sits on two 3/8" steel dowels pressed into the D (one on the rim at z −5.6, one on the web top) running in blind steel drill bushings, plus six 1/4-20 bolts into threaded inserts. Drill the box through the D as a template. The wing cannot run forward of the strip: the boards' edge curves away there. ASSUMED until measured: the boards' side flat runs back to z −6.49 and the 330/210° stubs sit \~0.04" inside the side plane.
+
+## Coma corrector and focal plane: L = 12.5" (2026-10-31)
+
+**Corrector: Explore Scientific HR 2" (HRCC02-01).** 1.0 lb, 147.2 mm overall, 85 mm 2" barrel, 1.06×, 30 mm corrected image circle, 2" filter thread on the barrel nose. Visual: set the helical to its 13.5 mm mark, focus the main focuser once with frosted tape at the top of the helical, lock it, then match each eyepiece on the helical only (manual). Camera: remove the helical and thread the M42/M48 adapter onto the body; sensor about 57 mm behind it at our \~1600 mm focal length (55 mm + 2 mm per the manual). The C8 and ED80 correctors don't work on a fast Newtonian.
+
+**Why L moved from 11.9" to 12.5":** the ES puts the combined focus about 35 mm outside native focus, and the focus point's height above the barrel shoulder isn't published (57–76 mm bracketed). At 11.9" the worst case could not reach focus and the barrel nose reached about 0.9" into the incoming beam. Inward travel can't be added later; extension tubes can.
+
+| At L = 12.5" | Spare in-travel | Spare out-travel | Nose into the beam |
+| --- | --- | --- | --- |
+| ES, focus 57 mm above the shoulder | 31 mm | 7 mm | none |
+| ES, 67 mm | 21 mm | 17 mm | 0.11" |
+| ES, 76 mm (worst) | 12 mm | 26 mm | 0.46" (≈0.6% of the light) |
+| Paracorr 2 | — | 4 mm (29 mm with a 1" extension tube) | — |
+| No corrector | — | needs a 1" extension tube | — |
+
+Other effects: poles 37.30/37.35" node to node (carbon cut 35.20/35.25"), eyepiece 63.2" at zenith, mirror face 12.46" below the axis, no counterweight; fully illuminated field 0.30" with the 3.5" secondary (was 0.45", obstruction unchanged at 21.9%). Stiffness unchanged: cage + spider 0.012 mm, truss 0.027 mm, mirror box 0.040 mm. Camera train with a rotator: ASI533 6.5 + ZWO OAG 16.5 + Falcon v2 16 + adapters \~3 ≈ 42 of \~57 mm; rotator goes before the OAG; filters on the corrector nose.

@@ -126,7 +126,7 @@ for a in uc.STRUTS:
     seps.append(round(best - 0.025, 3))
 report["wire_pair_min_gap_in"] = seps
 # reflected cone from the secondary to the focus (focuser on -X) must stay clear of the wires
-L_focus = 11.9
+L_focus = json.load(open("out/params.json"))["params"]["L_secondary_to_focus"]
 cone = cq.Workplane("XY").add(cq.Solid.makeCone(1.65 * IN, 0.15 * IN, L_focus * IN,
                                                 cq.Vector(0.5 * IN, 0, 0), cq.Vector(-1, 0, 0)))
 report["wires_in_focuser_cone"] = wsp["wires"].intersect(cone).val().Volume() > 0.01

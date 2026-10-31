@@ -27,7 +27,7 @@ P = dict(
     aperture=16.0,
     focal_ratio=3.9,          # Nick: mirror is about f/3.9 (confirm from Hubble test report ROC)
     secondary_minor=3.5,
-    L_secondary_to_focus=11.9,
+    L_secondary_to_focus=12.5,    # 2026-10-31: was 11.9; moved out 0.6" so the ES HR corrector (focus ~35 mm outward, barrel 85 mm) has >= 13 mm of in-travel and its nose stays (nearly) out of the beam; Paracorr / no corrector need a 2" extension tube
     # Primary mirror (ASSUMED until measured)
     mirror_dia=16.0,          # Hubble Optics 16" f/4 sandwich: 406 mm
     mirror_thick=1.65,        # 42 mm (Hubble Optics spec)
@@ -485,6 +485,24 @@ checks = dict(
     alt_external_ratio=round(alt_ratio, 0),
     az_external_ratio=round(az_ratio, 0),
 )
+# coma corrector fit at the focuser (2026-10-31): distances from the tube axis, inches
+_L = P["L_secondary_to_focus"]
+_rack_in = P["board_inner_from_axis"] + 0.25 + P["focuser_racked_in"]      # drawtube top, racked in
+_rack_out = _rack_in + 1.5
+_dt_len = P["focuser_racked_in"] + 1.55                                      # drawtube length (FTF2015)
+_beam_r = P["mirror_dia"] / 2
+_cc = {}
+for _H in (57, 67, 76):          # ES HR: focal plane height above the barrel shoulder, mm (not published; bracketed)
+    _sh = _L + 35 / 25.4 - _H / 25.4
+    _cc[f"es_H{_H}"] = dict(spare_in_travel_mm=round((_sh - _rack_in) * 25.4, 1),
+                            spare_out_travel_mm=round((_rack_out - _sh) * 25.4, 1),
+                            nose_into_beam_in=round(max(0.0, _beam_r - (_sh - 85 / 25.4)), 2),
+                            drawtube_into_beam_in=round(max(0.0, _beam_r - (_sh - _dt_len)), 2))
+_sh = _L - 19 / 25.4             # Paracorr 2: ~19 mm in-travel vs a shoulder-plane eyepiece
+_cc["paracorr"] = dict(spare_out_travel_mm=round((_rack_out - _sh) * 25.4, 1),
+                       with_1in_extension_spare_out_mm=round((_rack_out - (_sh - 1.0)) * 25.4, 1))
+_cc["no_corrector_spare_out_mm"] = round((_rack_out - _L) * 25.4, 1)
+checks["coma_corrector_fit"] = _cc
 rocker_json = {k: val for k, val in G.items() if isinstance(val, (int, float, str, tuple, list, dict))}
 json.dump(dict(params=P, assumed=ASSUMED, checks=checks, rocker=rocker_json, rocker_holes=rocker_holes,
                frame=dict(z_alt=z_alt, y_sec=y_sec, y_mirror=y_mirror,

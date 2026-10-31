@@ -44,7 +44,7 @@ OTHER = [
     dict(id="delrin18", stock="Delrin sheet 1/8\"", order="small offcut", cuts="2 × 0.5\" × 1.4\"", parts="Edge gusset faces"),
     dict(id="cork", stock="Cork sheet 1/16\"", order="6\" × 6\"", cuts="9 × 1\" discs", parts="Pad faces"),
     dict(id="ss020", stock="301/302 stainless strip 0.020\" × 1.5\"", order="36\"", cuts="4 × 8.5\"", parts="Quad spider vanes"),
-    dict(id="carbon", stock="Roll-wrapped carbon tube 1.25\" OD × 0.062\" wall", order="6 × 1 m (39.4\")", cuts="38.15\" and 38.20\" (3 each)", parts="Truss poles (carbon supplier, not Midwest)"),
+    dict(id="carbon", stock="Roll-wrapped carbon tube 1.25\" OD × 0.062\" wall", order="6 × 1 m (39.4\")", cuts="35.20\" ×2 and 35.25\" ×4", parts="Truss poles (carbon supplier, not Midwest)"),
 ]
 
 def inch(o):

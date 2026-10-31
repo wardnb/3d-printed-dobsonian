@@ -19,6 +19,11 @@ import math
 import numpy as np
 
 import upper_cage as uc
+import json as _json
+try:
+    L_FOCUS = _json.load(open("out/params.json"))["params"]["L_secondary_to_focus"]
+except Exception:
+    L_FOCUS = 12.5
 
 E_AL, G_AL = 10.0e6, 3.8e6
 E_W = 28.0e6                                  # steel wire
@@ -337,9 +342,9 @@ def collimation_error(fr, masses, ids, alt_deg):
     C = np.array(fr.nodes[ids["sec"]]) + u[ids["sec"], :3]
     n0 = np.array([-1, -1, 0]) / math.sqrt(2)
     n = n0 + np.cross(th, n0)
-    Fp = np.array([0, 11.9, 0])                      # primary's focus, rigid to the apexes
+    Fp = np.array([0, L_FOCUS, 0])                      # primary's focus, rigid to the apexes
     F = Fp - 2 * np.dot(Fp - C, n) * n
-    F0 = np.array([-11.9, 0, 0])
+    F0 = np.array([-L_FOCUS, 0, 0])
     dF = F - F0
     d_eye = u[ids["eyep"], :3]
     e = dF - d_eye
