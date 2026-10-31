@@ -20,6 +20,10 @@ decisions; this file is the working knowledge needed to continue the engineering
 - Visual observing first. Imaging (ASI533 + OAG) is a future option only; no field rotator, EQ platform maybe later.
 - Machines: AltMill 2×4 CNC (primary for aluminium and birch), LongMill CNC, Voron Trident 3D printer.
   CAM is Vectric Aspire (Windows): DXF per part from the export scripts → Aspire toolpaths → gSender. No Fusion.
+- Material: every Al alloy has the same stiffness (~10 Msi) and the designs are stiffness-limited, so 6061-T6 is the default.
+  Flat, heavily pocketed plates (cage rings, cell frame, focuser board) may be cast tooling plate (ATP-5 = cast 5083, or MIC-6):
+  stress-relieved, milled faces, stays flat. Its yield is well below 6061-T6, so loaded threads in it (cell collimation bolts) get steel inserts;
+  truss plugs, sockets and clamped/threaded blocks stay 6061.
 - Transport: Kia EV6; liftgate opening about 25" tall is the binding limit (every piece ≤ about 23" tall).
 - Many dimensions are ASSUMED until Nick measures; keep them flagged and say so in answers.
 
