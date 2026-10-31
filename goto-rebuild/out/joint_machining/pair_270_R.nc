@@ -1,10 +1,10 @@
 ( pair_270_R: 1.254 blind bonded bore; fixture tilt 13.59 deg )
-( units inch, WCS zero = datum post top front-left corner; check every number before cutting )
+( units inch, WCS zero = datum post top front-left corner; the block top is ABOVE Z0, rapids at block top + 0.5; check every number before cutting )
 G20 G90 G17 G94
 M3 S18000
 G4 P3
 ( T1 = 1/2 3FL carbide flat end mill )
-G0 Z1.0
+G0 Z1.618
 G0 X3.1180 Y3.4728
 G1 Z1.1683 F15
 G1 X3.1180 Y3.4728 Z1.1683 F30
@@ -2650,7 +2650,7 @@ X3.1093 Y3.4063
 X3.1158 Y3.4393
 X3.1180 Y3.4728
 G1 X2.8610 Y3.4728 F20
-G0 Z1.0
+G0 Z1.618
 G0 X3.2280 Y3.4728
 G1 Z1.1683 F15
 G1 X3.2280 Y3.4728 Z1.1683 F30
@@ -5296,7 +5296,7 @@ X3.2155 Y3.3778
 X3.2249 Y3.4249
 X3.2280 Y3.4728
 G1 X2.8610 Y3.4728 F20
-G0 Z1.0
+G0 Z1.618
 ( finish pass, full depth )
 G0 X3.2380 Y3.4728
 G1 Z1.1683 F12
@@ -6647,6 +6647,6 @@ X3.2252 Y3.3752
 X3.2348 Y3.4236
 X3.2380 Y3.4728
 G1 X2.8610 Y3.4728 F20
-G0 Z1.0
+G0 Z1.618
 M5
 M30

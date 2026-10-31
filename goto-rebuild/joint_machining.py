@@ -6,8 +6,9 @@ a compound angle. The AltMill is 3-axis, so each one is cut with the block sitti
 (one per station, Voron) that stands that axis vertical; the cut itself is generated G-code (helical, so no special tools).
 
 Block frames (inches): t tangential (+ toward increasing angle), u up the tube, r radial outward.
-  socket block: datum = centre of the block body's underside (= stub top); stock 3.6 t x 2.0 r x 3.6 u including
-                1.5 of spigot material below the datum (milled to a 1.569" spigot last).
+  socket block: datum = centre of the block's underside (= stub top); stock 3.6 t x 2.0 r x 2.1 u. The 1.569" spigot
+                is a separate turned part (truss_joints.SPIGOT_*), bolted and bonded into a register in the underside, so
+                the stack on the fixture stays ~3.6" (it was 5.1" with integral spigot stock: too tall for the AltMill).
   pair block:   datum = centre of the top face (against the cage ring); 3.6 t x 1.6 r x 1.6 u.
 Station frame: the block's resting face lies on the fixture's sloped face ("plate"); the plate is rotated by beta about its
 normal and tilted by tau about machine X so the feature axis comes out exactly vertical. Machine origin for the G-code =
@@ -29,8 +30,7 @@ IN = 25.4
 OUT = os.path.join("out", "joint_machining")
 os.makedirs(OUT, exist_ok=True)
 
-SPIGOT_L = 1.5
-SOCK_STOCK = (T.BLOCK_T, T.BLOCK_R, T.BLOCK_H + SPIGOT_L)       # t, r, u
+SOCK_STOCK = (T.BLOCK_T, T.BLOCK_R, T.BLOCK_H)                  # t, r, u (spigot is a separate turned part)
 PAIR_STOCK = (T.PAIR_T, T.PAIR_R, T.PAIR_H)
 K30 = math.tan(T.HALF)                                          # cone wall: r = K30 * (z - apex)
 FIX_WALL, FIX_WALL_H, FIX_MIN = 0.25, 0.45, 0.40                # fence wall thickness/height, fixture min thickness
@@ -76,7 +76,7 @@ def plate_frame(f, p):
     """block (t, u, r) -> plate (x, y, z), z = out of the resting face."""
     t, u, r = p
     if f["kind"] == "cup":
-        return np.array([t, r, u + SPIGOT_L])                             # stock underside on the plate
+        return np.array([t, r, u])                                        # block underside on the plate
     return np.array([t, -r, -u])                                          # pair block upside down (top face on the plate)
 
 
@@ -173,12 +173,19 @@ RPM = 18000
 
 
 def g_header(title):
-    return [f"( {title} )", "( units inch, WCS zero = datum post top front-left corner; check every number before cutting )",
+    return [f"( {title} )", "( units inch, WCS zero = datum post top front-left corner; the block top is ABOVE Z0, rapids at block top + 0.5; check every number before cutting )",
             "G20 G90 G17 G94", f"M3 S{RPM}", "G4 P3"]
 
 
-def g_footer():
-    return ["G0 Z1.0", "M5", "M30"]
+SAFE_ABOVE_TOP = 0.50      # rapid height above the highest point of the block (fences, clamps and inserts are lower)
+
+
+def safe_z(g):
+    return round(g["top_z"] + SAFE_ABOVE_TOP, 3)
+
+
+def g_footer(sz):
+    return [f"G0 Z{sz:.3f}", "M5", "M30"]
 
 
 def helix_ring(cx, cy, r, z_from, z_to, step, feed, pts=48):
@@ -205,8 +212,9 @@ def gcode_cup(f, g):
     helix that follows the 60 deg cone, then a 0.29" stud hole through the 0.10" web into the wheel pocket."""
     cx, cy, za = g["feat"]
     z0 = g["top_z"] + 0.05
+    sz = safe_z(g)
     L = g_header(f"{f['label']}: 60 deg cup + stud hole; fixture tilt {math.degrees(g['st']['tau']):.2f} deg")
-    L += ["( T1 = 1/4 3FL carbide flat end mill, rough )", "G0 Z1.0", f"G0 X{cx:.4f} Y{cy:.4f}"]
+    L += ["( T1 = 1/4 3FL carbide flat end mill, rough )", f"G0 Z{sz:.3f}", f"G0 X{cx:.4f} Y{cy:.4f}"]
     z = z0
     while z > za + 0.25:
         z = max(z - 0.035, za + 0.25)
@@ -220,7 +228,7 @@ def gcode_cup(f, g):
             L.append(f"G1 X{cx + r:.4f} Y{cy:.4f} F40")
             L.append(f"G2 X{cx + r:.4f} Y{cy:.4f} I{-r:.4f} J0 F40")
         L.append(f"G1 X{cx:.4f} Y{cy:.4f}")
-    L += ["G0 Z1.0", "M5", "( T2 = 1/8 ball end mill, finish )", "M0 (change to 1/8 ball, re-zero Z on the post)", f"M3 S{RPM}", "G4 P3"]
+    L += [f"G0 Z{sz:.3f}", "M5", "( T2 = 1/8 ball end mill, finish )", "M0 (change to 1/8 ball, re-zero Z on the post)", f"M3 S{RPM}", "G4 P3"]
     rb = 0.0625
     zw_end = za + rb * math.cos(T.HALF) / K30 + 0.002
     zw = z0 - rb * math.sin(T.HALF)
@@ -238,9 +246,9 @@ def gcode_cup(f, g):
                 first = False
             L.append(f"G1 X{x:.4f} Y{y:.4f} Z{zc:.4f} F35")
         zw -= step
-    L += ["G0 Z1.0", "M5", "( T3 = 1/8 flat end mill, stud hole 0.290 )", "M0 (change to 1/8 flat, re-zero Z)", f"M3 S{RPM}", "G4 P3"]
+    L += [f"G0 Z{sz:.3f}", "M5", "( T3 = 1/8 flat end mill, stud hole 0.290 )", "M0 (change to 1/8 flat, re-zero Z)", f"M3 S{RPM}", "G4 P3"]
     L += helix_ring(cx, cy, 0.145 - 0.0625, za + 0.05, za - 0.30, 0.01, 12)
-    L += g_footer()
+    L += g_footer(sz)
     return L
 
 
@@ -248,16 +256,17 @@ def gcode_bore(f, g):
     """Pair bore: 1.254" blind bore by helical interpolation with a 1/2" 3-flute flat end mill, flat floor at the tube end."""
     cx, cy, zf = g["feat"]
     z0 = g["top_z"] + 0.05
+    sz = safe_z(g)
     L = g_header(f"{f['label']}: 1.254 blind bonded bore; fixture tilt {math.degrees(g['st']['tau']):.2f} deg")
-    L += ["( T1 = 1/2 3FL carbide flat end mill )", "G0 Z1.0"]
+    L += ["( T1 = 1/2 3FL carbide flat end mill )", f"G0 Z{sz:.3f}"]
     r_tool = 0.25
     for r in (0.627 - r_tool - 0.12, 0.627 - r_tool - 0.010):
         L += helix_ring(cx, cy, r, z0, zf + 0.005, 0.03, 30)
         L.append(f"G1 X{cx:.4f} Y{cy:.4f} F20")
-        L.append("G0 Z1.0")
+        L.append(f"G0 Z{sz:.3f}")
     L += ["( finish pass, full depth )"] + helix_ring(cx, cy, 0.627 - r_tool, z0, zf, 0.06, 25)
     L.append(f"G1 X{cx:.4f} Y{cy:.4f} F20")
-    L += g_footer()
+    L += g_footer(sz)
     return L
 
 
@@ -265,8 +274,8 @@ def gcode_bore(f, g):
 def socket_pocket_dxf():
     """Outside (radial) face of the socket block, viewed from outside: the two thumbwheel pockets."""
     T_, R_, H_ = SOCK_STOCK
-    w = cq.Workplane("XY").rect(T_ * IN, H_ * IN).extrude(0.1 * IN)              # x = t, y = u (stock incl. spigot)
-    ys = -H_ / 2 + SPIGOT_L                                                      # datum (stub top) in this view
+    w = cq.Workplane("XY").rect(T_ * IN, H_ * IN).extrude(0.1 * IN)              # x = t, y = u
+    ys = -H_ / 2                                                                 # datum (stub top) in this view
     for side in (-1, 1):
         apex_u = 1.0
         top = apex_u - T.POCKET_TOP
@@ -276,10 +285,15 @@ def socket_pocket_dxf():
 
 
 def socket_spigot_dxf():
+    """Underside of the socket block: Ø0.504 x 0.12 register + 1/4-20 tap drill on the centreline."""
     T_, R_, H_ = SOCK_STOCK
-    d = T.STUB_OD - 2 * T.STUB_WALL - 0.006
-    w = cq.Workplane("XY").rect(T_ * IN, R_ * IN).extrude(0.1 * IN).cut(cq.Workplane("XY").circle(d / 2 * IN).extrude(0.1 * IN))
-    cq.exporters.export(w.section(0.05 * IN), os.path.join(OUT, "socket_op5_spigot_pocket_around_1.569_island.dxf"))
+    w = cq.Workplane("XY").rect(T_ * IN, R_ * IN).extrude(0.1 * IN)
+    w = w.cut(cq.Workplane("XY").circle((T.SPIGOT_PILOT_D / 2 + 0.002) * IN).extrude(0.1 * IN))
+    w = w.cut(cq.Workplane("XY").circle(0.1005 * IN).extrude(0.1 * IN))
+    cq.exporters.export(w.section(0.05 * IN), os.path.join(OUT, "socket_op5_underside_register_and_tap.dxf"))
+    for old in ("socket_op5_spigot_pocket_around_1.569_island.dxf",):
+        if os.path.exists(os.path.join(OUT, old)):
+            os.remove(os.path.join(OUT, old))
 
 
 def pair_top_dxf(t, feats):
@@ -340,11 +354,13 @@ def main():
     rep["wedge_washer_max_thickness_in"] = wedge_washer()
     rep["tube_bond_length_in"] = round((T.PAIR_H - 0.6 + T.TUBE_PAST_APEX * 0.972) / 0.972, 2)
     rep["ops"] = {
-        "socket block (x3: 1 point, 2 back), stock 2.0 x 4 flat bar cut 3.70 (faced to 3.6 t x 2.0 r x 3.6 u)": [
-            "Op1 vise: square the stock to 3.60 x 2.00 x 3.60",
+        "socket block (x3: 1 point, 2 back), stock 2.0 x 4 flat bar cut 2.20 (faced to 3.6 t x 2.0 r x 2.1 u)": [
+            "Op1 vise: square the stock to 3.60 x 2.00 x 2.10",
             "Op2 vise, outside (radial) face up: two wheel pockets 1.00 wide x 0.75 tall, 1.25 deep (socket_op2 DXF)",
             "Op3/Op4 printed fixture, station L then R: 60 deg cup + 0.29 stud hole (.nc files, touch-plate zero on the post corner)",
-            "Op5 vise, underside up: pocket around the 1.569 spigot island, 1.50 deep (socket_op5 DXF); fit to the stub bore, bond with structural epoxy",
+            "Op5 vise, underside up: Ø0.504 register 0.12 deep + #7 (0.201) drill 0.70 deep on the centre, tap 1/4-20 0.60 deep (socket_op5 DXF)",
+            "Spigot (turned, x3, from 1 3/4 round with the cone plugs): Ø1.569 x 1.50 (fit to the measured stub bore, 0.003 radial bond gap), Ø0.50 x 0.11 pilot on top, 0.266 through hole, Ø0.39 x 0.26 counterbore in the bottom (socket_spigot STEP)",
+            "Assemble: bond the spigot's top face and pilot to the block (structural epoxy) and pull up with a 1/4-20 x 1-3/4 SHCS + Loctite from below; then bond the spigot into the stub as before",
             "Wedge washer x2 per block under the thumbwheels (wedge_washer STEP, 13.4 deg; flat-bottomed, key in the pocket)"],
         "pair block (x3: 30, 150 mirror, 270), stock 2 x 2 square bar cut 3.70 (faced to 3.6 t x 1.6 r x 1.6 u)": [
             "Op1 vise, top (ring) face up: 0.281 stud hole through at r -0.45, 1 x 1/4 dowel hole reamed 0.50 deep at r +0.35 (1/4 x 3/4 dowel; stud + dowel locate it, rotation slop ±0.6° moves a node 0.008 in), 2 x 1/4 bond vents down to the bore floors (pair_<t> DXF)",
@@ -395,18 +411,20 @@ def sheet():
     ax.text(T_ / 2, R_ / 2 + 0.08, "outside face ↑", ha="right", fontsize=6)
     ax.set_xlim(-2.4, 2.4); ax.set_ylim(-1.8, 2.0); ax.set_aspect("equal"); ax.axis("off")
     # socket outside-face view (pockets + spigot)
-    ax = fig.add_axes([0.25, 0.56, 0.22, 0.36]); ax.set_title("Socket block, outside face (Op2) and spigot (Op5)", fontsize=9)
+    ax = fig.add_axes([0.25, 0.56, 0.22, 0.36]); ax.set_title("Socket block, outside face (Op2), underside register (Op5), turned spigot", fontsize=9)
     ax.add_patch(Rectangle((-T_ / 2, 0), T_, T.BLOCK_H, fill=False, lw=1.2))
     d_sp = T.STUB_OD - 2 * T.STUB_WALL - 0.006
-    ax.add_patch(Rectangle((-d_sp / 2, -SPIGOT_L), d_sp, SPIGOT_L, fill=False, lw=1.0))
-    ax.add_patch(Rectangle((-T_ / 2, -SPIGOT_L), T_, SPIGOT_L, fill=False, lw=0.5, ls=":", color="gray"))
+    SPIGOT_L = T.SPIGOT_L
+    ax.add_patch(Rectangle((-d_sp / 2, -SPIGOT_L), d_sp, SPIGOT_L, fill=False, lw=1.0, ls="--"))
+    ax.add_patch(Rectangle((-T.SPIGOT_PILOT_D / 2, 0), T.SPIGOT_PILOT_D, T.SPIGOT_PILOT_H + 0.01, fill=True, color="#ddd", lw=0))
+    ax.add_patch(Rectangle((-0.1, 0), 0.2, T.SPIGOT_DRILL_DEPTH, fill=False, lw=0.6))
     for s in (-1, 1):
         top = 1.0 - T.POCKET_TOP
         ax.add_patch(Rectangle((0.8 * s - T.POCKET_W / 2, top - T.POCKET_H), T.POCKET_W, T.POCKET_H, fill=True, color="#ddd", lw=0))
         ax.plot(0.8 * s, 1.0, "k+", ms=8)
-    ax.text(0, -SPIGOT_L / 2, f"Ø{d_sp:.3f} x {SPIGOT_L:.2f}\n(bond in stub bore)", ha="center", va="center", fontsize=7)
+    ax.text(0, -SPIGOT_L / 2, f"turned spigot (separate part)\nØ{d_sp:.3f} x {SPIGOT_L:.2f}, bolted + bonded\n(bond in stub bore)", ha="center", va="center", fontsize=7)
     ax.text(0.8, 1.0 - T.POCKET_TOP - T.POCKET_H / 2, f"{T.POCKET_W:.2f} x {T.POCKET_H:.2f}\n1.25 deep", ha="center", va="center", fontsize=6)
-    dim(ax, -T_ / 2, -SPIGOT_L, -T_ / 2, T.BLOCK_H, f"{T.BLOCK_H + SPIGOT_L:.2f} stock", horiz=False)
+    dim(ax, -T_ / 2, 0, -T_ / 2, T.BLOCK_H, f"{T.BLOCK_H:.2f} block", horiz=False)
     ax.text(T_ / 2 + 0.05, 0, "← datum (stub top)", ha="left", fontsize=6)
     ax.set_xlim(-2.6, 2.2); ax.set_ylim(-2.0, 2.6); ax.set_aspect("equal"); ax.axis("off")
     # pair block top

@@ -35,9 +35,9 @@ BARS = [
     dict(id="rd12", stock="6061 round bar 1/2\"", order="12\"", cuts="3 × 1.65\"", parts="Cell pivot posts"),
     dict(id="tube58", stock="6061 round tube 5/8\" OD × 0.058\" wall", order="6 ft", cuts="6 × 9.27\"", parts="Upper cage diagonals"),
     dict(id="rd3", stock="6061 round bar 3\"", order="6\"", cuts="1 × 5\"", parts="Secondary holder body (45° face milled)"),
-    dict(id="fl2x4", stock="6061 flat bar 2\" × 4\"", order="12\"", cuts="3 × 3.70\"", parts="Truss socket blocks (provisional: detail drawings pending)"),
-    dict(id="sq2", stock="6061 square bar 2\" × 2\"", order="12\"", cuts="3 × 3.70\"", parts="Truss pair blocks (provisional)"),
-    dict(id="rd134", stock="6061 round bar 1 3/4\"", order="40\"", cuts="12 × 3.10\"", parts="Truss cone plugs (provisional; needs a lathe or a turning service)"),
+    dict(id="fl2x4", stock="6061 flat bar 2\" × 4\"", order="8\"", cuts="3 × 2.20\"", parts="Truss socket blocks (spigot is a separate turned part)"),
+    dict(id="sq2", stock="6061 square bar 2\" × 2\"", order="12\"", cuts="3 × 3.70\"", parts="Truss pair blocks"),
+    dict(id="rd134", stock="6061 round bar 1 3/4\"", order="48\"", cuts="12 × 3.10\" + 3 × 1.90\"", parts="Truss cone plugs (12) and socket spigots (3): lathe work, send to a turning service"),
 ]
 OTHER = [
     dict(id="delrin1", stock="Delrin (acetal) rod 1\"", order="6\"", cuts="9 × 0.25\"", parts="Cell pads"),

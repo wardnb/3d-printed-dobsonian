@@ -48,6 +48,14 @@ BLOCK_T, BLOCK_R, BLOCK_H = 3.6, 2.0, 2.1      # socket block: tangential x radi
 STUD_D, STUD_BELOW = 0.25, 0.60                # stud dia, length past the cone apex
 WHEEL_D, WHEEL_T = 0.90, 0.30                  # knurled thumbwheel nut
 POCKET_H, POCKET_W, POCKET_TOP = 0.75, 1.0, 0.10   # pocket height (along y), tangential width, top below the apex
+# Spigot = a separate turned 6061 part (2026-10-31: integral it made the socket stock 3.6" tall, too tall for the AltMill's
+# Z on the wedge fixtures). Short Ø0.50 x 0.11 pilot into a matching register in the block's underside, bonded, and a
+# 1/4-20 x 1-3/4 SHCS up from the spigot's bottom (counterbored) into the block (tapped 0.60 deep on the centreline).
+# The block's underside bears on the stub's end face; the spigot only locates it and takes side/uplift loads.
+SPIGOT_L = 1.5
+SPIGOT_PILOT_D, SPIGOT_PILOT_H = 0.50, 0.11       # register depth 0.12 (pocket floor is 0.15 above the underside)
+SPIGOT_CB_D, SPIGOT_CB_H = 0.39, 0.26              # SHCS head counterbore in the spigot's bottom
+SPIGOT_TAP_DEPTH, SPIGOT_DRILL_DEPTH = 0.60, 0.70  # 1/4-20 in the block (#7 drill 0.201)
 # the pocket ceiling is flat in the block but the stud leans ~13.4 deg: the thumbwheel bears on an aluminium wedge washer
 # (0.9" dia, 13.4 deg, keyed square in the pocket) so it seats square to the stud
 WEDGE_D, WEDGE_MIN = 0.9, 0.06
@@ -161,8 +169,14 @@ def socket_block(b):
     rd, td = rad_tan(b)
     centre = (bx, Y_STUB_TOP + BLOCK_H / 2, bz)
     blk = block(centre, b, BLOCK_T, BLOCK_H, BLOCK_R)
-    spigot = cyl(STUB_OD / 2 - STUB_WALL - 0.003, 1.5, (bx, Y_STUB_TOP, bz), (0, -1, 0))
-    blk = blk.union(spigot)
+    spigot = cyl(STUB_OD / 2 - STUB_WALL - 0.003, SPIGOT_L, (bx, Y_STUB_TOP, bz), (0, -1, 0))
+    spigot = spigot.union(cyl(SPIGOT_PILOT_D / 2, SPIGOT_PILOT_H, (bx, Y_STUB_TOP, bz), (0, 1, 0)))
+    spigot = spigot.cut(cyl(0.133, SPIGOT_L + 0.2, (bx, Y_STUB_TOP + 0.15, bz), (0, -1, 0)))
+    spigot = spigot.cut(cyl(SPIGOT_CB_D / 2, SPIGOT_CB_H, (bx, Y_STUB_TOP - SPIGOT_L, bz), (0, 1, 0)))
+    blk = blk.cut(cyl(SPIGOT_PILOT_D / 2 + 0.002, SPIGOT_PILOT_H + 0.01, (bx, Y_STUB_TOP, bz), (0, 1, 0)))   # register
+    blk = blk.cut(cyl(0.1005, SPIGOT_DRILL_DEPTH, (bx, Y_STUB_TOP, bz), (0, 1, 0)))                       # tap drill
+    sbolt = cyl(0.125, 1.75, (bx, Y_STUB_TOP - SPIGOT_L + SPIGOT_CB_H, bz), (0, 1, 0))
+    sbolt = sbolt.union(cyl(0.1875, 0.25, (bx, Y_STUB_TOP - SPIGOT_L + 0.01, bz), (0, 1, 0)))
     wheels, studs = None, None
     for side in (-1, +1):
         t = (b - 60 * side) % 360                       # the apex this cup's pole comes from
@@ -184,7 +198,7 @@ def socket_block(b):
         wheel = cyl(WHEEL_D / 2, WHEEL_T, along(pc, d_up, WHEEL_T / 2), d_dn)
         wheels = wheel if wheels is None else wheels.union(wheel)
         studs = stud if studs is None else studs.union(stud)
-    return dict(block=blk, knobs=wheels, pads=studs)
+    return dict(block=blk, knobs=wheels, pads=studs, spigot=spigot, spigot_bolt=sbolt)
 
 def pair_block(t):
     ax, az = polar(R_TOP, t)
@@ -256,6 +270,7 @@ def build_full():
     for b in (90, 210, 330):
         sb = socket_block(b)
         a.add(sb["block"], name=f"socket_{b}", color=ALU)
+        a.add(sb["spigot"], name=f"spigot_{b}", color=ALU)
         a.add(sb["knobs"], name=f"thumbwheels_{b}", color=KNOB)
         a.add(sb["pads"], name=f"drawbolt_studs_{b}", color=BRASS)
         stub, ring, collars = stub_and_ring(b)
@@ -282,7 +297,7 @@ def build_viewer():
     sb_ = wh = st = col = None
     for b in (90, 210, 330):
         sb = socket_block(b)
-        sb_, wh, st = U(sb_, sb["block"]), U(wh, sb["knobs"]), U(st, sb["pads"])
+        sb_, wh, st = U(U(sb_, sb["block"]), sb["spigot"]), U(wh, sb["knobs"]), U(st, sb["pads"])
         col = U(col, stub_and_ring(b)[2])
         st = U(st, board_pin(b)[0])
     for name, part, color in (("truss_poles", poles, CARBON), ("pole_plugs", plugs, ALU), ("pair_blocks", pblk, ALU),
@@ -308,6 +323,8 @@ def build_socket_detail(b=90, section=False):
 
     sb = socket_block(b)
     add(sb["block"], "socket_block", ALU)
+    add(sb["spigot"], "spigot", ALU)
+    add(sb["spigot_bolt"], "spigot_bolt", BRASS)
     add(sb["knobs"], "thumbwheels", KNOB)
     add(sb["pads"], "drawbolt_studs", BRASS)
     stub, ring, collars = stub_and_ring(b)
@@ -346,7 +363,9 @@ if __name__ == "__main__":
     sd = build_socket_detail(); sd.save(f"{out}/socket_detail.glb")
     ss = build_socket_detail(section=True); ss.save(f"{out}/socket_section.glb")
     pd = build_pair_detail(); pd.save(f"{out}/pair_detail.glb")
-    socket_block(90)["block"].val().exportStep(f"{out}/socket_block_90.step")
+    _sb = socket_block(90)
+    _sb["block"].val().exportStep(f"{out}/socket_block_90.step")
+    _sb["spigot"].val().exportStep(f"{out}/socket_spigot.step")
     pair_block(30)["block"].val().exportStep(f"{out}/pair_block_30.step")
     A, B = node_points(30, 1)
     pole_parts(A, B)[0].val().exportStep(f"{out}/pole_plug.step")
