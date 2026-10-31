@@ -636,3 +636,9 @@ Strength was never the issue; stiffness and slip were. Once two bolts slip, dowe
 | No corrector | — | needs a 1" extension tube | — |
 
 Other effects: poles 37.30/37.35" node to node (carbon cut 35.20/35.25"), eyepiece 63.2" at zenith, mirror face 12.46" below the axis, no counterweight; fully illuminated field 0.30" with the 3.5" secondary (was 0.45", obstruction unchanged at 21.9%). Stiffness unchanged: cage + spider 0.012 mm, truss 0.027 mm, mirror box 0.040 mm. Camera train with a rotator: ASI533 6.5 + ZWO OAG 16.5 + Falcon v2 16 + adapters \~3 ≈ 42 of \~57 mm; rotator goes before the OAG; filters on the corrector nose.
+
+## Truss base: how the poles meet the mirror box (2026-10-31)
+
+The three DobStuff 45 mm aluminium struts stay in their holes through both boards and are cut off 1" above the top ring; these stubs (at 90/210/330°) carry the truss. Each stub takes an aluminium socket block whose spigot is bonded into the 40 mm bore; the block has two countersunk cups for the cone-ended plugs of the two poles that land there, each pulled down by a stud and knurled thumbwheel.
+
+The stubs are held along their axis at both boards: two 45 mm clamp collars, one above and one below the top ring, and a 1/4" × 2-3/4" steel dowel pin drilled radially in from the mirror board's edge at mid-thickness through both walls of each stub. A lower collar has no room (the stubs end flush under the board, and one inside the box would hit the bearing wings). Holding both boards gives 0.023 mm of focal-plane error in the box model against 0.059 mm at the top ring only.

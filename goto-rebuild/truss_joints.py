@@ -49,6 +49,12 @@ STUD_D, STUD_BELOW = 0.25, 0.60                # stud dia, length past the cone 
 WHEEL_D, WHEEL_T = 0.90, 0.30                  # knurled thumbwheel nut
 POCKET_H, POCKET_W, POCKET_TOP = 0.60, 1.0, 0.10   # pocket height (along y), tangential width, top below the apex
 COLLAR_OD, COLLAR_W = 2.75, 0.55               # 45 mm two-piece shaft clamp collars, one each side of the box's top ring
+# board pin (2026-10-31): the stubs end flush with the mirror board's underside and a collar on top of the board would
+# hit the bearing wings, so each stub is also pinned at the mirror board by a 1/4" steel dowel drilled radially in from
+# the board's edge through both stub walls (double shear). mcage_fe: stubs held at both boards 0.023 mm vs 0.059 at the
+# top ring only. Board edge along the stub's ray: the point tip (12.125") at 90, the back corners (~12.5") at 210/330.
+PIN_D = 0.25
+PIN_EDGE_R = {90: 12.125, 210: 12.5, 330: 12.5}
 PAIR_T, PAIR_R, PAIR_H = 3.6, 1.6, 1.6         # pair block under the ring
 
 
@@ -209,6 +215,17 @@ def stub_and_ring(b):
     return stub, ring.union(collars) if False else ring, collars
 
 
+def board_pin(b):
+    """1/4" dowel pin, radial, through the mirror board's edge at mid-thickness and both walls of the stub."""
+    bx, bz = base_xz(b)
+    rc = math.hypot(bx, bz)
+    ux, uz = bx / rc, bz / rc
+    r0 = rc - STUB_OD / 2 - 0.10                 # just past the far wall
+    r1 = PIN_EDGE_R[b] - 0.06                    # flush, slightly countersunk
+    y = F["y_mcage_bot"] + PR["ply"] / 2
+    return cyl(PIN_D / 2, r1 - r0, (ux * r0, y, uz * r0), (ux, 0, uz)), round(r1 - r0, 2)
+
+
 def cage_ring_sector(t):
     return ring_sector(Y_RING_LO, PR["ring_thick"], PR["ring_id"] / 2, PR["ring_od"] / 2, t, 22)
 
@@ -235,6 +252,7 @@ def build_full():
         a.add(stub, name=f"stub_{b}", color=STUB)
         a.add(ring, name=f"box_ring_{b}", color=BIRCH)
         a.add(collars, name=f"stub_collars_{b}", color=KNOB)
+        a.add(board_pin(b)[0], name=f"board_pin_{b}", color=BRASS)
     return a
 
 
@@ -256,9 +274,10 @@ def build_viewer():
         sb = socket_block(b)
         sb_, wh, st = U(sb_, sb["block"]), U(wh, sb["knobs"]), U(st, sb["pads"])
         col = U(col, stub_and_ring(b)[2])
+        st = U(st, board_pin(b)[0])
     for name, part, color in (("truss_poles", poles, CARBON), ("pole_plugs", plugs, ALU), ("pair_blocks", pblk, ALU),
                               ("pair_knobs", pk, KNOB), ("pair_dowels", dw, BRASS), ("socket_blocks", sb_, ALU),
-                              ("thumbwheels", wh, KNOB), ("drawbolt_studs", st, BRASS), ("stub_collars", col, KNOB)):
+                              ("thumbwheels", wh, KNOB), ("drawbolt_studs_and_board_pins", st, BRASS), ("stub_collars", col, KNOB)):
         a.add(part, name=name, color=color)
     return a
 
@@ -326,4 +345,5 @@ if __name__ == "__main__":
     print(json.dumps(dict(pole_node_to_node_in=round(L, 2), pole_lengths_in=lens, tube_len_in=round(L - 0.6 - S_SHOULDER - SHOULDER_L, 2),
                           plug_nose_to_shoulder_in=round(S_SHOULDER - S_NOSE, 3), shank_od_in=round(BORE - 0.006, 3),
                           cup_depth_in=round(S_SHOULDER, 3), node_offset_in=NODE_OFF,
-                          spigot_od_in=round(STUB_OD - 2 * STUB_WALL - 0.006, 3), stub_od_in=STUB_OD), indent=1))
+                          spigot_od_in=round(STUB_OD - 2 * STUB_WALL - 0.006, 3), stub_od_in=STUB_OD,
+                          board_pin_len_in={b: board_pin(b)[1] for b in (90, 210, 330)}), indent=1))

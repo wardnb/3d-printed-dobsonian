@@ -100,7 +100,7 @@ ul.meas li > span:first-child { min-width: 0; }
 <div class="wrap">
   <header>
     <h1>16-inch Dob Rebuild</h1>
-    <p class="sub">Model v6 (rocker, ground board and 14″ bearings 19 Oct; triangulated upper cage, adjustable finder cradle and 9-point flotation cell 30 Oct; drawbolt truss joints and stub collars 31 Oct) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>box weight, mirror board opening and puck map still to measure</b></p>
+    <p class="sub">Model v6 (rocker, ground board and 14″ bearings 19 Oct; triangulated upper cage, adjustable finder cradle and 9-point flotation cell 30 Oct; drawbolt truss joints, stub collars and board pins, bearing back wings and focus moved to 12.5″ for the ES corrector 31 Oct) · Hubble Optics 16″ f/3.9 · SiTech + Nexus GoTo · <b>box weight, mirror board opening and puck map still to measure</b></p>
   </header>
 
   <div class="grid">
@@ -362,7 +362,7 @@ function tune(obj) {
 }
 const trussInfo = {
   zigzag: { len: C.truss_zigzag_pole_length_in, note: "1.25″ × 0.062″ carbon, three pre-joined pairs on a ±60° base, cone sockets on the 45 mm stubs",
-    text: "Chosen after the truss review. Each pre-joined pair meets at one block under the lower ring and spreads 120° to two cone sockets on the mirror cage; neighbouring pairs share a socket block, so the six poles form a fully triangulated octahedron. Twice as stiff as the narrow layout (0.04 vs 0.09 mm of focal-point drift with ideal joints at the measured 38.5″); the joints, not the poles, decide the rest. Each cone is pulled into its cup by a stud and thumbwheel, because two poles go into tension (up to 27 lb) near the horizon; collars on the stubs take the 46 lb uplift. Three units to carry; six thumbwheels and three knobs at setup." },
+    text: "Chosen after the truss review. Each pre-joined pair meets at one block under the lower ring and spreads 120° to two cone sockets on the mirror cage; neighbouring pairs share a socket block, so the six poles form a fully triangulated octahedron. Twice as stiff as the narrow layout (0.04 vs 0.09 mm of focal-point drift with ideal joints at the measured 38.5″); the joints, not the poles, decide the rest. Each cone is pulled into its cup by a stud and thumbwheel, because two poles go into tension (up to 27 lb) near the horizon; collars on the stubs at the top ring and a cross pin at the mirror board take the 46 lb uplift. Three units to carry; six thumbwheels and three knobs at setup." },
   pairs: { len: C.truss_pole_length_in, note: "1″ OD, pre-joined pairs on a ±30° base",
     text: "The earlier layout, kept for comparison: slimmer triangles to carry, but a 10″ base gives half the twist stiffness, and six separate sockets." },
 };
