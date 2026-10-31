@@ -1,0 +1,255 @@
+<title>Dob Plate Cut Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a job sheet. Option chooser and running total up top, then one section per stock thickness with
+   the nest drawings beside a priced stock list. */
+:root {
+  --bg: #f3f4f2;          /* mill-scale paper */
+  --panel: #ffffff;
+  --ink: #1b2328;
+  --muted: #5d6870;
+  --rule: #d3d8da;
+  --stock: #8fa1ab;       /* stock outline */
+  --part: #1b2328;        /* part outlines */
+  --part-fill: rgba(196, 107, 30, 0.10);
+  --accent: #c46b1e;      /* layout-fluid orange */
+  --accent-ink: #9a4f10;
+  --ok: #2f6b47;
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171a; --panel: #192024; --ink: #e4e9eb; --muted: #95a3aa; --rule: #2b3439;
+    --stock: #5f7480; --part: #dfe6e9; --part-fill: rgba(232, 146, 70, 0.14);
+    --accent: #e89246; --accent-ink: #f0a865; --ok: #7cc49a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171a; --panel: #192024; --ink: #e4e9eb; --muted: #95a3aa; --rule: #2b3439;
+  --stock: #5f7480; --part: #dfe6e9; --part-fill: rgba(232, 146, 70, 0.14);
+  --accent: #e89246; --accent-ink: #f0a865; --ok: #7cc49a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font: 16px/1.5 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 48px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 36px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 22px; font-weight: 700; }
+h3 { font-size: 16px; font-weight: 700; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--muted); }
+.mono, td.n, .dim { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font: 500 12px var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-ink); }
+header { display: grid; gap: 10px; }
+.specs { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 13px var(--f-mono); color: var(--muted); }
+
+/* chooser + total */
+.chooser { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(220px, 0.9fr); gap: 12px; align-items: stretch; }
+@media (max-width: 860px) { .chooser { grid-template-columns: minmax(0, 1fr); } }
+.opt { display: grid; gap: 6px; padding: 14px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); cursor: pointer; }
+.opt input { position: absolute; opacity: 0; pointer-events: none; }
+.opt:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.opt .k { font: 700 13px var(--f-mono); color: var(--accent-ink); }
+.opt .t { font-weight: 600; line-height: 1.3; }
+.opt .m { font: 13px var(--f-mono); color: var(--muted); }
+.total { display: grid; align-content: center; gap: 2px; padding: 14px 16px; border-radius: 6px; background: var(--ink); color: var(--bg); }
+.total .lab { font: 500 12px var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.8; }
+.total .v { font: 700 30px var(--f-display); font-variant-numeric: tabular-nums; }
+.total .sub { font: 12px var(--f-mono); opacity: 0.75; }
+
+section { display: grid; gap: 16px; }
+.sec-head { display: grid; gap: 4px; border-top: 2px solid var(--ink); padding-top: 12px; }
+.option { display: grid; gap: 12px; padding: 16px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); }
+.option.dim-out { opacity: 0.55; }
+.option-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; justify-content: space-between; }
+.sheets { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 14px; }
+figure { margin: 0; display: grid; gap: 6px; min-width: 0; }
+figure svg { width: 100%; height: auto; display: block; }
+figcaption { font: 12.5px var(--f-mono); color: var(--muted); }
+figcaption b { color: var(--ink); font-weight: 500; }
+.stock-o { fill: none; stroke: var(--stock); stroke-width: 0.06; stroke-dasharray: 0.3 0.18; }
+.part-o { fill: var(--part-fill); stroke: var(--part); stroke-width: 0.04; fill-rule: evenodd; }
+.part-o.ring { fill: rgba(127, 127, 127, 0.06); }
+.part-o:hover, .part-o.hl { fill: var(--accent); fill-opacity: 0.35; }
+.tip { font: 12px var(--f-mono); color: var(--accent-ink); min-height: 1.4em; }
+
+.tbl { overflow-x: auto; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); }
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 640px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font: 500 11.5px var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--bg); }
+tr:last-child td { border-bottom: 0; }
+td.n { white-space: nowrap; }
+td small { display: block; color: var(--muted); font-size: 12.5px; }
+.price { display: inline-flex; align-items: center; gap: 4px; font-family: var(--f-mono); }
+.price input { width: 7.5ch; font: 14px var(--f-mono); padding: 4px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--bg); color: var(--ink); text-align: right; }
+.price input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.line-total { font-family: var(--f-mono); white-space: nowrap; }
+.notes { display: grid; gap: 10px; padding: 16px 18px; border-left: 3px solid var(--accent); background: var(--panel); border-radius: 0 6px 6px 0; }
+.notes ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; max-width: 80ch; }
+.small { font-size: 13px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">16″ GoTo Dob · aluminium stock</div>
+    <h1>Plate cut plan</h1>
+    <p class="lede">Every machined plate part, nested from its real outline on stock you can order. Pick how to buy the 1/4″ plate, type in prices as you shop, and the total updates. Prices stay in this browser only.</p>
+    <div class="specs"><span>1/4″ end mill</span><span>0.30″ between parts</span><span>0.30″ from stock edges</span><span>nests from the export scripts' DXFs, 31 Oct</span></div>
+  </header>
+
+  <div class="chooser" role="radiogroup" aria-label="How to buy the 1/4 inch plate" id="chooser"></div>
+
+  <section id="quarter">
+    <div class="sec-head">
+      <h2>1/4″ plate</h2>
+      <p class="small">Two cage rings, the focuser board, three cell triangles, the finder bar and tilt plate, the secondary carrier and the gluing-jig bridge. In options A and B every small part fits inside the first ring's centre; the second ring's 17″ centre disc is spare.</p>
+    </div>
+    <div id="opts"></div>
+  </section>
+
+  <section id="half">
+    <div class="sec-head">
+      <h2>1/2″ plate</h2>
+      <p class="small">The cell frame, with the edge gussets, finder angle blocks, yaw yoke and the jig base tucked between its arms.</p>
+    </div>
+    <div id="halfbox"></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Bar and tube</h2>
+      <p class="small">Order lengths include saw kerf and facing. Truss joint stock is provisional until the joint drawings are done.</p>
+    </div>
+    <div class="tbl"><table><thead><tr><th>Stock</th><th>Order</th><th>Cut list</th><th>For</th><th>Price</th></tr></thead><tbody id="bars"></tbody></table></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Other materials</h2></div>
+    <div class="tbl"><table><thead><tr><th>Stock</th><th>Order</th><th>Cut list</th><th>For</th><th>Price</th></tr></thead><tbody id="other"></tbody></table></div>
+  </section>
+
+  <section>
+    <div class="notes">
+      <h3>Ordering notes</h3>
+      <ul>
+        <li><b>Plate type:</b> ATP-5 or MIC-6 cast plate suits the rings, the focuser board and the cell frame, since it stays flat when the slots and pockets come out. Rolled 6061-T6 works everywhere. Stiffness is the same.</li>
+        <li><b>Rings (option C):</b> ask for at least 21″ OD and at most 17.25″ ID, and machine both edges to 20.50″ / 17.50″. Ring and circle cuts come with loose saw tolerances, so never order them at finished size.</li>
+        <li><b>Circles (option B):</b> a 21¼″ disc leaves about 0.37″ round the ring. Hold it with screws through the centre waste, not the rim.</li>
+        <li><b>1/2″ plate:</b> for the cell frame, put steel thread inserts in the three 5/16-24 bolt holes if the frame is cast plate.</li>
+        <li><b>Bed:</b> everything fits the AltMill bed (48.6 × 24.4″) as a single fixture.</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem("cutplan:" + k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem("cutplan:" + k, JSON.stringify(v)); } catch (e) {} },
+};
+const prices = store.get("prices") || {};
+let choice = store.get("choice") || "C";
+
+const fmt = v => "$" + v.toFixed(2);
+function svgFor(sheet) {
+  const pad = 0.4, w = sheet.w + 2 * pad, h = sheet.h + 2 * pad;
+  const path = rings => rings.map(r => "M" + r.map(p => (p[0] + pad).toFixed(2) + " " + (sheet.h - p[1] + pad).toFixed(2)).join("L") + "Z").join("");
+  let s = `<svg viewBox="0 0 ${w.toFixed(2)} ${h.toFixed(2)}" role="img" aria-label="${sheet.label} nest">`;
+  s += `<path class="stock-o" d="${path(sheet.stock)}"/>`;
+  for (const p of sheet.parts) {
+    const ring = /ring/.test(p.name) ? " ring" : "";
+    s += `<path class="part-o${ring}" d="${path(p.rings)}"><title>${p.name}</title></path>`;
+  }
+  return s + "</svg>";
+}
+function stockLines(sheets) {
+  // group identical stock pieces
+  const g = {};
+  for (const s of sheets) { (g[s.label] = g[s.label] || { label: s.label, n: 0, lb: s.lb }).n++; }
+  return Object.values(g);
+}
+function priceCell(id) {
+  const v = prices[id] ?? "";
+  return `<span class="price">$<input id="p-${id}" data-id="${id}" inputmode="decimal" value="${v}" aria-label="Unit price"></span>`;
+}
+function sheetFigure(s) {
+  const pct = Math.round(100 * s.used_area / s.stock_area);
+  const names = s.parts.map(p => p.name.replace(/ \d\/\d$/, "")).filter((v, i, a) => a.indexOf(v) === i);
+  return `<figure>${svgFor(s)}<figcaption><b>${s.label}</b> · ${s.lb} lb · ${pct}% used<br>${names.join(", ")}${s.edge_note ? "<br>" + s.edge_note : ""}</figcaption></figure>`;
+}
+
+function render() {
+  const opts = DATA.plan.options;
+  document.getElementById("chooser").innerHTML = opts.map(o => {
+    const lb = o.sheets.reduce((a, s) => a + s.lb, 0);
+    return `<label class="opt"><input type="radio" name="opt" value="${o.key}" ${o.key === choice ? "checked" : ""}>
+      <span class="k">Option ${o.key}</span><span class="t">${o.title}</span>
+      <span class="m">${o.sheets.length} pieces · ${lb.toFixed(1)} lb of 1/4″ stock</span></label>`;
+  }).join("") + `<div class="total" aria-live="polite"><span class="lab">Running total</span><span class="v" id="tot">$0.00</span><span class="sub" id="totsub"></span></div>`;
+
+  document.getElementById("opts").innerHTML = opts.map(o => {
+    const lines = stockLines(o.sheets).map(l => {
+      const id = o.key + ":" + l.label;
+      return `<tr><td>${l.label}<small>${l.lb} lb each</small></td><td class="n">× ${l.n}</td><td>${priceCell(id)}</td><td class="line-total" data-line="${id}" data-n="${l.n}"></td></tr>`;
+    }).join("");
+    return `<div class="option" data-opt="${o.key}">
+      <div class="option-head"><h3>Option ${o.key}: ${o.title}</h3><span class="small mono" data-optsum="${o.key}"></span></div>
+      <div class="sheets">${o.sheets.map(sheetFigure).join("")}</div>
+      <div class="tbl"><table><thead><tr><th>Stock piece</th><th>Qty</th><th>Unit price</th><th>Line</th></tr></thead><tbody>${lines}</tbody></table></div>
+    </div>`;
+  }).join("");
+
+  const half = DATA.plan.half;
+  document.getElementById("halfbox").innerHTML = `<div class="option">
+    <div class="sheets">${half.map(sheetFigure).join("")}</div>
+    <div class="tbl"><table><thead><tr><th>Stock piece</th><th>Qty</th><th>Unit price</th><th>Line</th></tr></thead><tbody>
+    ${stockLines(half).map(l => `<tr><td>${l.label}<small>${l.lb} lb</small></td><td class="n">× ${l.n}</td><td>${priceCell("H:" + l.label)}</td><td class="line-total" data-line="H:${l.label}" data-n="${l.n}"></td></tr>`).join("")}
+    </tbody></table></div></div>`;
+
+  const row = r => `<tr><td>${r.stock}</td><td class="n">${r.order}</td><td class="n">${r.cuts}</td><td>${r.parts}</td><td>${priceCell(r.id)} <span class="line-total" data-line="${r.id}" data-n="1"></span></td></tr>`;
+  document.getElementById("bars").innerHTML = DATA.bars.map(row).join("");
+  document.getElementById("other").innerHTML = DATA.other.map(row).join("");
+
+  document.querySelectorAll('input[name="opt"]').forEach(r => r.addEventListener("change", () => { choice = r.value; store.set("choice", choice); totals(); }));
+  document.querySelectorAll(".price input").forEach(inp => inp.addEventListener("input", () => {
+    const v = inp.value.trim(); if (v === "") delete prices[inp.dataset.id]; else prices[inp.dataset.id] = v;
+    store.set("prices", prices); totals();
+  }));
+  totals();
+}
+
+function lineVal(id, n) { const v = parseFloat(prices[id]); return isFinite(v) ? v * n : null; }
+function totals() {
+  let sum = 0, missing = 0;
+  const optSum = {};
+  document.querySelectorAll(".line-total").forEach(el => {
+    const v = lineVal(el.dataset.line, +el.dataset.n);
+    el.textContent = v == null ? "" : (el.dataset.n > 1 ? "= " : "") + fmt(v);
+    const key = el.dataset.line.split(":")[0];
+    if (/^[ABC]$/.test(key)) { optSum[key] = optSum[key] || { v: 0, miss: 0 }; if (v == null) optSum[key].miss++; else optSum[key].v += v; }
+    const counts = /^[ABC]$/.test(key) ? key === choice : true;
+    if (counts) { if (v == null) missing++; else sum += v; }
+  });
+  document.querySelectorAll("[data-optsum]").forEach(el => {
+    const o = optSum[el.dataset.optsum]; if (!o) return;
+    el.textContent = o.miss ? `${fmt(o.v)} so far · ${o.miss} price${o.miss > 1 ? "s" : ""} to fill` : `1/4″ stock ${fmt(o.v)}`;
+  });
+  document.querySelectorAll(".option[data-opt]").forEach(el => el.classList.toggle("dim-out", el.dataset.opt !== choice));
+  document.getElementById("tot").textContent = fmt(sum);
+  document.getElementById("totsub").textContent = `Option ${choice} + 1/2″ plate + bar + other` + (missing ? ` · ${missing} prices not filled` : " · all prices in");
+}
+render();
+</script>

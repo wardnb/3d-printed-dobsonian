@@ -9,6 +9,8 @@ decisions; this file is the working knowledge needed to continue the engineering
 - `docs/measurements.md` is the log of as-built measurements; `docs/dobstuff_kit_reference.md` is what the DobStuff blog shows.
 - 3D viewer artifact: https://claude.ai/artifact/J1dg2GqFYWfny88NzJT5gF (republish from `goto-rebuild/dist/index.html`
   with the seven `*.glb.txt` files; see "Viewer" below).
+- Cut plan (aluminium stock, nests + price fields): https://claude.ai/artifact/237LEPgBL1Bg77qVBxu3X3 — `cut_plan.py` (nests the DXFs → `out/cut_plan/plan.json`) then
+  `build_cut_plan_page.py` (template `site_cutplan/template.html` → `out/cut_plan/index.html`); re-run both after any part change and republish.
 - Truss joints viewer: https://claude.ai/artifact/1scoQ7z6AcpRmrQ3ZDc6of (source `goto-rebuild/site_joints/index.html`,
   models from `truss_joints.py` → `out/truss_joints/`; bundle to `dist_joints/` as base64 `.glb.txt` and republish).
 
