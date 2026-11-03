@@ -44,7 +44,7 @@ OTHER = [
     dict(id="delrin18", stock="Delrin sheet 1/8\"", order="small offcut", cuts="2 × 0.5\" × 1.4\"", parts="Edge gusset faces"),
     dict(id="cork", stock="Cork sheet 1/16\"", order="6\" × 6\"", cuts="9 × 1\" discs", parts="Pad faces"),
     dict(id="ss020", stock="301/302 stainless strip 0.020\" × 1.5\"", order="36\"", cuts="4 × 8.5\"", parts="Quad spider vanes"),
-    dict(id="carbon", stock="Roll-wrapped carbon tube 1.25\" OD × 0.062\" wall", order="6 × 1 m (39.4\")", cuts="36.11\" ×2 and 36.16\" ×4", parts="Truss poles (carbon supplier, not Midwest)"),
+    dict(id="carbon", stock="Roll-wrapped carbon tube 1.125\" ID × ~1.25\" OD", order="3 × 72\" (two poles each)", cuts="36.11\" ×2 and 36.16\" ×4 (needs 72.3\" per pair: trim the pair-block bond 0.2\" or buy 74\"+)", parts="Truss poles. Priced 3 Nov: Clearwater 1.125-1.253-TW-72 $164 ea (twill skin, 0.064 wall); Rock West 45562 $170.99 ea (UD, 0.058 wall, 13.3 Msi, in stock, $51.30 ground to Boise); DragonPlate FDPT1.125*1.25*72 $169.43 ea. Clearwater 36\" stock is too short."),
 ]
 
 # Everything else to buy (2026-10-31). when: "now" = drawn and fixed; "measure" = wait for a measurement or the part it
@@ -141,6 +141,7 @@ def inch(o):
 
 # prices Nick saw at Midwest Steel Supply (cast tool & jig plate), 2026-10-31; keys = page line ids
 SEEN = {
+    "carbon": ["164.00", "3", "$164 (72\"; Rock West $170.99 + $51.30 ship, DragonPlate $169.43)", "3 Nov", "Clearwater"],
     "sq34": ["33.26", "1", "$33.26 (48\"; Midwest $63.50 for 72\", Metals Depot ~$40)", "3 Nov", "OnlineMetals"],
     "fl34x114": ["47.15", "1", "$47.15 (36\"; Midwest $75.31 for 30\")", "2 Nov", "OnlineMetals"],
     "rd12": ["4.50", "1", "$4.50 (12\"; Midwest $29.00)", "2 Nov", "OnlineMetals"],
