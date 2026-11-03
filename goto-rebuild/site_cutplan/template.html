@@ -148,7 +148,7 @@ tr.hide, .buygroup.hide { display: none; }
   <section>
     <div class="sec-head">
       <h2>Bar and tube</h2>
-      <p class="small">Order lengths include saw kerf and facing. Consolidated for Midwest's per-piece cut fee (2 Nov): several parts share a bar, and a few are milled down from a larger section.</p>
+      <p class="small">Order lengths include saw kerf and facing. Consolidated to cut per-piece fees: several parts share a bar, and a few are milled down from a larger section. Each price notes the cheaper supplier (Midwest or OnlineMetals, 2–3 Nov); plates are far cheaper at Midwest.</p>
     </div>
     <div class="tbl"><table><thead><tr><th>Stock</th><th>Order</th><th>Cut list</th><th>For</th><th>Price</th></tr></thead><tbody id="bars"></tbody></table></div>
   </section>
@@ -222,7 +222,7 @@ function qtyCell(id, need) {
 function priceCell(id) {
   const v = prices[id] ?? "";
   const seen = (DATA.seen || {})[id];
-  return `<span class="price">$<input id="p-${id}" data-id="${id}" inputmode="decimal" value="${v}" aria-label="Unit price"></span>` + (seen ? `<small class="seen">Midwest, ${seen[3] || "31 Oct"}: ${seen[2]}</small>` : "");
+  return `<span class="price">$<input id="p-${id}" data-id="${id}" inputmode="decimal" value="${v}" aria-label="Unit price"></span>` + (seen ? `<small class="seen">${seen[4] || "Midwest"}, ${seen[3] || "31 Oct"}: ${seen[2]}</small>` : "");
 }
 function sheetFigure(s) {
   const pct = Math.round(100 * s.used_area / s.stock_area);

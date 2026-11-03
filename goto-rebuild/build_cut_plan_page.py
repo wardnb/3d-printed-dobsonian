@@ -28,16 +28,16 @@ for o in plan["half"]:
             p["rings"] = slim(p["rings"])
 
 BARS = [
-    # Midwest prices checked 2 Nov 2026 (their per-piece cut fee is ~$7.50, so fewer, longer pieces win; a 72" piece of
+    # Midwest and OnlineMetals prices checked 2-3 Nov 2026 (plates and the 3" round / 1-3/4 square from Midwest, the rest from OnlineMetals) (their per-piece cut fee is ~$7.50, so fewer, longer pieces win; a 72" piece of
     # 3/4" square costs less than a 48" one). 6061-T6 throughout.
-    dict(id="sq34", stock="6061 square bar 3/4\" × 3/4\"", order="72\"", cuts="4 × 7.50\" + 3 × 4.15\"", parts="Upper cage posts; cell guard posts milled down to 1/2\" square"),
-    dict(id="fl34x114", stock="6061 flat bar 3/4\" × 1 1/4\"", order="30\"", cuts="3 × 1.20\" + 6 × 0.60\" + 2 × 7.50\" + 6\"", parts="Diagonal node (3) and clevis (6) blocks; focuser rails ripped to 1/2\" × 3/4\"; 6\" for the six wedge washers"),
+    dict(id="sq34", stock="6061 square bar 3/4\" × 3/4\"", order="48\"", cuts="4 × 7.50\" + 3 × 4.15\"", parts="Upper cage posts; cell guard posts milled down to 1/2\" square"),
+    dict(id="fl34x114", stock="6061 flat bar 3/4\" × 1 1/4\"", order="36\"", cuts="3 × 1.20\" + 6 × 0.60\" + 2 × 7.50\" + 6\"", parts="Diagonal node (3) and clevis (6) blocks; focuser rails ripped to 1/2\" × 3/4\"; 6\" for the six wedge washers"),
     dict(id="rd12", stock="6061 round bar 1/2\"", order="12\"", cuts="3 × 1.65\"", parts="Cell pivot posts"),
-    dict(id="tube58", stock="6061-T6 thin-wall round tube 5/8\" OD × 0.065\" wall", order="60\"", cuts="6 × 9.27\"", parts="Upper cage diagonals (Midwest has 0.065\", not 0.058\": slightly heavier and stiffer)"),
+    dict(id="tube58", stock="6061-T6 drawn round tube 5/8\" OD × 0.058\" wall", order="72\"", cuts="6 × 9.27\"", parts="Upper cage diagonals (OnlineMetals has 0.058\"; Midwest only 0.065\")"),
     dict(id="rd3", stock="6061 round bar 3\"", order="6\"", cuts="1 × 5\"", parts="Secondary holder body (45° face milled)"),
     dict(id="sq214", stock="6061 square bar 2 1/4\" × 2 1/4\"", order="12\"", cuts="3 × 3.70\"", parts="Truss socket blocks (faced to 3.6 × 2.0 × 2.1)"),
     dict(id="sq134", stock="6061 square bar 1 3/4\" × 1 3/4\"", order="20\"", cuts="3 × 3.70\" + 3 × 2.40\"", parts="Truss pair blocks (faced to 1.6 × 1.6) and socket spigots (milled upright, 0.75\" grip)"),
-    dict(id="rd138", stock="6061 round bar 1 3/8\"", order="40\"", cuts="12 × 3.10\"", parts="Truss cone plugs (1.25\" max dia) if made in-house; skip if the turning service supplies material"),
+    dict(id="rd138", stock="6061 round bar 1 3/8\"", order="48\"", cuts="12 × 3.10\"", parts="Truss cone plugs (1.25\" max dia) if made in-house; skip if the turning service supplies material"),
 ]
 OTHER = [
     dict(id="delrin1", stock="Delrin (acetal) rod 1\"", order="6\"", cuts="9 × 0.25\"", parts="Cell pads"),
@@ -141,14 +141,14 @@ def inch(o):
 
 # prices Nick saw at Midwest Steel Supply (cast tool & jig plate), 2026-10-31; keys = page line ids
 SEEN = {
-    "sq34": ["63.50", "1", "$63.50 (72\")", "2 Nov"],
-    "fl34x114": ["75.31", "1", "$75.31 (30\")", "2 Nov"],
-    "rd12": ["29.00", "1", "$29.00 (12\")", "2 Nov"],
-    "tube58": ["37.84", "1", "$37.84 (60\")", "2 Nov"],
-    "rd3": ["88.42", "1", "$88.42 (6\")", "2 Nov"],
-    "sq214": ["87.63", "1", "$87.63 (12\")", "2 Nov"],
-    "sq134": ["88.03", "1", "$88.03 (20\")", "2 Nov"],
-    "rd138": ["117.08", "1", "$117.08 (40\")", "2 Nov"],
+    "sq34": ["33.26", "1", "$33.26 (48\"; Midwest $63.50 for 72\")", "2 Nov", "OnlineMetals"],
+    "fl34x114": ["47.15", "1", "$47.15 (36\"; Midwest $75.31 for 30\")", "2 Nov", "OnlineMetals"],
+    "rd12": ["4.50", "1", "$4.50 (12\"; Midwest $29.00)", "2 Nov", "OnlineMetals"],
+    "tube58": ["20.50", "1", "$20.50 (72\", 0.058 wall; Midwest $37.84 for 0.065)", "2 Nov", "OnlineMetals"],
+    "rd3": ["88.42", "1", "$88.42 (6\"; OnlineMetals $127.59 for 12\")", "2 Nov", "Midwest"],
+    "sq214": ["80.75", "1", "$80.75 (12\"; Midwest $87.63)", "2 Nov", "OnlineMetals"],
+    "sq134": ["88.03", "1", "$88.03 (20\"; OnlineMetals $109.45 for 24\")", "2 Nov", "Midwest"],
+    "rd138": ["91.84", "1", "$91.84 (48\"; Midwest $117.08 for 40\")", "2 Nov", "OnlineMetals"],
     'A:1/4" plate 21.5" × 21.5"': ["170.74", "2", "$170.74 each at 2, $168.24 at 3"],
     'B:1/4" circle 21" dia': ["144.54", "2", "$144.54 each at 2 (21.25\" quoted), $142.04 at 3"],
     'HR:1/2" plate 17" × 18"': ["148.41", "1", "$148.41 for 1, $140.91 each at 2"],
