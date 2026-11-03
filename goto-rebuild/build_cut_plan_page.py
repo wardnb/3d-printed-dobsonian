@@ -37,7 +37,8 @@ BARS = [
     dict(id="rd3", stock="6061 round bar 3\"", order="6\"", cuts="1 × 5\"", parts="Secondary holder body (45° face milled)"),
     dict(id="fl2x4", stock="6061 flat bar 2\" × 4\"", order="8\"", cuts="3 × 2.20\"", parts="Truss socket blocks (spigot is a separate turned part)"),
     dict(id="sq2", stock="6061 square bar 2\" × 2\"", order="12\"", cuts="3 × 3.70\"", parts="Truss pair blocks"),
-    dict(id="rd134", stock="6061 round bar 1 3/4\"", order="48\"", cuts="12 × 3.10\" + 3 × 1.90\"", parts="Truss cone plugs (12) and socket spigots (3): lathe work, send to a turning service"),
+    dict(id="rd134", stock="6061 round bar 1 3/4\"", order="48\"", cuts="12 × 3.10\" + 3 × 2.40\"", parts="Truss cone plugs (12: rotary axis, lathe or turning service) and socket spigots (3: milled upright in the AltMill vise, 0.75\" of grip)"),
+    dict(id="rd1", stock="6061 round bar 1\"", order="6\"", cuts="6 × 0.40\"", parts="Thumbwheel wedge washers (13.4°, keyed square in the pocket)"),
 ]
 OTHER = [
     dict(id="delrin1", stock="Delrin (acetal) rod 1\"", order="6\"", cuts="9 × 0.25\"", parts="Cell pads"),
@@ -55,7 +56,7 @@ def B(id, item, n, spec, when, src=""):
 
 BUY = [
     dict(group="Truss and joints", items=[
-        B("turn", "Turning job: cone plugs + socket spigots", 1, "12 plugs + 3 spigots from the STEP files (pole_plug, socket_spigot), 6061. Plug shank is sized to a 1.126\" bore: send the measured carbon bore with the order", "measure", "local shop / Xometry"),
+        B("turn", "Turning job: cone plugs (only if not made in-house)", 1, "12 plugs from the pole_plug STEP, 6061; skip if the rotary-axis trial plug seats well. Plug shank is sized to a 1.126\" bore: send the measured carbon bore with the order. Spigots are milled on the AltMill", "measure", "local shop / Xometry"),
         B("collar45", "45 mm two-piece shaft collar", 6, "Aluminium or steel clamp collar, 45 mm bore, ~2.75\" OD; one each side of the box's top ring on every stub", "now", "Ruland / McMaster"),
         B("pin14x234", "Steel dowel pin 1/4\" × 2-3/4\"", 3, "Board pins, radial through the mirror board's edge and both stub walls", "now", "McMaster"),
         B("pin14x34", "Steel dowel pin 1/4\" × 3/4\"", 3, "Pair block locating dowels (reamed 0.250\")", "now", "McMaster"),
@@ -121,6 +122,7 @@ BUY = [
     dict(group="Shop consumables (truss blocks and fixtures)", items=[
         B("tools", "Carbide end mills", 1, "1/8\" ball, ≥ 1.5\" reach; 1/8\" flat, ≥ 1.5\" reach; 1/4\" 3FL, ≥ 1.25\" LOC; 1/2\" 3FL, ≥ 1.5\" LOC (aluminium geometry)", "now", ""),
         B("taps", "1/4-20 tap, #7 drill, 0.250\" reamer", 1, "Socket undersides, pair blocks", "now", ""),
+        B("bush29", "Drill bushing 0.29\" OD × 0.201\" ID", 1, "Plug-nose drill guide: pressed into a socket cup's stud hole so the tap drill follows the cone axis", "now", "McMaster"),
         B("hsi", "1/4-20 heat-set inserts + strap clamps", 1, "16 inserts for the 8 printed fixtures; low-profile straps (≤ 0.35\" above the block)", "now", ""),
         B("fil", "PETG or ASA filament", 1, "8 wedge fixtures", "now", ""),
         B("loctite", "Loctite 243 / 263", 1, "Drawbolts, spigot bolts", "now", ""),
