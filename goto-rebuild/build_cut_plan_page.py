@@ -141,7 +141,7 @@ def inch(o):
 
 # prices Nick saw at Midwest Steel Supply (cast tool & jig plate), 2026-10-31; keys = page line ids
 SEEN = {
-    "sq34": ["33.26", "1", "$33.26 (48\"; Midwest $63.50 for 72\")", "2 Nov", "OnlineMetals"],
+    "sq34": ["33.26", "1", "$33.26 (48\"; Midwest $63.50 for 72\", Metals Depot ~$40)", "3 Nov", "OnlineMetals"],
     "fl34x114": ["47.15", "1", "$47.15 (36\"; Midwest $75.31 for 30\")", "2 Nov", "OnlineMetals"],
     "rd12": ["4.50", "1", "$4.50 (12\"; Midwest $29.00)", "2 Nov", "OnlineMetals"],
     "tube58": ["20.50", "1", "$20.50 (72\", 0.058 wall; Midwest $37.84 for 0.065)", "2 Nov", "OnlineMetals"],
@@ -150,7 +150,7 @@ SEEN = {
     "sq134": ["88.03", "1", "$88.03 (20\"; OnlineMetals $109.45 for 24\")", "2 Nov", "Midwest"],
     "rd138": ["91.84", "1", "$91.84 (48\"; Midwest $117.08 for 40\")", "2 Nov", "OnlineMetals"],
     'A:1/4" plate 21.5" × 21.5"': ["170.74", "2", "$170.74 each at 2, $168.24 at 3"],
-    'B:1/4" circle 21" dia': ["144.54", "2", "$144.54 each at 2 (21.25\" quoted), $142.04 at 3"],
+    'B:1/4" circle 21" dia': ["141.39", "2", "$141.39 each at 2, $138.89 at 3 (3 Nov; was $144.54 on 31 Oct)", "3 Nov"],
     'HR:1/2" plate 17" × 18"': ["148.41", "1", "$148.41 for 1, $140.91 each at 2"],
 }
 data = inch(dict(plan=plan, bars=BARS, other=OTHER, buy=BUY, seen=SEEN))
