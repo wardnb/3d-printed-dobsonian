@@ -354,15 +354,15 @@ def main():
     rep["wedge_washer_max_thickness_in"] = wedge_washer()
     rep["tube_bond_length_in"] = round((T.PAIR_H - 0.6 + T.TUBE_PAST_APEX * 0.972) / 0.972, 2)
     rep["ops"] = {
-        "socket block (x3: 1 point, 2 back), stock 2.0 x 4 flat bar cut 2.20 (faced to 3.6 t x 2.0 r x 2.1 u)": [
+        "socket block (x3: 1 point, 2 back), stock 2-1/4 square bar cut 3.70 (faced to 3.6 t x 2.0 r x 2.1 u)": [
             "Op1 vise: square the stock to 3.60 x 2.00 x 2.10",
             "Op2 vise, outside (radial) face up: two wheel pockets 1.00 wide x 0.75 tall, 1.25 deep (socket_op2 DXF)",
             "Op3/Op4 printed fixture, station L then R: 60 deg cup + 0.29 stud hole (.nc files, touch-plate zero on the post corner)",
             "Op5 vise, underside up: Ø0.504 register 0.12 deep + #7 (0.201) drill 0.70 deep on the centre, tap 1/4-20 0.60 deep (socket_op5 DXF)",
-            "Spigot (turned, x3, from 1 3/4 round with the cone plugs): Ø1.569 x 1.50 (fit to the measured stub bore, 0.003 radial bond gap), Ø0.50 x 0.11 pilot on top, 0.266 through hole, Ø0.39 x 0.26 counterbore in the bottom (socket_spigot STEP)",
+            "Spigot (x3, milled upright in the vise from 1-3/4 square cut 2.40, 0.75 grip): Ø1.569 x 1.50 (fit to the measured stub bore, 0.003 radial bond gap), Ø0.50 x 0.11 pilot on top, 0.266 through hole, Ø0.39 x 0.26 counterbore in the bottom (socket_spigot STEP)",
             "Assemble: bond the spigot's top face and pilot to the block (structural epoxy) and pull up with a 1/4-20 x 1-3/4 SHCS + Loctite from below; then bond the spigot into the stub as before",
             "Wedge washer x2 per block under the thumbwheels (wedge_washer STEP, 13.4 deg; flat-bottomed, key in the pocket)"],
-        "pair block (x3: 30, 150 mirror, 270), stock 2 x 2 square bar cut 3.70 (faced to 3.6 t x 1.6 r x 1.6 u)": [
+        "pair block (x3: 30, 150 mirror, 270), stock 1-3/4 square bar cut 3.70 (faced to 3.6 t x 1.6 r x 1.6 u)": [
             "Op1 vise, top (ring) face up: 0.281 stud hole through at r -0.45, 1 x 1/4 dowel hole reamed 0.50 deep at r +0.35 (1/4 x 3/4 dowel; stud + dowel locate it, rotation slop ±0.6° moves a node 0.008 in), 2 x 1/4 bond vents down to the bore floors (pair_<t> DXF)",
             "Op2/Op3 printed fixture, block upside down, station L then R: 1.254 blind bore to the tube-end floor (.nc files)",
             "Bond the tubes to the floor with a length jig (node-to-node 37.30 / 37.35)"],
