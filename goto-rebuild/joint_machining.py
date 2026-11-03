@@ -32,6 +32,7 @@ os.makedirs(OUT, exist_ok=True)
 
 SOCK_STOCK = (T.BLOCK_T, T.BLOCK_R, T.BLOCK_H)                  # t, r, u (spigot is a separate turned part)
 PAIR_STOCK = (T.PAIR_T, T.PAIR_R, T.PAIR_H)
+BORE_D = round(T.POLE_OD + 0.004, 3)                            # pair-block bore: tube OD + 0.002 radial epoxy gap
 K30 = math.tan(T.HALF)                                          # cone wall: r = K30 * (z - apex)
 FIX_WALL, FIX_WALL_H, FIX_MIN = 0.25, 0.45, 0.40                # fence wall thickness/height, fixture min thickness
 POST = 0.75                                                     # datum post (square)
@@ -253,18 +254,18 @@ def gcode_cup(f, g):
 
 
 def gcode_bore(f, g):
-    """Pair bore: 1.254" blind bore by helical interpolation with a 1/2" 3-flute flat end mill, flat floor at the tube end."""
+    """Pair bore: Ø(tube OD + 0.004) blind bore by helical interpolation with a 1/2" 3-flute flat end mill, flat floor at the tube end."""
     cx, cy, zf = g["feat"]
     z0 = g["top_z"] + 0.05
     sz = safe_z(g)
-    L = g_header(f"{f['label']}: 1.254 blind bonded bore; fixture tilt {math.degrees(g['st']['tau']):.2f} deg")
+    L = g_header(f"{f['label']}: {BORE_D:.3f} blind bonded bore; fixture tilt {math.degrees(g['st']['tau']):.2f} deg")
     L += ["( T1 = 1/2 3FL carbide flat end mill )", f"G0 Z{sz:.3f}"]
     r_tool = 0.25
-    for r in (0.627 - r_tool - 0.12, 0.627 - r_tool - 0.010):
+    for r in (BORE_D / 2 - r_tool - 0.12, BORE_D / 2 - r_tool - 0.010):
         L += helix_ring(cx, cy, r, z0, zf + 0.005, 0.03, 30)
         L.append(f"G1 X{cx:.4f} Y{cy:.4f} F20")
         L.append(f"G0 Z{sz:.3f}")
-    L += ["( finish pass, full depth )"] + helix_ring(cx, cy, 0.627 - r_tool, z0, zf, 0.06, 25)
+    L += ["( finish pass, full depth )"] + helix_ring(cx, cy, BORE_D / 2 - r_tool, z0, zf, 0.06, 25)
     L.append(f"G1 X{cx:.4f} Y{cy:.4f} F20")
     L += g_footer(sz)
     return L
@@ -364,7 +365,7 @@ def main():
             "Wedge washer x2 per block under the thumbwheels (wedge_washer STEP, 13.4 deg; flat-bottomed, key in the pocket)"],
         "pair block (x3: 30, 150 mirror, 270), stock 1-3/4 square bar cut 3.70 (faced to 3.6 t x 1.6 r x 1.6 u)": [
             "Op1 vise, top (ring) face up: 0.281 stud hole through at r -0.45, 1 x 1/4 dowel hole reamed 0.50 deep at r +0.35 (1/4 x 3/4 dowel; stud + dowel locate it, rotation slop ±0.6° moves a node 0.008 in), 2 x 1/4 bond vents down to the bore floors (pair_<t> DXF)",
-            "Op2/Op3 printed fixture, block upside down, station L then R: 1.254 blind bore to the tube-end floor (.nc files)",
+            f"Op2/Op3 printed fixture, block upside down, station L then R: {BORE_D:.3f} blind bore (tube OD + 0.004; re-run after measuring the tubes) to the tube-end floor (.nc files)",
             "Bond the tubes to the floor with a length jig (node-to-node 37.30 / 37.35)"],
     }
     json.dump(rep, open(os.path.join(OUT, "report.json"), "w"), indent=1)
@@ -436,7 +437,7 @@ def sheet():
         ax.text(x, y + 0.22, f"Ø{d:.3f}", ha="center", fontsize=6)
     for f in features():
         if f["part"] == "pair_30":
-            ax.add_patch(Circle((f["point"][0], f["point"][2]), 0.627, fill=False, lw=0.6, ls="--"))
+            ax.add_patch(Circle((f["point"][0], f["point"][2]), BORE_D / 2, fill=False, lw=0.6, ls="--"))
     dim(ax, -Tp / 2, -Rp / 2, Tp / 2, -Rp / 2, f"{Tp:.2f}")
     dim(ax, -Tp / 2, -Rp / 2, -Tp / 2, Rp / 2, f"{Rp:.2f}", horiz=False)
     ax.text(0, -Rp / 2 - 0.55, "stud r −0.45, dowel r +0.35, vents over the bore floors; bores (dashed) cut from below on the fixture", ha="center", fontsize=6)
@@ -462,7 +463,7 @@ def sheet():
     tb = ax.table(cellText=rows, colLabels=["station", "feature", "tilt °", "block rot °", "feature X Y Z from post corner", "fixture"],
                   loc="upper left", cellLoc="left", colWidths=[0.14, 0.07, 0.07, 0.09, 0.30, 0.25])
     tb.auto_set_font_size(False); tb.set_fontsize(8); tb.scale(1, 1.35)
-    ax.text(0, 0.02, "Cup: 60° included, apex at the X Y Z shown (stud hole Ø0.290 continues 0.30 below). Bore: Ø1.254 blind, floor at Z shown "
+    ax.text(0, 0.02, f"Cup: 60° included, apex at the X Y Z shown (stud hole Ø0.290 continues 0.30 below). Bore: Ø{BORE_D:.3f} blind, floor at Z shown "
             "(= tube end, 0.30 past the pair node).\nTools: 1/4 3FL flat (cup rough, LOC ≥ 1.25), 1/8 ball and 1/8 flat (≥ 1.5 reach), 1/2 3FL flat (bore, LOC ≥ 1.5). "
             "Socket 210 and 330 are the same part (checked).", fontsize=7, va="bottom")
     # ops

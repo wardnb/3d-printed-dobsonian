@@ -32,7 +32,7 @@ Y_RING_LO = F["y_ring_lo"]                     # cage lower ring, mirror-side fa
 Y_STUB_TOP = F["y_mcage_top"] + PR["stub_proud"]
 Y_NODE = Y_STUB_TOP + PR.get("socket_node_above_stub", 0.6)   # cone apex (FE node) height
 NODE_OFF = 0.8                                 # the two cups at a socket sit +/-0.8" tangentially
-POLE_OD, POLE_WALL = PR["truss_pole_od"], 0.062   # 1.25 x 0.062 carbon
+POLE_OD, POLE_WALL = PR["truss_pole_od"], 0.0575  # Rock West 45562: 1.125 ID x 1.24 OD (ordered 2026-11-03); measure before cutting plugs
 BORE = POLE_OD - 2 * POLE_WALL
 STUB_OD, STUB_WALL = PR["mcage_tube_od"], PR["mcage_tube_wall"]   # 45 x 2.5 mm DobStuff strut (measured)
 HALF = math.radians(30)                        # 60 deg included cone
@@ -61,7 +61,7 @@ SPIGOT_TAP_DEPTH, SPIGOT_DRILL_DEPTH = 0.60, 0.70  # 1/4-20 in the block (#7 dri
 WEDGE_D, WEDGE_MIN = 0.9, 0.06
 # pair end (2026-10-31 detailing): the carbon tube runs 0.30" PAST the pair node into a blind bonded bore, so ~1.33" of
 # tube is bonded (it was 0.43": the tube stopped 0.6" short of the node); the bore floor locates the tube length
-TUBE_PAST_APEX = 0.30
+TUBE_PAST_APEX = 0.05                          # was 0.30: trimmed 2026-11-03 so two poles come out of one 72" tube
 COLLAR_OD, COLLAR_W = 2.75, 0.55               # 45 mm two-piece shaft clamp collars, one each side of the box's top ring
 # board pin (2026-10-31): the stubs end flush with the mirror board's underside and a collar on top of the board would
 # hit the bearing wings, so each stub is also pinned at the mirror board by a 1/4" steel dowel drilled radially in from

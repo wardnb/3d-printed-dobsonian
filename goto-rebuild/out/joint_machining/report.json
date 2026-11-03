@@ -125,21 +125,21 @@
    "tilt_deg": 13.59,
    "lean_az_deg_from_t": -155.81,
    "point_in_block_t_u_r": [
-    -0.736,
-    -0.308,
-    0.029
+    -0.789,
+    -0.551,
+    0.005
    ],
    "fixture_tilt_deg": 13.585,
    "block_rotation_deg": -245.81,
    "feature_xyz_from_post_corner": [
     3.5167,
     3.4728,
-    -0.599
+    -0.349
    ],
    "block_top_highest_z": 0.964,
    "fixture_bottom_z": -2.149,
    "gcode": "pair_30_L.nc",
-   "gcode_lines": 6652
+   "gcode_lines": 5692
   },
   {
    "station": "pair_30_R",
@@ -153,21 +153,21 @@
    "tilt_deg": 13.27,
    "lean_az_deg_from_t": -26.23,
    "point_in_block_t_u_r": [
-    0.738,
-    -0.308,
-    0.03
+    0.79,
+    -0.551,
+    0.005
    ],
    "fixture_tilt_deg": 13.266,
    "block_rotation_deg": -116.23,
    "feature_xyz_from_post_corner": [
     2.8938,
     3.4783,
-    -0.4302
+    -0.1802
    ],
    "block_top_highest_z": 1.13,
    "fixture_bottom_z": -1.961,
    "gcode": "pair_30_R.nc",
-   "gcode_lines": 6652
+   "gcode_lines": 5692
   },
   {
    "station": "pair_150_L",
@@ -181,21 +181,21 @@
    "tilt_deg": 13.27,
    "lean_az_deg_from_t": -153.77,
    "point_in_block_t_u_r": [
-    -0.738,
-    -0.308,
-    0.03
+    -0.79,
+    -0.551,
+    0.005
    ],
    "fixture_tilt_deg": 13.266,
    "block_rotation_deg": -243.77,
    "feature_xyz_from_post_corner": [
     3.6009,
     3.4783,
-    -0.5924
+    -0.3424
    ],
    "block_top_highest_z": 0.968,
    "fixture_bottom_z": -2.123,
    "gcode": "pair_150_L.nc",
-   "gcode_lines": 6652
+   "gcode_lines": 5692
   },
   {
    "station": "pair_150_R",
@@ -209,21 +209,21 @@
    "tilt_deg": 13.59,
    "lean_az_deg_from_t": -24.19,
    "point_in_block_t_u_r": [
-    0.736,
-    -0.308,
-    0.029
+    0.789,
+    -0.551,
+    0.005
    ],
    "fixture_tilt_deg": 13.585,
    "block_rotation_deg": -114.19,
    "feature_xyz_from_post_corner": [
     2.861,
     3.4728,
-    -0.445
+    -0.195
    ],
    "block_top_highest_z": 1.118,
    "fixture_bottom_z": -1.995,
    "gcode": "pair_150_R.nc",
-   "gcode_lines": 6652
+   "gcode_lines": 5692
   },
   {
    "station": "pair_270_L",
@@ -237,21 +237,21 @@
    "tilt_deg": 13.59,
    "lean_az_deg_from_t": -155.81,
    "point_in_block_t_u_r": [
-    -0.736,
-    -0.308,
-    0.029
+    -0.789,
+    -0.551,
+    0.005
    ],
    "fixture_tilt_deg": 13.585,
    "block_rotation_deg": -245.81,
    "feature_xyz_from_post_corner": [
     3.5167,
     3.4728,
-    -0.599
+    -0.349
    ],
    "block_top_highest_z": 0.964,
    "fixture_bottom_z": -2.149,
    "gcode": "pair_270_L.nc",
-   "gcode_lines": 6652
+   "gcode_lines": 5692
   },
   {
    "station": "pair_270_R",
@@ -265,21 +265,21 @@
    "tilt_deg": 13.59,
    "lean_az_deg_from_t": -24.19,
    "point_in_block_t_u_r": [
-    0.736,
-    -0.308,
-    0.029
+    0.789,
+    -0.551,
+    0.005
    ],
    "fixture_tilt_deg": 13.585,
    "block_rotation_deg": -114.19,
    "feature_xyz_from_post_corner": [
     2.861,
     3.4728,
-    -0.445
+    -0.195
    ],
    "block_top_highest_z": 1.118,
    "fixture_bottom_z": -1.995,
    "gcode": "pair_270_R.nc",
-   "gcode_lines": 6652
+   "gcode_lines": 5692
   }
  ],
  "pair_top_face_holes_t_r_dia": {
@@ -295,13 +295,13 @@
     0.25
    ],
    [
-    -0.736,
-    0.029,
+    -0.789,
+    0.005,
     0.25
    ],
    [
-    0.738,
-    0.03,
+    0.79,
+    0.005,
     0.25
    ]
   ],
@@ -317,13 +317,13 @@
     0.25
    ],
    [
-    -0.738,
-    0.03,
+    -0.79,
+    0.005,
     0.25
    ],
    [
-    0.736,
-    0.029,
+    0.789,
+    0.005,
     0.25
    ]
   ],
@@ -339,19 +339,19 @@
     0.25
    ],
    [
-    -0.736,
-    0.029,
+    -0.789,
+    0.005,
     0.25
    ],
    [
-    0.736,
-    0.029,
+    0.789,
+    0.005,
     0.25
    ]
   ]
  },
  "wedge_washer_max_thickness_in": 0.275,
- "tube_bond_length_in": 1.33,
+ "tube_bond_length_in": 1.08,
  "ops": {
   "socket block (x3: 1 point, 2 back), stock 2-1/4 square bar cut 3.70 (faced to 3.6 t x 2.0 r x 2.1 u)": [
    "Op1 vise: square the stock to 3.60 x 2.00 x 2.10",
@@ -364,7 +364,7 @@
   ],
   "pair block (x3: 30, 150 mirror, 270), stock 1-3/4 square bar cut 3.70 (faced to 3.6 t x 1.6 r x 1.6 u)": [
    "Op1 vise, top (ring) face up: 0.281 stud hole through at r -0.45, 1 x 1/4 dowel hole reamed 0.50 deep at r +0.35 (1/4 x 3/4 dowel; stud + dowel locate it, rotation slop \u00b10.6\u00b0 moves a node 0.008 in), 2 x 1/4 bond vents down to the bore floors (pair_<t> DXF)",
-   "Op2/Op3 printed fixture, block upside down, station L then R: 1.254 blind bore to the tube-end floor (.nc files)",
+   "Op2/Op3 printed fixture, block upside down, station L then R: 1.244 blind bore (tube OD + 0.004; re-run after measuring the tubes) to the tube-end floor (.nc files)",
    "Bond the tubes to the floor with a length jig (node-to-node 37.30 / 37.35)"
   ]
  }
