@@ -26,8 +26,33 @@
    ],
    "block_top_highest_z": 1.426,
    "fixture_bottom_z": -2.198,
+   "block_top_z_at_feature_xy": 1.1676,
+   "block_fence_corner_xyz": [
+    1.7704,
+    5.0842,
+    -1.3042
+   ],
+   "block_top_high_vertex_xyz": [
+    3.7715,
+    2.6534,
+    1.4264
+   ],
+   "holddown_holes_xy_0p27": [
+    [
+     6.024,
+     0.43
+    ],
+    [
+     6.024,
+     6.729
+    ],
+    [
+     0.43,
+     6.729
+    ]
+   ],
    "gcode": "socket_point_L.nc",
-   "gcode_lines": 25735
+   "gcode_lines": 25737
   },
   {
    "station": "socket_point_R",
@@ -54,8 +79,33 @@
    ],
    "block_top_highest_z": 1.426,
    "fixture_bottom_z": -2.198,
+   "block_top_z_at_feature_xy": 1.1676,
+   "block_fence_corner_xyz": [
+    3.4329,
+    2.1715,
+    -0.6176
+   ],
+   "block_top_high_vertex_xyz": [
+    3.4329,
+    2.6534,
+    1.4264
+   ],
+   "holddown_holes_xy_0p27": [
+    [
+     6.024,
+     0.43
+    ],
+    [
+     6.024,
+     6.729
+    ],
+    [
+     0.43,
+     6.729
+    ]
+   ],
    "gcode": "socket_point_R.nc",
-   "gcode_lines": 25735
+   "gcode_lines": 25737
   },
   {
    "station": "socket_back_L",
@@ -82,8 +132,33 @@
    ],
    "block_top_highest_z": 1.422,
    "fixture_bottom_z": -2.226,
+   "block_top_z_at_feature_xy": 1.1564,
+   "block_fence_corner_xyz": [
+    1.777,
+    5.0333,
+    -1.3052
+   ],
+   "block_top_high_vertex_xyz": [
+    3.8833,
+    2.6887,
+    1.4219
+   ],
+   "holddown_holes_xy_0p27": [
+    [
+     6.102,
+     0.43
+    ],
+    [
+     6.102,
+     6.738
+    ],
+    [
+     0.43,
+     6.738
+    ]
+   ],
    "gcode": "socket_back_L.nc",
-   "gcode_lines": 25957
+   "gcode_lines": 25959
   },
   {
    "station": "socket_back_R",
@@ -110,8 +185,33 @@
    ],
    "block_top_highest_z": 1.422,
    "fixture_bottom_z": -2.226,
+   "block_top_z_at_feature_xy": 1.1564,
+   "block_fence_corner_xyz": [
+    3.399,
+    2.1954,
+    -0.6194
+   ],
+   "block_top_high_vertex_xyz": [
+    3.399,
+    2.6887,
+    1.4219
+   ],
+   "holddown_holes_xy_0p27": [
+    [
+     6.102,
+     0.43
+    ],
+    [
+     6.102,
+     6.738
+    ],
+    [
+     0.43,
+     6.738
+    ]
+   ],
    "gcode": "socket_back_R.nc",
-   "gcode_lines": 25957
+   "gcode_lines": 25959
   },
   {
    "station": "pair_30_L",
@@ -138,8 +238,33 @@
    ],
    "block_top_highest_z": 0.964,
    "fixture_bottom_z": -2.149,
+   "block_top_z_at_feature_xy": 0.7298,
+   "block_fence_corner_xyz": [
+    4.6562,
+    2.7639,
+    -0.745
+   ],
+   "block_top_high_vertex_xyz": [
+    3.1967,
+    2.5024,
+    0.9643
+   ],
+   "holddown_holes_xy_0p27": [
+    [
+     5.198,
+     0.43
+    ],
+    [
+     5.198,
+     6.47
+    ],
+    [
+     0.43,
+     6.47
+    ]
+   ],
    "gcode": "pair_30_L.nc",
-   "gcode_lines": 5692
+   "gcode_lines": 5694
   },
   {
    "station": "pair_30_R",
@@ -166,8 +291,33 @@
    ],
    "block_top_highest_z": 1.13,
    "fixture_bottom_z": -1.961,
+   "block_top_z_at_feature_xy": 0.8972,
+   "block_fence_corner_xyz": [
+    3.3253,
+    5.9548,
+    -1.3305
+   ],
+   "block_top_high_vertex_xyz": [
+    3.1695,
+    2.4905,
+    1.1301
+   ],
+   "holddown_holes_xy_0p27": [
+    [
+     5.315,
+     0.43
+    ],
+    [
+     5.315,
+     6.482
+    ],
+    [
+     0.43,
+     6.482
+    ]
+   ],
    "gcode": "pair_30_R.nc",
-   "gcode_lines": 5692
+   "gcode_lines": 5694
   },
   {
    "station": "pair_150_L",
@@ -194,8 +344,33 @@
    ],
    "block_top_highest_z": 0.968,
    "fixture_bottom_z": -2.123,
+   "block_top_z_at_feature_xy": 0.735,
+   "block_fence_corner_xyz": [
+    4.7605,
+    2.8116,
+    -0.7517
+   ],
+   "block_top_high_vertex_xyz": [
+    3.3253,
+    2.4905,
+    0.9679
+   ],
+   "holddown_holes_xy_0p27": [
+    [
+     5.315,
+     0.43
+    ],
+    [
+     5.315,
+     6.482
+    ],
+    [
+     0.43,
+     6.482
+    ]
+   ],
    "gcode": "pair_150_L.nc",
-   "gcode_lines": 5692
+   "gcode_lines": 5694
   },
   {
    "station": "pair_150_R",
@@ -222,8 +397,33 @@
    ],
    "block_top_highest_z": 1.118,
    "fixture_bottom_z": -1.995,
+   "block_top_z_at_feature_xy": 0.8838,
+   "block_fence_corner_xyz": [
+    3.1967,
+    5.9559,
+    -1.3623
+   ],
+   "block_top_high_vertex_xyz": [
+    3.181,
+    2.5024,
+    1.1183
+   ],
+   "holddown_holes_xy_0p27": [
+    [
+     5.198,
+     0.43
+    ],
+    [
+     5.198,
+     6.47
+    ],
+    [
+     0.43,
+     6.47
+    ]
+   ],
    "gcode": "pair_150_R.nc",
-   "gcode_lines": 5692
+   "gcode_lines": 5694
   },
   {
    "station": "pair_270_L",
@@ -250,8 +450,33 @@
    ],
    "block_top_highest_z": 0.964,
    "fixture_bottom_z": -2.149,
+   "block_top_z_at_feature_xy": 0.7298,
+   "block_fence_corner_xyz": [
+    4.6562,
+    2.7639,
+    -0.745
+   ],
+   "block_top_high_vertex_xyz": [
+    3.1967,
+    2.5024,
+    0.9643
+   ],
+   "holddown_holes_xy_0p27": [
+    [
+     5.198,
+     0.43
+    ],
+    [
+     5.198,
+     6.47
+    ],
+    [
+     0.43,
+     6.47
+    ]
+   ],
    "gcode": "pair_270_L.nc",
-   "gcode_lines": 5692
+   "gcode_lines": 5694
   },
   {
    "station": "pair_270_R",
@@ -278,8 +503,33 @@
    ],
    "block_top_highest_z": 1.118,
    "fixture_bottom_z": -1.995,
+   "block_top_z_at_feature_xy": 0.8838,
+   "block_fence_corner_xyz": [
+    3.1967,
+    5.9559,
+    -1.3623
+   ],
+   "block_top_high_vertex_xyz": [
+    3.181,
+    2.5024,
+    1.1183
+   ],
+   "holddown_holes_xy_0p27": [
+    [
+     5.198,
+     0.43
+    ],
+    [
+     5.198,
+     6.47
+    ],
+    [
+     0.43,
+     6.47
+    ]
+   ],
    "gcode": "pair_270_R.nc",
-   "gcode_lines": 5692
+   "gcode_lines": 5694
   }
  ],
  "pair_top_face_holes_t_r_dia": {

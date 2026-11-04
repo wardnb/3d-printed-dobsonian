@@ -1,5 +1,7 @@
 ( socket_point_L: 60 deg cup + stud hole; fixture tilt 13.27 deg )
 ( units inch, WCS zero = datum post top front-left corner; the block top is ABOVE Z0, rapids at block top + 0.5; check every number before cutting )
+( Z from the block, not the post: touch the block top face at X4.0469 Y3.7511; set that reading to Z1.1676 )
+( caliper check of the print: fence inner corner at X1.770 Y5.084 Z-1.304 from the post corner; shift G54 by any X/Y difference )
 G20 G90 G17 G94
 M3 S18000
 G4 P3

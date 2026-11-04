@@ -158,6 +158,20 @@ def build(f):
         (((bb2.xmax / IN + x0 - POST) / 2) * IN, ((bb2.ymax / IN + y0 - POST) / 2) * IN, (zmin + FIX_MIN / 2) * IN))
     body = body.union(post).union(base_web).union(slab)
     origin = np.array([x0 - POST + 0.02, y0 - POST + 0.02, top])            # WCS zero: post's top front-left corner
+    # hold-down holes (2026-11-04, local session's request): three vertical 0.27" through-holes in the flat slab corners,
+    # clear of the sloped body so a screw head seats on the flat slab top; positions verified below
+    slab_top = zmin + FIX_MIN
+    bb3 = body.val().BoundingBox()
+    cand = [(bb3.xmax / IN - 0.45, bb3.ymin / IN + 0.45), (bb3.xmax / IN - 0.45, bb3.ymax / IN - 0.45),
+            (bb3.xmin / IN + 0.45, bb3.ymax / IN - 0.45)]
+    holes = []
+    for hx, hy in cand:
+        probe = cq.Workplane("XY").circle(0.40 * IN).extrude(30 * IN).translate((hx * IN, hy * IN, (zmin - 1) * IN))
+        hit = body.intersect(probe)
+        hz = hit.val().BoundingBox().zmax / IN if hit.val().Volume() > 0 else None
+        if hz is not None and abs(hz - slab_top) < 0.01:
+            body = body.cut(cq.Workplane("XY").circle(0.135 * IN).extrude(30 * IN).translate((hx * IN, hy * IN, (zmin - 1) * IN)))
+            holes.append((hx, hy))
     # block in place (for the picture) and the feature in machine coordinates relative to the WCS
     blk = (cq.Workplane("XY").polyline([(x * IN, y * IN) for x, y in corners]).close().extrude(H * IN)
            .rotate((0, 0, 0), (0, 0, 1), math.degrees(st["beta"])).rotate((0, 0, 0), (1, 0, 0), -math.degrees(st["tau"])))
@@ -165,17 +179,32 @@ def build(f):
     # highest point of the block's top face (for the start height)
     top_face = [mach((x, y, H)) - origin for x, y in corners]
     zbot = zmin - origin[2]
+    # block references for touching off on the BLOCK instead of the printed post (ASA shrink ~0.5 %):
+    #  - the top face is a plane; its Z directly above the feature XY is the Z touch-off (reading = top_z_at_feature)
+    #  - the block's bottom corner in the fence angle (= fence inner corner) and the top face's highest vertex, for a
+    #    caliper check of the printed post-to-fence distance against the model
+    p0, p1, p2 = top_face[0], top_face[1], top_face[3]
+    n = np.cross(np.subtract(p1, p0), np.subtract(p2, p0))
+    top_z_at_feat = p0[2] - (n[0] * (feat[0] - p0[0]) + n[1] * (feat[1] - p0[1])) / n[2]
+    fence_corner = mach((min(xs), min(ys), 0.0)) - origin
+    high_vertex = max(top_face, key=lambda p: p[2])
     return dict(body=body, block=blk, feat=feat, top_z=max(p[2] for p in top_face), st=st, zbot=zbot,
-                origin=origin, H=H)
+                origin=origin, H=H, holes=[(hx - origin[0], hy - origin[1]) for hx, hy in holes],
+                top_z_at_feat=top_z_at_feat, fence_corner=fence_corner, high_vertex=high_vertex)
 
 
 # ---------------------------------------------------------------- G-code
 RPM = 18000
 
 
-def g_header(title):
-    return [f"( {title} )", "( units inch, WCS zero = datum post top front-left corner; the block top is ABOVE Z0, rapids at block top + 0.5; check every number before cutting )",
-            "G20 G90 G17 G94", f"M3 S{RPM}", "G4 P3"]
+def g_header(title, g=None):
+    L = [f"( {title} )", "( units inch, WCS zero = datum post top front-left corner; the block top is ABOVE Z0, rapids at block top + 0.5; check every number before cutting )"]
+    if g is not None:
+        fx, fy, fz = g["feat"]
+        L += [f"( Z from the block, not the post: touch the block top face at X{fx:.4f} Y{fy:.4f}; set that reading to Z{g['top_z_at_feat']:.4f} )",
+              f"( caliper check of the print: fence inner corner at X{g['fence_corner'][0]:.3f} Y{g['fence_corner'][1]:.3f} Z{g['fence_corner'][2]:.3f} from the post corner; shift G54 by any X/Y difference )"]
+    L += ["G20 G90 G17 G94", f"M3 S{RPM}", "G4 P3"]
+    return L
 
 
 SAFE_ABOVE_TOP = 0.50      # rapid height above the highest point of the block (fences, clamps and inserts are lower)
@@ -214,7 +243,7 @@ def gcode_cup(f, g):
     cx, cy, za = g["feat"]
     z0 = g["top_z"] + 0.05
     sz = safe_z(g)
-    L = g_header(f"{f['label']}: 60 deg cup + stud hole; fixture tilt {math.degrees(g['st']['tau']):.2f} deg")
+    L = g_header(f"{f['label']}: 60 deg cup + stud hole; fixture tilt {math.degrees(g['st']['tau']):.2f} deg", g)
     L += ["( T1 = 1/4 3FL carbide flat end mill, rough )", f"G0 Z{sz:.3f}", f"G0 X{cx:.4f} Y{cy:.4f}"]
     z = z0
     while z > za + 0.25:
@@ -258,7 +287,7 @@ def gcode_bore(f, g):
     cx, cy, zf = g["feat"]
     z0 = g["top_z"] + 0.05
     sz = safe_z(g)
-    L = g_header(f"{f['label']}: {BORE_D:.3f} blind bonded bore; fixture tilt {math.degrees(g['st']['tau']):.2f} deg")
+    L = g_header(f"{f['label']}: {BORE_D:.3f} blind bonded bore; fixture tilt {math.degrees(g['st']['tau']):.2f} deg", g)
     L += ["( T1 = 1/2 3FL carbide flat end mill )", f"G0 Z{sz:.3f}"]
     r_tool = 0.25
     for r in (BORE_D / 2 - r_tool - 0.12, BORE_D / 2 - r_tool - 0.010):
@@ -347,6 +376,10 @@ def main():
             fixture_tilt_deg=round(math.degrees(g["st"]["tau"]), 3), block_rotation_deg=round(math.degrees(g["st"]["beta"]), 2),
             feature_xyz_from_post_corner=[round(x, 4) for x in g["feat"]],
             block_top_highest_z=round(g["top_z"], 3), fixture_bottom_z=round(g["zbot"], 3),
+            block_top_z_at_feature_xy=round(float(g["top_z_at_feat"]), 4),
+            block_fence_corner_xyz=[round(float(x), 4) for x in g["fence_corner"]],
+            block_top_high_vertex_xyz=[round(float(x), 4) for x in g["high_vertex"]],
+            holddown_holes_xy_0p27=[[round(float(x), 3) for x in h] for h in g["holes"]],
             gcode=f"{tag}.nc", gcode_lines=len(code)))
     socket_pocket_dxf()
     socket_spigot_dxf()

@@ -31,6 +31,29 @@ not part of the finished scope. STLs here are in mm with the flat base on z = 0,
 - Check the sloped face is flat (pencil on the block's underside, rub, scrape high spots).
 - Label each fixture with its station name; the pairs look alike.
 
+## Touching off (answers `docs/requests.md`, 2026-11-04)
+
+Printed ASA shrinks ~0.5 % unless the slicer compensates, so the post-to-block distance on a 7" fixture can be
+0.3–0.5 mm off. What that error does: it shifts the cup or bore sideways on the block by that amount. The cone
+self-centres in its cup, so the only effect is the pole-base position, which collimation absorbs; the things that
+have to be right (cup angle, axis direction, depth) come from the tool, the fixture's slope angle (unchanged by
+uniform shrink) and Z. So:
+
+- **Z: touch off on the block, not the post.** Before cutting, touch the block's top face directly above the
+  feature (X, Y in the `.nc` header and `report.json: block_top_z_at_feature_xy`) and set that reading to the Z
+  given. The block is machined aluminium, so depth (= pole length) is then exact.
+- **X/Y: post corner, then a caliper check.** `report.json: block_fence_corner_xyz` is the model's position of the
+  fence inner corner (where the block's corner seats) from the post corner. Measure the print; shift G54 by any
+  difference. Enable the slicer's shrinkage compensation for ASA on future prints and the check becomes a formality.
+- `block_top_high_vertex_xyz` is the block's highest corner, for a sanity check of the whole setup with a dial.
+
+## Holding the fixture down
+
+Three vertical Ø0.27" through-holes in the flat slab corners (`report.json: holddown_holes_xy_0p27`, from the post
+corner), clear of the sloped body so a 1/4" screw head seats on the flat slab top. Screw into the spoilboard
+(T-nuts or threaded inserts). Fixtures printed before 2026-11-04 don't have them: drill them at the listed XY
+(the slab is flat there), or clamp the slab edges.
+
 ## On the AltMill
 
 - Fixture base clamped flat to the spoilboard, datum post toward the machine's front-left; G-code zero =

@@ -1,5 +1,7 @@
 ( pair_270_L: 1.244 blind bonded bore; fixture tilt 13.59 deg )
 ( units inch, WCS zero = datum post top front-left corner; the block top is ABOVE Z0, rapids at block top + 0.5; check every number before cutting )
+( Z from the block, not the post: touch the block top face at X3.5167 Y3.4728; set that reading to Z0.7298 )
+( caliper check of the print: fence inner corner at X4.656 Y2.764 Z-0.745 from the post corner; shift G54 by any X/Y difference )
 G20 G90 G17 G94
 M3 S18000
 G4 P3
