@@ -60,16 +60,18 @@ def main():
     ap.add_argument('stl', nargs='+')
     ap.add_argument('--filament', default='asa', choices=FILAMENTS)  # ASA default: PLA creeps under clamp loads
     ap.add_argument('--set', action='append', default=[], help='process override key=value (repeatable)')
+    ap.add_argument('--fset', action='append', default=[], help='filament override key=value, e.g. filament_shrink=99.5%% (repeatable)')
     ap.add_argument('--out', default='.')
     ap.add_argument('--upload', help='Moonraker folder under gcodes/ to upload into')
     ap.add_argument('--tag', default='', help='suffix for the G-code name')
     a = ap.parse_args()
     extra = dict(kv.split('=', 1) for kv in a.set)
+    fextra = {k: [v] for k, v in (kv.split('=', 1) for kv in a.fset)}  # filament values are one-element lists
     idx = index()
     tmp = tempfile.mkdtemp(prefix='slice_')
     write(idx, MACHINE, f'{tmp}/machine.json')
     write(idx, PROCESS, f'{tmp}/process.json', extra)
-    write(idx, FILAMENTS[a.filament], f'{tmp}/filament.json')
+    write(idx, FILAMENTS[a.filament], f'{tmp}/filament.json', fextra)
     os.makedirs(a.out, exist_ok=True)
     for stl in a.stl:
         n = os.path.splitext(os.path.basename(stl))[0]
