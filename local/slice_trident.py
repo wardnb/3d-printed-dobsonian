@@ -9,9 +9,10 @@ filament "Generic PLA - trident1" / "Generic ASA - trident1") by resolving their
 OrcaSlicer CLI cannot resolve inherits itself. Gotchas learned 2026-11-04: every JSON needs "from": "User" and
 "version"; the machine and process must KEEP their `inherits` names (the CLI's compatibility check compares the
 process's `compatible_printers` with the machine's inherited system name, not its own name); run under xvfb-run.
+--tool N adds TOOL=N to the PRINT_START line (AFC lane; check `AFC_stepper laneN` material first).
 Prints time + filament per part; --upload sends the G-code to Moonraker (upload only, never starts a print).
 """
-import argparse, glob, json, os, shutil, subprocess, sys, tempfile
+import argparse, glob, json, os, re, shutil, subprocess, sys, tempfile
 
 ROOT = os.path.expanduser('~/.config/OrcaSlicer')
 ORCA = os.path.expanduser('~/Applications/OrcaSlicer_Linux_AppImage_Ubuntu2404_V2.4.2.AppImage')
@@ -64,6 +65,7 @@ def main():
     ap.add_argument('--out', default='.')
     ap.add_argument('--upload', help='Moonraker folder under gcodes/ to upload into')
     ap.add_argument('--tag', default='', help='suffix for the G-code name')
+    ap.add_argument('--tool', type=int, help='AFC lane as Tn for PRINT_START (lane3/ASA = 2). Without it PRINT_START_STAGE2 runs T0 = lane1 PLA')
     a = ap.parse_args()
     extra = dict(kv.split('=', 1) for kv in a.set)
     fextra = {k: [v] for k, v in (kv.split('=', 1) for kv in a.fset)}  # filament values are one-element lists
@@ -86,6 +88,10 @@ def main():
             continue
         dst = os.path.join(a.out, f'{n}{a.tag}.gcode')
         shutil.move(f'{od}/plate_1.gcode', dst)
+        if a.tool is not None:  # the Trident's PRINT_START ends with T{tool}; Orca's single-filament slice never sets it
+            txt = open(dst).read()
+            txt = re.sub(r'^(PRINT_START[^\n]*?)(?: TOOL=\d+)?$', rf'\1 TOOL={a.tool}', txt, count=1, flags=re.M)
+            open(dst, 'w').write(txt)
         info = {}
         for line in open(dst):
             if line.startswith('; estimated printing time (normal mode)'):
