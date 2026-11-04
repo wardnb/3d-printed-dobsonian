@@ -58,7 +58,7 @@ def write(idx, name, out, extra=None):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('stl', nargs='+')
-    ap.add_argument('--filament', default='pla', choices=FILAMENTS)
+    ap.add_argument('--filament', default='asa', choices=FILAMENTS)  # ASA default: PLA creeps under clamp loads
     ap.add_argument('--set', action='append', default=[], help='process override key=value (repeatable)')
     ap.add_argument('--out', default='.')
     ap.add_argument('--upload', help='Moonraker folder under gcodes/ to upload into')

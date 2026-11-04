@@ -7,12 +7,13 @@ Mark a line `[done <date>]` when it lands; keep done items until the next tidy.
 ## 2026-11-04 — wedge fixtures
 
 - **Status (no action needed):** the eight fixtures in `out/joint_machining/print/` are sliced and queued on
-  trident1 (`gcodes/dob_fixtures/`): PLA, 0.2 mm, 4 walls, 20 % cubic, 6 top / 5 bottom layers, no brim.
-  About 4.7 h and 200 g each for the pair fixtures, 5.4 h and 235 g for the socket fixtures (40 % gyroid was
+  trident1 (`gcodes/dob_fixtures/`): **ASA** (not PLA, per the cloud session's advice: creep under the clamp
+  preload), 0.2 mm, 4 walls, 20 % cubic, 6 top / 5 bottom layers, 6 mm brim, chamber 50 °C.
+  About 5.0 h and 160 g each for the pair fixtures, 5.75 h and 186 g for the socket fixtures (40 % gyroid was
   22 h each; the fixtures are in compression, so 20 % cubic is plenty). Slicing tool: `local/slice_trident.py`.
-- **Request: let the operator touch off on the BLOCK, not the fixture's datum post.** Printed PLA shrinks
-  about 0.2–0.4 %, so the fence-to-post distance on a 170–180 mm fixture is off by up to ~0.5 mm, and
-  `feature_xyz_from_post_corner` (3.2–4.1" from the post) inherits ~0.3 mm (0.012") of that in X/Y. The block
+- **Request: let the operator touch off on the BLOCK, not the fixture's datum post.** Printed ASA shrinks
+  about 0.4–0.8 % (PLA 0.2–0.4 %), so the fence-to-post distance on a 170–180 mm fixture is off by up to ~0.5 mm, and
+  `feature_xyz_from_post_corner` (3.2–4.1" from the post) inherits ~0.3–0.6 mm (0.012–0.025") of that in X/Y. The block
   itself is machined aluminium and its corners are exact. Please either (a) add the machine XYZ of a
   touchable block corner (the top-face high corner, or the corner in the fence angle) relative to the post
   corner to `report.json` and the `.nc` headers, so Nick can probe the block and shift the WCS, or (b) move
