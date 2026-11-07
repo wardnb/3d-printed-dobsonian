@@ -68,7 +68,7 @@ BUY = [
         B("knob14", "1/4-20 male-thread knob, 2-1/2\" stud", 3, "Pair block to cage ring, from below (check the stud length on the parts)", "now", "McMaster"),
         B("shcs1474", "1/4-20 × 1-3/4\" SHCS", 3, "Spigot to socket block, from below", "now", "McMaster"),
         B("rollpin", "1/8\" roll pin × 1\"", 8, "Keeps each thumbwheel captive across its pocket mouth", "now", "McMaster"),
-        B("epoxy", "Structural epoxy + gun + nozzles", 1, "3M DP420 or DP460 (50 ml cartridges, 2–3): plugs in poles, poles in pair blocks, spigots in blocks and stubs", "now", ""),
+        B("epoxy", "Structural epoxy + gun + nozzles", 1, "3M DP420 or DP460 (50 ml cartridges, 3): plugs in poles, poles in pair blocks, spigots in blocks and stubs, and the 1/16\" roller track strips on the D rims", "now", ""),
     ]),
     dict(group="Upper cage, spider, finder", items=[
         B("cage14", "1/4-20 stainless FHCS / SHCS assortment", 1, "~24 screws: 8 ring-to-post, 6 diagonal node, 4 focuser rails, 3 focuser push-pull pairs; buy 5/8\" and 3/4\" lengths", "now", "McMaster / Bolt Depot"),
@@ -98,6 +98,8 @@ BUY = [
         B("r10", "R10-2RS or R10-ZZ ball bearing (5/8 × 1-3/8 × 11/32)", 9, "Roller wheels: 4 alt + 4 az + spare (roller_study.py: 21–34 lb each, Hertz ≤ 130 MPa at 3 g on 6061). ZZ shields drag ~1/5 of 2RS seals", "now", "McMaster / VXB"),
         B("sb58", "5/8\" × 1\" shoulder bolt, 1/2-13 thread, 18-8", 8, "Roller axles; the far cheek of each block is tapped 1/2-13", "now", "McMaster"),
         B("fr6", "FR6-2RS flanged bearing (3/8 × 7/8 × 9/32) + 3/8 × 1-1/2 shoulder bolt", 1, "Zero-play az pivot in a 6061 housing on the floor; 5/16-18 steel insert in the ground hub", "now", "McMaster"),
+        B("xbolt", "1/4-20 × 2\" bolts + nyloc nuts", 8, "Alt roller block cross bolts, through both cheeks and the wall", "now", ""),
+        B("trackscr", "#8 × 3/4\" stainless FHCS (az track segments, countersunk flush) + #10 × 1\" wood screws (flange plates)", 1, "~20 of the #8, 16 of the #10", "now", ""),
         B("ptfe", "Virgin PTFE sheet 1/16\"", 1, "Lateral tab faces (4) on the alt roller blocks, 0.05\" off the D; 3 × 3\"", "now", ""),
         B("brake", "Brake shoes: 1\" neoprene/cork pads + compression springs", 2, "Hand-push brake on each axis, pressed on by the same cam lever that lifts the pinion (~15–20 lb on the track = 100–120 in-lb hold); not drawn yet", "later", ""),
         B("dowel38", "Steel dowel pin 3/8\" + drill bushing 3/8\" ID × 1/2\" OD", 4, "D bearing to box (2 per side)", "now", "McMaster"),
