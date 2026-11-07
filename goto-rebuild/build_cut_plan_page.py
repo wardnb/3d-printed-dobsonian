@@ -94,7 +94,7 @@ BUY = [
         B("wiresaw", "Debonding line (braided fishing line or 0.010\" piano wire)", 1, "Saw through the 9 old glue dabs", "now", ""),
     ]),
     dict(group="Birch, bearings, rocker, ground board", items=[
-        B("birch", "Baltic birch 18 mm, 5 × 5 ft", 3, "D bearings, rocker, ground board, box wings (ripped to 24.4\" strips)", "now", ""),
+        B("birch", "Baltic birch 18 mm, 5 × 5 ft — BOUGHT 2026-11-07, ~$460 for three sheets ripped to 24-3/8\" strips", 3, "D bearings, rocker, ground board, box wings. Measure the real thickness with calipers before cutting (model uses 0.71\"; 18 mm birch runs 17.5–18.2) and put it in P[\"ply\"]", "now", "bought"),
         B("r10", "R10-2RS or R10-ZZ ball bearing (5/8 × 1-3/8 × 11/32)", 9, "Roller wheels: 4 alt + 4 az + spare (roller_study.py: 21–34 lb each, Hertz ≤ 130 MPa at 3 g on 6061). ZZ shields drag ~1/5 of 2RS seals", "now", "McMaster / VXB"),
         B("sb58", "5/8\" × 1\" shoulder bolt, 1/2-13 thread, 18-8", 8, "Roller axles; the far cheek of each block is tapped 1/2-13", "now", "McMaster"),
         B("fr6", "FR6-2RS flanged bearing (3/8 × 7/8 × 9/32) + 3/8 × 1-1/2 shoulder bolt", 1, "Zero-play az pivot in a 6061 housing on the floor; 5/16-18 steel insert in the ground hub", "now", "McMaster"),
