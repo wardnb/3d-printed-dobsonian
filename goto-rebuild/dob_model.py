@@ -48,7 +48,8 @@ P = dict(
     mcage_height=12.8,            # measured: 11 3/8" between the boards + two 18 mm boards
     cell_depth=3.0,               # measured: mirror face down to the bottom of the cell triangle
     # Rocker / ground board (DESIGN, 2026-10-19: rebuild on the AltMill, see rocker.py)
-    alt_pad_angle=30,             # PTFE pads +/-30 deg from the bottom of the bearing arc
+    alt_pad_angle=30,             # alt rollers (were PTFE pads) +/-30 deg from the bottom of the bearing arc
+    bearing_kind="rollers",       # "rollers" (R10 ball-bearing wheels on 6061 tracks, 2026-11-07) or "ptfe"
     alt_min_deg=15,               # lowest altitude with the front pad still under the arc (sets the D's chord offset)
     rocker_horn_angle=42,         # wall top follows the arc to here, then slopes to the end height
     rocker_inside_depth=26.0,     # between the end boards (box needs 22.9 tip to back + clearance)
@@ -56,7 +57,7 @@ P = dict(
     ground_ring_od=30.0,          # fixed az ring on the ground board: belt + tape on its rim, pads on its top
     ground_ring_id=23.0,
     ground_foot_radius=14.0,      # feet under the ring, on the three arms
-    ground_pad_radius=12.75,      # az PTFE pads on the ring, under the rocker floor's laminate
+    ground_pad_radius=12.75,      # az rollers (were PTFE pads) on the ring's 1/8 6061 track, under the rocker floor
     ply=0.709,                    # 18 mm Baltic birch
     # Upper cage (design)
     ring_id=17.5,
@@ -337,9 +338,13 @@ def rim(x_mid, width, r_out, r_in):
     return w.extrude(width * IN).translate(v(x_mid - width / 2, 0, 0))
 
 
-tube.add(rim(-bearing_x, G["bearing_t"], R + 0.06, R), name="ebony_plain", color=EBONY)
 _xi, _b = G["bearing_x_in"], G["bands"]
-tube.add(rim(_xi + sum(_b["ebony"]) / 2, _b["ebony"][1] - _b["ebony"][0], R + 0.06, R), name="ebony_drive", color=EBONY)
+if G["kind"] == "rollers":        # 1/16 x 5/8 6061 roller track strips on both rims (2026-11-07)
+    tube.add(rim(-(_xi + sum(G["run_band"]) / 2), 0.625, R + G["track_t"], R), name="track_plain", color=ALU)
+    tube.add(rim(_xi + sum(G["run_band"]) / 2, 0.625, R + G["track_t"], R), name="track_drive", color=ALU)
+else:
+    tube.add(rim(-bearing_x, G["bearing_t"], R + 0.06, R), name="ebony_plain", color=EBONY)
+    tube.add(rim(_xi + sum(_b["ebony"]) / 2, _b["ebony"][1] - _b["ebony"][0], R + 0.06, R), name="ebony_drive", color=EBONY)
 tube.add(rim(_xi + sum(_b["tape"]) / 2, _b["tape"][1] - _b["tape"][0], R + 0.04, R - 0.02), name="encoder_strip_alt", color=STRIP)
 tube.add(rim(_xi + sum(_b["belt"]) / 2, _b["belt"][1] - _b["belt"][0], R + 0.09, R), name="alt_belt_on_rim", color=BLACK)   # GT2 belt, 9 mm, teeth out
 
@@ -429,7 +434,7 @@ for k, col in (("hub", BLACK), ("vanes", WIRE), ("studs", cq.Color(0.55, 0.57, 0
 base = cq.Assembly(name="base")
 
 # rocker, ground board, drives and brackets from rocker.py (see its docstring for the layout)
-_COL = dict(BIRCH=BIRCH, ALU=ALU, BLACK=BLACK, PTFE=PTFE, MOTOR=MOTOR, STRIP=STRIP, ELEC=ELEC)
+_COL = dict(BIRCH=BIRCH, ALU=ALU, BLACK=BLACK, PTFE=PTFE, MOTOR=MOTOR, STRIP=STRIP, ELEC=ELEC, STEEL=cq.Color(0.45, 0.45, 0.5))
 rocker_solids, rocker_flats, rocker_holes = rocker.build(G)
 for _name, (_solid, _c) in rocker_solids.items():
     base.add(_solid, name=_name, color=_COL[_c])

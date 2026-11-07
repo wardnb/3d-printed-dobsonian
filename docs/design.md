@@ -31,7 +31,7 @@ The electronics and focuser are already owned; the open purchases are the second
 | Axis encoders ×2 | To buy | For SiTech S.E. inputs; 8k–32k steps/rev |
 | Nexus–SiTech serial cable | Check | RJ11 to RJ22 |
 | 12V LiFePO4, 10Ah+ | To buy | Must supply 5A; powers both units |
-| Ebonystar, PTFE pads, Dyneema or SS cable, GT2 belts and pulleys | To buy | Bearings and drive stages |
+| R10 roller bearings, 6061 tracks, GT2 belts and pulleys | To buy | Bearings and drive stages (laminate and PTFE pads dropped 2026-11-07) |
 | ¼" 6061 plate, 12–18mm Baltic birch | To buy | Cage, cell, brackets; box, rocker, ground board |
 
 ## Optical design
@@ -90,7 +90,7 @@ Keep the DobStuff mirror cage and rocker layout; replace the three struts and st
 
 - Mirror cage as built: two 3/4" plywood rings, six short tubes between them, two side panels for the bearings, and three 1.25" tube holes through the top ring to mounts on the bottom ring. Short stubs of those tubes stay in the holes, 1" proud, and the truss sockets plug into them.
 - Truss: wide pairs (an octahedron). Three pre-joined pairs of 1" × 0.058" 6061 poles, about 30" long, each pair joined at a block under the cage's lower ring (30/150/270°) and spreading to cone sockets on two neighbouring stubs (90/210/330°). Cone-ended plugs, nine knobs, no tools.
-- Altitude bearings: 14" radius D, two laminated layers of 3/4" Baltic birch, Ebony Star on PTFE pads at ±35°, doweled so they return to the same place. Drive side carries the GT2 belt and the magnetic tape.
+- Altitude bearings: 14" radius D, two laminated layers of 18 mm Baltic birch, running on R10 ball-bearing rollers at ±30° via a 1/16" 6061 strip on the rim (PTFE pads on Ebony Star until 2026-11-07), doweled so they return to the same place. Drive side carries the GT2 belt and the magnetic tape.
 - Rocker and ground board: rocker carries both motors; the ground board gets a 30" ring whose rim carries the azimuth belt and tape.
 - Balance: solved with no counterweight; mirror face 14.6" below the altitude axis, eyepiece about 60.6" at zenith.
 
@@ -648,6 +648,18 @@ The stubs are held along their axis at both boards: two 45 mm clamp collars, one
 The same swing arm drives both axes. Two 1/4" 6061 plates (6.2 × 2.0", 0.43 lb per pair) on three standoffs carry an 8 mm jackshaft in two F608 bearings, a 20-tooth flangeless GT2 pinion on the rim belt, and the Pittman gearmotor with a 16-tooth pulley. One fixed ratio, no shifter: the motor holes are slotted so either a 32-tooth (2:1, 152 mm loop) or a 48-tooth (3:1, 170 mm loop) pulley fits at the same 52 mm centre distance; pick after the friction test and change one number in the SiTech setup.
 
 The arm pivots on a 3/8" shoulder bolt 4" from the pinion, on the rim's tangent, so the drive force passes through the pivot and only the tooth separating force acts on the spring (about 19 lb at the arm's tail for 25 lb at the pinion). Clutch: an over-centre cam lever pulls the tail back and lifts the pinion 3 mm clear; the rim tape encoders keep the position while you push by hand. Altitude: base plate on the drive wall, arm outboard of the D, pinion through the wall notch, motor sticking out along the axis. Azimuth: pinion on the ground ring at y = 6", arm along the ring's tangent, motor vertical; clears the ground board through a full turn. Every bearing, swing and clash check passes. Still assumed: the gearbox face screw pattern and motor size.
+
+## Roller bearings replace the PTFE pads (2026-11-07)
+
+Ebony Star is discontinued, and the pad design was marginal anyway: with μ 0.12 (assumed) the PTFE/laminate friction was ~145 in-lb on altitude and ~183 on azimuth, leaving about 1.7× torque margin on the 45 oz-in gearboxes (none at μ 0.2), and because that friction exceeded the tube's imbalance (~25 in-lb) the altitude gear train crossed its backlash at every direction reversal. Both axes now run on steel ball-bearing rollers on aluminium tracks (`roller_study.py`, `rocker.py` with `bearing_kind = "rollers"`; the PTFE version is kept as `"ptfe"`).
+
+**Altitude.** Each D rim carries a 1/16" × 5/8" 6061-T6 strip, bent elastically around the 14" radius and epoxy-bonded (strap-clamped while curing; no screw heads under the rollers). Two R10 ball bearings (5/8 × 1-3/8 × 11/32") per side, used as wheels on 5/8" × 1" shoulder bolts, sit at ±30° in 6061 blocks (1.4 × 2.0 × 2.2") that straddle the rocker wall in a notch cut into the wall top (wall top at R + 2.0" over the block's 2" length, 0.5" saddle, two 1/4-20 cross bolts). A 1/8" aluminium tab with a 1/16" PTFE face on each block's outer cheek, 0.05" off the D's outer face, replaces the lateral-stop brackets. Rim bands from the inner face: 0.16" bare, 0.36" GT2 belt, 0.63" roller track, 0.26" magnetic tape; the pinion hub has to be ≤ 12.5 mm because it passes 0.04" under the strip.
+
+**Azimuth.** Four R10 rollers at the floor's corners (45/135/225/315°, r 12.75") in 1.1"-tall blocks hung through cutouts in the rocker floor under 1/8" flange plates, running on a 1/8" 6061 track ring (r 12.25–13.25", four 90° segments with the joints at 45° + k·90°, off the birch ring's joints; #8 flat-heads countersunk flush). Three rollers at the ground board's 90/210/330° stations would have sat under the end boards. The floor rises 0.6" (rocker 15.6" tall, eyepiece 63.8" at zenith). With no pad friction the pivot alone centres the rocker, so the 3/8" bolt-in-a-bushing becomes a 3/8" shoulder bolt in an FR6-2RS flanged ball bearing in a 6061 housing on the floor: 0.005" of pivot play would read as 69" at the azimuth tape.
+
+**Numbers.** Alt roller load 21 lb (static), Hertz contact 75 MPa on 6061 (130 MPa at 3 g; yield 276); the strip on the plywood edge carries 1.3 MPa and gives ~120,000 lb/in of radial support, comparable to the PTFE pad. Az rollers 26 lb each, 82 MPa. Friction: ~11 in-lb altitude (10 N·mm of seal drag per 2RS bearing assumed, plus the tab rubbing on a 2° slope) and ~7 in-lb azimuth. Drive torque 36 in-lb alt → 5 oz-in at the gearbox output, 8.8× margin (was 1.9×); azimuth 20×. The D-to-box joint FE (`bearing_fe.py`) re-run with 0.15" point loads instead of 0.8" pads: windup and fastener loads unchanged, the joint sets them. Rim runout: 0.010" of differential left/right runout tilts the tube 95", smooth with altitude and absorbed by the pointing model.
+
+**What changes in use.** With ~11 in-lb of friction gravity keeps the altitude train loaded one way, so the gearbox backlash is never crossed at transit or on guide pulses: balance with the lightest eyepiece so every heavier one adds nose-heavy bias, aiming for 20–30 in-lb. The tube no longer stays put when the pinion is lifted, so each cam lever also presses a 1" rubber or cork shoe onto the track (~15 lb normal → ~100 in-lb hold on alt, 1.6 lb at the eyepiece; ~19 lb → 120 in-lb on az); the brake is off whenever the pinion is engaged. Still to draw: brake shoes, the tabs' screws, the pivot housing. To buy: 1-1/2 × 2" 6061 bar (18"), two 1/16 × 5/8 × 48" strips, one 1/8 × 12 × 48" plate, 9 R10 bearings, 8 shoulder bolts, the FR6 pivot bearing; laminate, PTFE pads and contact cement are off the list.
 
 ## Truss joint blocks: machining (2026-10-31)
 

@@ -176,7 +176,9 @@ def module(G, axis, ratio="2:1", engaged=True):
     j = JACK_T[ratio]
     parts = {
         "pinion_20T": (_cyl(pl, sgn, 0, wof(0), -0.20, 0.40, OD(PINION_T) / 2), "ALU"),
-        "pinion_hub": (_cyl(pl, sgn, 0, wof(0), 0.20, 0.28, 0.32), "ALU"),
+        # hub no bigger than the teeth (0.24 r): with the roller track strip on the rim (R + 1/16, 2026-11-07) a stock
+        # 16 mm hub would touch it. Use a hubless/long-toothed 20T pinion or turn the hub down to <= 12.5 mm
+        "pinion_hub": (_cyl(pl, sgn, 0, wof(0), 0.20, 0.28, 0.24), "ALU"),
         "jackshaft_8mm": (_cyl(pl, sgn, 0, wof(0), -0.22, sB + PLATE_T + 0.1 + 0.22, SHAFT_D / 2), "ALU"),
         f"pulley_{j}T": (_cyl(pl, sgn, 0, wof(0), sA + PLATE_T + 0.10, 0.55, OD(j) / 2 + 0.03), "BLACK"),
         "pulley_16T": (_cyl(pl, sgn, C_NOM, wof(C_NOM), sA + PLATE_T + 0.10, 0.55, 0.26), "BLACK"),

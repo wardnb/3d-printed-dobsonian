@@ -57,16 +57,23 @@ def derive(P, R, swing, panel_x):
     G["box_inside_h"] = P["mcage_height"] - 2 * ply            # 11.38 (measured 11 3/8)
     G["wing_z"] = (-6.4, -1.5)                                 # to the end of the boards' side flat (z -6.49, ASSUMED)
     G["wing_notch"] = (-6.4, -4.1, 0.70)                       # clears the 330/210 deg stub's lower collar (2.75" OD)
-    # drive-side rim bands, inboard -> outboard (x from the inner face)
-    bands = [("bare", 0.15), ("belt", 0.36), ("ebony", 0.64), ("tape", 0.26)]
+    # bearing kind (2026-11-07): "rollers" = R10 ball-bearing wheels on an aluminium track (adopted), "ptfe" = the
+    # earlier PTFE-on-laminate pads (kept for comparison; Ebony Star is discontinued)
+    G["kind"] = P.get("bearing_kind", "rollers")
+    rollers = G["kind"] == "rollers"
+    # drive-side rim bands, inboard -> outboard (x from the inner face); the running band is the roller track
+    # (1/16 x 5/8 6061 strip bonded to the rim) or the Ebony Star laminate
+    bands = ([("bare", 0.16), ("belt", 0.36), ("track", 0.63), ("tape", 0.26)] if rollers
+             else [("bare", 0.15), ("belt", 0.36), ("ebony", 0.64), ("tape", 0.26)])
     x = 0.0
     G["bands"] = {}
     for name, w in bands:
         G["bands"][name] = (x, x + w)
         x += w
     assert x <= G["bearing_t"] + 1e-6, "rim bands exceed the bearing thickness"
-    eb = G["bands"]["ebony"]
-    G["pad_x"] = G["bearing_x_in"] + (eb[0] + eb[1]) / 2          # pad (and wall) centre, 11.675
+    eb = G["bands"]["track" if rollers else "ebony"]
+    G["run_band"] = eb
+    G["pad_x"] = G["bearing_x_in"] + (eb[0] + eb[1]) / 2          # running band (and wall) centre, ~11.675
     G["pad_w"] = 0.55                                              # PTFE pad width, inside the Ebony band
     # --- rocker walls sit centred under the pads
     G["wall_in"] = G["pad_x"] - ply / 2
@@ -79,7 +86,19 @@ def derive(P, R, swing, panel_x):
     G["ring_z0"] = G["foot_h"] + G["arm_t"]                        # ground ring bottom, 1.5
     G["ground_top"] = G["ring_z0"] + ply                           # ring top (az running surface), 2.21
     G["az_pad_t"] = 0.15
-    G["floor_z0"] = G["ground_top"] + G["az_pad_t"]                # rocker floor underside
+    # --- rollers (roller_study.py): R10 bearing 5/8 x 1-3/8 x 11/32 on a 5/8 shoulder bolt in a 6061 block
+    G["roller_od"], G["roller_w"], G["axle_d"] = 1.375, 0.344, 0.625
+    G["track_t"] = 0.0625                                          # alt: 1/16 x 5/8 strip on the rim
+    G["az_track_t"] = 0.125                                        # az: 1/8 plate ring on the ground ring
+    G["blk_w"], G["blk_l"] = 1.4, 2.0                              # block: across the roller axis x along it... see build()
+    G["blk_h_alt"], G["blk_h_az"] = 2.2, 1.1
+    G["axle_from_top"] = 0.45                                      # roller protrudes od/2 - 0.45 = 0.24 past the block
+    G["slot_w"], G["slot_d"] = 0.45, 1.30
+    G["saddle_d"] = 0.5                                            # alt block straddles the wall top this deep
+    G["tab_t"], G["tab_clear"] = 0.125, 0.05                       # 1/8 Al lateral tab + 1/16 PTFE, 0.05 off the D's face
+    G["az_blk_below_floor"] = G["blk_h_az"] - ply                  # the az block hangs through a floor cutout, 0.39 below
+    G["az_stack"] = G["az_track_t"] + G["az_blk_below_floor"] + (G["roller_od"] / 2 - G["axle_from_top"])
+    G["floor_z0"] = G["ground_top"] + (G["az_stack"] if rollers else G["az_pad_t"])   # rocker floor underside
     G["floor_top"] = G["floor_z0"] + ply
     G["z_alt"] = G["floor_top"] + swing + 0.5                      # 0.5 under the box at the bottom of its swing
     G["h_alt"] = G["z_alt"] - G["floor_top"]                       # axis above the floor top
@@ -88,6 +107,13 @@ def derive(P, R, swing, panel_x):
     G["lam_t"] = 0.06                                              # Ebony Star laminate on the rim
     G["pad_seat_r"] = R + G["lam_t"] + 0.19                        # 3/16 PTFE pad: top on the laminate
     G["pad_len"] = 1.6
+    # roller stations at +/-pad_angle: contact on the strip, axle od/2 further out, block below, saddle on the wall
+    G["r_track"] = R + G["track_t"]
+    G["r_axle"] = G["r_track"] + G["roller_od"] / 2
+    G["r_blk_top"] = G["r_axle"] - G["axle_from_top"]              # R + 0.30: 0.2 under the belt teeth
+    G["r_blk_bot"] = G["r_blk_top"] + G["blk_h_alt"]
+    G["r_notch"] = G["r_blk_bot"] - G["saddle_d"]                  # wall top inside the notch, R + 2.0
+    G["blk_bolt_r"] = G["r_notch"] + 0.30                          # two 1/4-20 cross bolts through block cheeks + wall
     G["horn_angle"] = P["rocker_horn_angle"]
     G["depth"] = P["rocker_inside_depth"]
     G["L"] = G["depth"] + 2 * ply                                  # walls run the full floor length
@@ -109,6 +135,7 @@ def derive(P, R, swing, panel_x):
     G["foot_r"] = P["ground_foot_radius"]
     G["az_pad_r"] = P["ground_pad_radius"]
     G["ground_angles"] = (90, 210, 330)
+    G["az_roller_angles"] = (45, 135, 225, 315)                    # four rollers at the floor's corners (clear of the end boards)
     G["pivot_d"] = 0.375
     # --- drives
     G["pinion_pd"] = 0.5
@@ -182,21 +209,36 @@ def wall_flat(G, drive, thick):
         ye, he = sy * (L / 2 + 0.2), G["end_h"]
         pts = [(yh, hh + 0.001), (ye, he), (ye, hh + 1), (yh, hh + 1)]
         w = w.cut(cq.Workplane("XY").polyline([(a * IN, b * IN) for a, b in pts]).close().extrude(thick * IN))
-    # pad seats: material back up to pad_seat_r over pad_len
+    rollers = G["kind"] == "rollers"
     for ang in (G["pad_angle"], -G["pad_angle"]):
-        r_hi = G["arc_r"] + 0.3
-        r_mid = (G["pad_seat_r"] + r_hi) / 2
-        boss = (cq.Workplane("XY").center(0, (ha - r_mid) * IN).rect(G["pad_len"] * IN, (r_hi - G["pad_seat_r"]) * IN)
-                .extrude(thick * IN).rotate((0, ha * IN, 0), (0, ha * IN, 1), ang))
-        w = w.union(boss)
+        if rollers:
+            # roller notch: the wall top drops from arc_r to r_notch over the block length; the block's saddle sits on
+            # the notch floor and two 1/4-20 cross bolts pass through its cheeks and the wall
+            r_hi = G["arc_r"] - 0.3
+            r_mid = (G["r_notch"] + r_hi) / 2
+            notch = (cq.Workplane("XY").center(0, (ha - r_mid) * IN).rect((G["blk_l"] + 0.04) * IN, (G["r_notch"] - r_hi) * IN)
+                     .extrude(thick * IN).rotate((0, ha * IN, 0), (0, ha * IN, 1), ang))
+            w = w.cut(notch)
+            for dy in (-0.6, 0.6):
+                h_ = (cq.Workplane("XY").center(dy * IN, (ha - G["blk_bolt_r"]) * IN).circle(0.13 * IN)
+                      .extrude(thick * IN).rotate((0, ha * IN, 0), (0, ha * IN, 1), ang))
+                w = w.cut(h_)
+        else:
+            # pad seats: material back up to pad_seat_r over pad_len
+            r_hi = G["arc_r"] + 0.3
+            r_mid = (G["pad_seat_r"] + r_hi) / 2
+            boss = (cq.Workplane("XY").center(0, (ha - r_mid) * IN).rect(G["pad_len"] * IN, (r_hi - G["pad_seat_r"]) * IN)
+                    .extrude(thick * IN).rotate((0, ha * IN, 0), (0, ha * IN, 1), ang))
+            w = w.union(boss)
     if drive:   # sprung pinion shaft passes over the wall top at theta = 0
         w = w.cut(cq.Workplane("XY").center(0, (ha - G["arc_r"] - 0.3) * IN).rect(1.0 * IN, 1.4 * IN).extrude(thick * IN))
     # bracket holes (1/4") through the wall, as (y, h) pairs
     holes = []
-    sa = G["lateral_stop_angle"]
-    ys = G["arc_r"] * math.sin(math.radians(sa))
-    h_edge = ha - G["arc_r"] * math.cos(math.radians(sa))
-    holes += [(ys, h_edge - 2.0), (ys, h_edge - 1.0)]                                # lateral stop bracket
+    if not rollers:                                                                  # lateral stop bracket (the roller blocks carry tabs)
+        sa = G["lateral_stop_angle"]
+        ys = G["arc_r"] * math.sin(math.radians(sa))
+        h_edge = ha - G["arc_r"] * math.cos(math.radians(sa))
+        holes += [(ys, h_edge - 2.0), (ys, h_edge - 1.0)]
     if drive:
         import drive
         holes += [(y_, z_ - G["floor_top"]) for y_, z_ in drive.wall_holes(G)]       # alt base plate + az bracket leg
@@ -217,6 +259,91 @@ def wall(G, side, drive):
     w = w.rotate((0, 0, 0), (1, 0, 0), 90).rotate((0, 0, 0), (0, 0, 1), 90)
     x0 = G["wall_in"] if side > 0 else -G["wall_out"]
     return w.translate(v(x0, 0, G["floor_top"])), holes
+
+
+def roller_block(G, h, saddle):
+    """6061 roller block in its own frame: X = along the roller AXIS (block width blk_w),
+    Y = tangential (blk_l), Z = radial with the roller side at +Z (top at z = 0, block extends to -h). Roller slot
+    slot_w wide (X) x slot_d deep from the top, axle hole along X at -axle_from_top, saddle groove (ply + 0.02 wide in X)
+    saddle_d deep from the bottom (alt only), two 1/4 cross holes along X through the saddle cheeks."""
+    b = box(0, 0, -h / 2, G["blk_w"], G["blk_l"], h)
+    b = b.cut(box(0, 0, -G["slot_d"] / 2, G["slot_w"], G["blk_l"] + 0.1, G["slot_d"]))
+    b = b.cut(cyl_x(-1, 2 + G["blk_w"], G["axle_d"] / 2, 0, -G["axle_from_top"]))
+    if saddle:
+        b = b.cut(box(0, 0, -h + G["saddle_d"] / 2, G["ply"] + 0.02, G["blk_l"] + 0.1, G["saddle_d"]))
+        for dy in (-0.6, 0.6):
+            b = b.cut(cyl_x(-1, 2 + G["blk_w"], 0.13, dy, -h + G["saddle_d"] - 0.30))
+    else:
+        for dy in (-0.6, 0.6):                                             # 1/4-20 tapped from the top (flange plate)
+            b = b.cut(cyl_z(-0.7, 0.8, 0.10, 0, dy))
+    roller = cyl_x(-G["roller_w"] / 2, G["roller_w"], G["roller_od"] / 2, 0, -G["axle_from_top"])
+    # 5/8 x 1 shoulder bolt from the +X cheek (head 0.9 dia x 0.4 outside that face), 1/2-13 in the -X cheek
+    axle = cyl_x(-G["blk_w"] / 2 + 0.2, G["blk_w"] - 0.2, G["axle_d"] / 2, 0, -G["axle_from_top"])
+    axle = axle.union(cyl_x(G["blk_w"] / 2, 0.4, 0.45, 0, -G["axle_from_top"]))
+    return b, roller, axle
+
+
+def roller_parts(G):
+    """Alt roller blocks on the wall notches (+ lateral tabs) and four az blocks hanging through the floor at its corners
+    (2026-11-07). Four az rollers (not three): a block at 90/210/330 would sit under an end board; the ply floor flexes
+    more than the track mismatch, so all four carry load."""
+    R, za, ft, ply = G["R"], G["z_alt"], G["floor_top"], G["ply"]
+    S = {}
+    blocks = rollers = axles = tabs = None
+    for sx in (1, -1):
+        for ang in (G["pad_angle"], -G["pad_angle"]):
+            b, r, a = roller_block(G, G["blk_h_alt"], True)
+            # block frame -> world: block top at radius r_blk_top straight below the axis, then rotated about X by ang
+            def place(p):
+                if sx < 0:                                                 # bolt head outboard on both sides
+                    p = p.mirror("YZ")
+                p = p.translate(v(sx * G["pad_x"], 0, za - G["r_blk_top"]))
+                return _rot_x(p, ang, za)
+            # lateral tab: 1/8 Al on the block's outer face + 1/16 PTFE, face tab_clear off the D's outer face
+            xo = G["bearing_x_out"]
+            x_tab_in = xo + G["tab_clear"]
+            t_tab = G["tab_t"] + 0.0625
+            h_tab = G["r_blk_top"] - (R - 0.5)                             # from the block top up alongside the rim
+            tab = box(x_tab_in + t_tab / 2 - G["pad_x"], 0, h_tab / 2, t_tab, 1.0, h_tab)      # +X = outboard; place() mirrors
+            tab_w = place(tab)
+            bw, rw, aw = place(b), place(r), place(a)
+            blocks = bw if blocks is None else blocks.union(bw)
+            rollers = rw if rollers is None else rollers.union(rw)
+            axles = aw if axles is None else axles.union(aw)
+            tabs = tab_w if tabs is None else tabs.union(tab_w)
+    S["alt_roller_blocks"] = (blocks, "ALU")
+    S["alt_rollers"] = (rollers, "STEEL")
+    S["alt_axles"] = (axles, "STEEL")
+    S["alt_lateral_tabs"] = (tabs, "PTFE")
+    # alt track strips: 1/16 x 5/8 6061 on each rim (full arc drawn)
+    xi = G["bearing_x_in"]
+    tb = G["run_band"]
+    strips = None
+    for sx in (1, -1):
+        x0 = xi + tb[0] + (tb[1] - tb[0] - 0.625) / 2
+        st = (cq.Workplane("YZ").circle(G["r_track"] * IN).circle(R * IN).extrude(0.625 * IN)
+              .translate(v(sx * x0 if sx > 0 else -(x0 + 0.625), 0, za)))
+        strips = st if strips is None else strips.union(st)
+    S["alt_track_strips"] = (strips, "ALU")
+    # az blocks: hang through the floor cutouts, roller axis radial, flange plate on the floor top
+    blocks = rollers = axles = plates = None
+    z_top = G["floor_z0"] + ply                                            # block top flush with the floor top
+    for a in G["az_roller_angles"]:
+        x, y = polar(G["az_pad_r"], a)
+        b, r, ax = roller_block(G, G["blk_h_az"], False)
+        def place(p):
+            return p.rotate((0, 0, 0), (0, 0, 1), a).translate(v(x, y, z_top))
+        bw, rw, aw = place(b), place(r), place(ax)
+        pl = place(box(0, 0, 0.125, G["blk_w"] + 1.0, G["blk_l"] + 1.0, 0.25).cut(box(0, 0, 0.125, 0.5, 1.5, 0.3)))   # roller clearance slot
+        blocks = bw if blocks is None else blocks.union(bw)
+        rollers = rw if rollers is None else rollers.union(rw)
+        axles = aw if axles is None else axles.union(aw)
+        plates = pl if plates is None else plates.union(pl)
+    S["az_roller_blocks"] = (blocks, "ALU")
+    S["az_rollers"] = (rollers, "STEEL")
+    S["az_axles"] = (axles, "STEEL")
+    S["az_flange_plates"] = (plates, "ALU")
+    return S
 
 
 def build(G):
@@ -240,13 +367,21 @@ def build(G):
         f = cyl_z(0, G["foot_h"], 1.0, x, y)
         feet = f if feet is None else feet.union(f)
     S["feet"] = (feet, "BLACK")
-    pads = None
-    for a in G["ground_angles"]:
-        x, y = polar(G["az_pad_r"], a)
-        p = box(x, y, G["ground_top"] + G["az_pad_t"] / 2, 1.5, 1.5, G["az_pad_t"])
-        pads = p if pads is None else pads.union(p)
-    S["az_ptfe"] = (pads, "PTFE")
-    S["pivot_disc"] = (cyl_z(G["ground_top"], G["az_pad_t"], 1.5).cut(cyl_z(0, 3, G["pivot_d"] / 2)), "ALU")
+    rollers = G["kind"] == "rollers"
+    if rollers:
+        # az track: 1/8 6061 ring (four 90 deg segments, joints at 45+k90 off the birch ring's joints) on the ground ring
+        ra = G["az_pad_r"]
+        S["az_track"] = (cyl_z(G["ground_top"], G["az_track_t"], ra + 0.5).cut(cyl_z(G["ground_top"], G["az_track_t"], ra - 0.5)), "ALU")
+        # pivot: 3/8 shoulder bolt in a flanged FR6 bearing housed in a 6061 disc on the floor top (zero play)
+        S["pivot_housing"] = (cyl_z(G["floor_z0"] + ply, 0.3, 0.75).cut(cyl_z(0, 9, 0.44)), "ALU")   # FR6 is 9/32 wide; box passes 0.2 over
+    else:
+        pads = None
+        for a in G["ground_angles"]:
+            x, y = polar(G["az_pad_r"], a)
+            p = box(x, y, G["ground_top"] + G["az_pad_t"] / 2, 1.5, 1.5, G["az_pad_t"])
+            pads = p if pads is None else pads.union(p)
+        S["az_ptfe"] = (pads, "PTFE")
+        S["pivot_disc"] = (cyl_z(G["ground_top"], G["az_pad_t"], 1.5).cut(cyl_z(0, 3, G["pivot_d"] / 2)), "ALU")
     S["pivot_stud"] = (cyl_z(G["foot_h"], ft - G["foot_h"] + 0.35, G["pivot_d"] / 2), "ALU")   # low nut: the box passes 0.5 over the floor
     # belt (upper 0.36 of the ring rim, teeth out) and magnetic tape (lower 0.26) on the ground ring
     S["az_belt_on_rim"] = (cyl_z(G["ground_top"] - 0.36, 0.36, G["ring_od"] / 2 + 0.09)
@@ -255,6 +390,13 @@ def build(G):
                              .cut(cyl_z(G["ring_z0"] - 0.1, 0.5, G["ring_od"] / 2 - 0.05)), "STRIP")
     # ---- rocker
     floor = box(0, 0, G["floor_z0"] + ply / 2, G["floor_w"], G["floor_l"], ply).cut(cyl_z(0, 5, G["pivot_d"] / 2 + 0.02))
+    if rollers:
+        for a in G["az_roller_angles"]:
+            x, y = polar(G["az_pad_r"], a)
+            # cutout = block + 0.02 each side, plus 0.5 radially outboard for the shoulder bolt's head
+            cut = (cq.Workplane("XY").box((G["blk_w"] + 0.54) * IN, (G["blk_l"] + 0.04) * IN, 3 * IN).translate(v(0.25, 0, 0))
+                   .rotate((0, 0, 0), (0, 0, 1), a).translate(v(x, y, G["floor_z0"] + ply / 2)))
+            floor = floor.cut(cut)
     S["rocker_floor"] = (floor, "BIRCH")
     wd, holes_d = wall(G, +1, True)
     wp, holes_p = wall(G, -1, False)
@@ -265,27 +407,30 @@ def build(G):
         e = box(0, sy * (G["depth"] / 2 + ply / 2), ft + G["end_h"] / 2, 2 * G["wall_in"], ply, G["end_h"])
         ends = e if ends is None else ends.union(e)
     S["rocker_ends"] = (ends, "BIRCH")
-    # altitude PTFE pads on the seats, centred under the Ebony band
-    apads = None
-    for sx in (1, -1):
-        for ang in (G["pad_angle"], -G["pad_angle"]):
-            p = box(sx * G["pad_x"], 0, za - (R + G["lam_t"] + 0.095), G["pad_w"], G["pad_len"], 0.19)
-            p = _rot_x(p, ang, za)
-            apads = p if apads is None else apads.union(p)
-    S["alt_ptfe_pads"] = (apads, "PTFE")
-    # lateral stops: L-brackets on each wall's outer face, PTFE face 0.06 off the bearing's outer face
-    stops = None
-    for sx in (1, -1):
-        sa = G["lateral_stop_angle"]
-        y = G["arc_r"] * math.sin(math.radians(sa))
-        h_edge = G["h_alt"] - G["arc_r"] * math.cos(math.radians(sa))        # wall top there
-        xo = G["wall_out"]
-        leg = box(sx * (xo + 0.45), y, ft + h_edge - 1.3, 0.9, 1.0, 2.4)
-        xf = G["bearing_x_out"] + 0.06
-        up = box(sx * ((xf + xo + 0.9) / 2), y, ft + h_edge + 1.2, (xo + 0.9) - xf, 1.0, 2.6)
-        part = leg.union(up)
-        stops = part if stops is None else stops.union(part)
-    S["lateral_stops"] = (stops, "ALU")
+    if rollers:
+        S.update(roller_parts(G))
+    else:
+        # altitude PTFE pads on the seats, centred under the Ebony band
+        apads = None
+        for sx in (1, -1):
+            for ang in (G["pad_angle"], -G["pad_angle"]):
+                p = box(sx * G["pad_x"], 0, za - (R + G["lam_t"] + 0.095), G["pad_w"], G["pad_len"], 0.19)
+                p = _rot_x(p, ang, za)
+                apads = p if apads is None else apads.union(p)
+        S["alt_ptfe_pads"] = (apads, "PTFE")
+        # lateral stops: L-brackets on each wall's outer face, PTFE face 0.06 off the bearing's outer face
+        stops = None
+        for sx in (1, -1):
+            sa = G["lateral_stop_angle"]
+            y = G["arc_r"] * math.sin(math.radians(sa))
+            h_edge = G["h_alt"] - G["arc_r"] * math.cos(math.radians(sa))        # wall top there
+            xo = G["wall_out"]
+            leg = box(sx * (xo + 0.45), y, ft + h_edge - 1.3, 0.9, 1.0, 2.4)
+            xf = G["bearing_x_out"] + 0.06
+            up = box(sx * ((xf + xo + 0.9) / 2), y, ft + h_edge + 1.2, (xo + 0.9) - xf, 1.0, 2.6)
+            part = leg.union(up)
+            stops = part if stops is None else stops.union(part)
+        S["lateral_stops"] = (stops, "ALU")
     # ---- drive modules (drive.py, 2026-10-31): the same swing arm on both axes, 2:1 pulleys drawn
     import drive
     for _ax in ("alt", "az"):

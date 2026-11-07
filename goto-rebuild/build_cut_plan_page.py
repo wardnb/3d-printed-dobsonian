@@ -38,6 +38,10 @@ BARS = [
     dict(id="sq214", stock="6061 square bar 2 1/4\" × 2 1/4\"", order="12\"", cuts="3 × 3.70\"", parts="Truss socket blocks (faced to 3.6 × 2.0 × 2.1)"),
     dict(id="sq134", stock="6061 square bar 1 3/4\" × 1 3/4\"", order="20\"", cuts="3 × 3.70\" + 3 × 2.40\"", parts="Truss pair blocks (faced to 1.6 × 1.6) and socket spigots (milled upright, 0.75\" grip)"),
     dict(id="rd138", stock="6061 round bar 1 3/8\"", order="48\"", cuts="12 × 3.10\"", parts="Truss cone plugs (1.25\" max dia) if made in-house; skip if the turning service supplies material"),
+    # roller bearings (2026-11-07, roller_study.py): not yet ordered
+    dict(id="bar1520", stock="6061 rectangular bar 1 1/2\" × 2\"", order="18\"", cuts="4 × 2.20\" + 4 × 1.10\"", parts="Alt roller blocks (2.2 tall, saddle over the wall) and four az roller blocks (1.1, hung through the floor at its corners); faced to 1.4 wide"),
+    dict(id="fl116x58", stock="6061-T6 flat bar 1/16\" × 5/8\"", order="2 × 48\"", cuts="2 × ~40\" (trim on the rim)", parts="Alt roller tracks, bent around the D rims and epoxy-bonded (elastic at R 14: strap-clamp while curing)"),
+    dict(id="pl18", stock="6061 plate 1/8\" × 12\" × 48\"", order="1", cuts="4 × 90° ring segments (r 12.25–13.25, 18.7 × 4.6 each) + 4 flange plates 2.4 × 3.0", parts="Az roller track ring on the ground ring (joints at 45°+k·90°, off the birch joints); az block flange plates (DXFs in out/rocker/)"),
 ]
 OTHER = [
     dict(id="delrin1", stock="Delrin (acetal) rod 1\"", order="6\"", cuts="9 × 0.25\"", parts="Cell pads"),
@@ -91,18 +95,20 @@ BUY = [
     ]),
     dict(group="Birch, bearings, rocker, ground board", items=[
         B("birch", "Baltic birch 18 mm, 5 × 5 ft", 3, "D bearings, rocker, ground board, box wings (ripped to 24.4\" strips)", "now", ""),
-        B("ebony", "Ebony Star laminate", 1, "D bearing rims and the rocker floor's underside (az): a 4 × 8 sheet covers both", "now", ""),
-        B("ptfe", "Virgin PTFE sheet 3/16\"", 1, "Alt pads (4), lateral stops (2), az pads (3); 6 × 6\" is plenty", "now", ""),
+        B("r10", "R10-2RS or R10-ZZ ball bearing (5/8 × 1-3/8 × 11/32)", 9, "Roller wheels: 4 alt + 4 az + spare (roller_study.py: 21–34 lb each, Hertz ≤ 130 MPa at 3 g on 6061). ZZ shields drag ~1/5 of 2RS seals", "now", "McMaster / VXB"),
+        B("sb58", "5/8\" × 1\" shoulder bolt, 1/2-13 thread, 18-8", 8, "Roller axles; the far cheek of each block is tapped 1/2-13", "now", "McMaster"),
+        B("fr6", "FR6-2RS flanged bearing (3/8 × 7/8 × 9/32) + 3/8 × 1-1/2 shoulder bolt", 1, "Zero-play az pivot in a 6061 housing on the floor; 5/16-18 steel insert in the ground hub", "now", "McMaster"),
+        B("ptfe", "Virgin PTFE sheet 1/16\"", 1, "Lateral tab faces (4) on the alt roller blocks, 0.05\" off the D; 3 × 3\"", "now", ""),
+        B("brake", "Brake shoes: 1\" neoprene/cork pads + compression springs", 2, "Hand-push brake on each axis, pressed on by the same cam lever that lifts the pinion (~15–20 lb on the track = 100–120 in-lb hold); not drawn yet", "later", ""),
         B("dowel38", "Steel dowel pin 3/8\" + drill bushing 3/8\" ID × 1/2\" OD", 4, "D bearing to box (2 per side)", "now", "McMaster"),
         B("bolt14", "1/4-20 bolts + threaded inserts for ply", 12, "D bearing to box side (6 per side)", "now", ""),
         B("confirmat", "Confirmat screws + step drill", 1, "Box back wings through both boards (8)", "now", ""),
-        B("pivot", "3/8\" pivot bolt, nyloc, fender + PTFE washers", 1, "Rocker on ground board", "now", ""),
         B("feet", "Levelling feet", 3, "Ground board feet at r 14\"", "now", ""),
-        B("glue", "Wood glue (Titebond III) + contact cement", 1, "Laminating the D layers; Ebony Star", "now", ""),
+        B("glue", "Wood glue (Titebond III)", 1, "Laminating the D layers (no laminate: the rollers run on aluminium tracks)", "now", ""),
     ]),
     dict(group="Drives (two identical modules)", items=[
         B("belt9", "GT2 9 mm open belt, 5 m", 1, "Glued teeth-out on the alt rim (~23\") and around the 30\" ground ring (~95\")", "now", ""),
-        B("pin20", "GT2 20T flangeless pinion, 8 mm bore, ≥ 9 mm wide", 3, "2 + spare", "now", ""),
+        B("pin20", "GT2 20T flangeless pinion, 8 mm bore, ≥ 9 mm wide", 3, "2 + spare. Hub ≤ 12.5 mm dia (hubless long-toothed type, or turn/file a 16 mm hub down): on the alt rim it runs 0.04\" under the roller track strip", "now", ""),
         B("p16", "GT2 16T, 6 mm belt, bore to suit the motor shaft", 2, "On the gearmotor (1/4\" ASSUMED: measure the Pittman shaft)", "measure", ""),
         B("p32", "GT2 32T + 152 mm loop (2:1)", 2, "Buy both ratio sets; they are cheap", "test", ""),
         B("p48", "GT2 48T + 170 mm loop (3:1)", 2, "", "test", ""),

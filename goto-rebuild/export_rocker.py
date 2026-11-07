@@ -55,7 +55,7 @@ def bb_overlap(a, b):
     return p.xmin <= q.xmax and q.xmin <= p.xmax and p.ymin <= q.ymax and q.ymin <= p.ymax and p.zmin <= q.zmax and q.zmin <= p.zmax
 
 clash = {}
-fixed = {k: s_ for k, (s_, _) in solids.items() if k not in ("alt_ptfe_pads",)}
+fixed = {k: s_ for k, (s_, _) in solids.items() if k not in ("alt_ptfe_pads", "alt_rollers", "alt_track_strips")}
 for alt in (G["alt_min"], 45, 90):
     for side, x_lo in (("drive", F["bearing_x_in"]), ("plain", -F["bearing_x_out"])):
         b = bearing_world(x_lo, alt)
@@ -67,9 +67,11 @@ report["bearing_clashes_in3"] = clash
 
 # ---- pads sit under the Ebony band, pinion inside the belt band, head over the tape
 xi = F["bearing_x_in"]
-eb, belt, tape = G["bands"]["ebony"], G["bands"]["belt"], G["bands"]["tape"]
-pad = (G["pad_x"] - G["pad_w"] / 2 - xi, G["pad_x"] + G["pad_w"] / 2 - xi)
-report["pad_inside_ebony_band"] = eb[0] <= pad[0] and pad[1] <= eb[1]
+eb, belt, tape = G["run_band"], G["bands"]["belt"], G["bands"]["tape"]
+pw = G["roller_w"] if G["kind"] == "rollers" else G["pad_w"]
+pad = (G["pad_x"] - pw / 2 - xi, G["pad_x"] + pw / 2 - xi)
+report["pad_inside_running_band"] = eb[0] <= pad[0] and pad[1] <= eb[1]
+report["bearing_kind"] = G["kind"]
 report["rim_bands_from_inner_face_in"] = G["bands"]
 
 # ---- parts, DXFs and sizes
@@ -101,7 +103,7 @@ drep["arm_plates_lb_per_axis"] = drive.arm_lb()
 drep["arm_plate_size_in"] = drive._size()
 drep["holes_A"] = [(round(u, 3), round(w, 3), round(d, 3), k) for u, w, d, k in drive.arm_holes("A")]
 drep["holes_B"] = [(round(u, 3), round(w, 3), round(d, 3), k) for u, w, d, k in drive.arm_holes("B")]
-ground = {k: solids[k][0] for k in ("ground_board", "ground_ring", "feet", "az_ptfe")}
+ground = {k: solids[k][0] for k in ("ground_board", "ground_ring", "feet", "az_ptfe", "az_track") if k in solids}
 azm = {k: s_ for k, (s_, _) in drive.module(G, "az").items() if "pinion" not in k}
 sweep = []
 for ang in range(0, 360, 20):
@@ -217,6 +219,59 @@ ax.set_title(f"floor  ({fl_:.2f} x {fw:.2f}, ripped from a 24.4 strip)", fontsiz
 fig.suptitle("Cut layout, 18 mm Baltic birch: three 5 x 5 sheets ripped into 24.4 x 60 strips; every blank fits the AltMill 2x4 (48.6 x 24.4)", fontsize=11)
 fig.tight_layout()
 fig.savefig(os.path.join(OUT, "cut_sheet_rocker.png"), dpi=110)
+# ---- roller bearings (2026-11-07): az track ring thirds + flange plates (1/8 6061 DXF, nested on a 12 x 48 blank),
+# roller block STEPs (1-1/2 x 2 bar), and the numbers the blocks are built from
+if G["kind"] == "rollers":
+    ra, tt = G["az_pad_r"], G["az_track_t"]
+    # four 90 deg segments (bbox 18.7 x 4.6: four nest on a 12 x 48 blank; 120 deg thirds would need 24 x 24),
+    # joints at 45/135/225/315 so none lands on the birch ring's joints at 90/210/330
+    s45 = math.sin(math.radians(45))
+    ro, ri = ra + 0.5, ra - 0.5
+    quarter = (cq.Workplane("XY").moveTo(-ro * s45 * IN, ro * s45 * IN).threePointArc((0, ro * IN), (ro * s45 * IN, ro * s45 * IN))
+               .lineTo(ri * s45 * IN, ri * s45 * IN).threePointArc((0, ri * IN), (-ri * s45 * IN, ri * s45 * IN)).close()
+               .extrude(0.05 * IN))
+    for da in (-36, -18, 0, 18, 36):                        # #8 FHCS countersunk flush every 18 deg (rollers roll over them)
+        a = math.radians(da)
+        quarter = quarter.cut(cq.Workplane("XY").center(ra * math.sin(a) * IN, ra * math.cos(a) * IN).circle(0.085 * IN).extrude(0.05 * IN))
+    cq.exporters.export(quarter.section(0.025 * IN), os.path.join(OUT, "az_track_quarter_x4_eighth-inch-6061.dxf"))
+    plate = cq.Workplane("XY").rect((G["blk_w"] + 1.0) * IN, (G["blk_l"] + 1.0) * IN).extrude(0.05 * IN)
+    plate = plate.cut(cq.Workplane("XY").slot2D(1.5 * IN, 0.5 * IN, 90).extrude(0.05 * IN))      # roller clearance slot
+    for dx, dy in ((0, -0.6), (0, 0.6)):                      # 1/4-20 into the block
+        plate = plate.cut(cq.Workplane("XY").center(dx * IN, dy * IN).circle(0.135 * IN).extrude(0.05 * IN))
+    for dx in (-(G["blk_w"] / 2 + 0.3), G["blk_w"] / 2 + 0.3):   # #10 wood screws into the floor
+        for dy in (-1.0, 1.0):
+            plate = plate.cut(cq.Workplane("XY").center(dx * IN, dy * IN).circle(0.1 * IN).extrude(0.05 * IN))
+    cq.exporters.export(plate.section(0.025 * IN), os.path.join(OUT, "az_flange_plate_x4_eighth-inch-6061.dxf"))
+    # nest check on 12 x 48: quarters in two columns x two rows, plates in the leftover strip
+    from shapely.geometry import Polygon as _Poly
+    from shapely import affinity as _aff
+    def _arc(r, a0, a1, n=90):
+        return [(r * math.sin(math.radians(a0 + (a1 - a0) * i / n)), r * math.cos(math.radians(a0 + (a1 - a0) * i / n))) for i in range(n + 1)]
+    qp = _Poly(_arc(ro, -45, 45) + _arc(ri, 45, -45))
+    qb = qp.bounds
+    q_w, q_h = qb[2] - qb[0], qb[3] - qb[1]
+    placed_ = [_aff.translate(qp, 0.5 - qb[0] + col * (q_w + 0.6), 0.5 - qb[1] + row * (q_h + 0.6))
+               for col in (0, 1) for row in (0, 1)]
+    pl_w, pl_h = G["blk_w"] + 1.0, G["blk_l"] + 1.0
+    px0 = 2 * (q_w + 0.6) + 0.5
+    for i in range(4):
+        x0_, y0_ = px0 + (i // 2) * (pl_w + 0.4), 0.5 + (i % 2) * (pl_h + 0.4)
+        placed_.append(_Poly([(x0_, y0_), (x0_ + pl_w, y0_), (x0_ + pl_w, y0_ + pl_h), (x0_, y0_ + pl_h)]))
+    okn = all(p.bounds[2] <= 48 and p.bounds[3] <= 12 for p in placed_)
+    okn = okn and all(placed_[i].distance(placed_[j]) >= 0.3 for i in range(len(placed_)) for j in range(i + 1, len(placed_)))
+    report["az_track_nest_12x48_ok"] = bool(okn)
+    report["az_track_quarter_bbox_in"] = (round(q_w, 2), round(q_h, 2))
+    for nm, hh, sad in (("alt_roller_block", G["blk_h_alt"], True), ("az_roller_block", G["blk_h_az"], False)):
+        b_, r_, a_ = rocker.roller_block(G, hh, sad)
+        cq.exporters.export(b_, os.path.join(OUT, f"{nm}.step"))
+    report["rollers"] = dict(roller="R10 5/8 x 1-3/8 x 11/32", axle="5/8 x 1 shoulder bolt", track_alt="1/16 x 5/8 6061 strip on the rim",
+                             track_az="1/8 6061 ring r 12.25-13.25 in four 90 deg segments", block_w_l_in=(G["blk_w"], G["blk_l"]),
+                             block_h_alt_az_in=(G["blk_h_alt"], G["blk_h_az"]), axle_below_block_top_in=G["axle_from_top"],
+                             slot_w_d_in=(G["slot_w"], G["slot_d"]), saddle_depth_in=G["saddle_d"],
+                             r_track=round(G["r_track"], 4), r_axle=round(G["r_axle"], 4), r_block_top=round(G["r_blk_top"], 3),
+                             r_notch_wall_top=round(G["r_notch"], 3), cross_bolt_r=round(G["blk_bolt_r"], 3),
+                             floor_over_ground_ring_in=round(G["floor_z0"] - G["ground_top"], 3),
+                             lateral_tab_clearance_in=G["tab_clear"])
 json.dump(report, open(os.path.join(OUT, "fit_report.json"), "w"), indent=2)
 print(json.dumps({k: v_ for k, v_ in report.items() if k not in ("parts", "bracket_holes_yh_in", "blanks")}, indent=1))
 for b in blank_report:

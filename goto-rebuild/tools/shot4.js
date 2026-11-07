@@ -1,7 +1,7 @@
 const { chromium } = require('/tmp/claude-0/-home-claude/1cb5d628-4a67-5c85-b2f5-b06b9468717d/scratchpad/npm/node_modules/playwright');
 const path = require('path'), fs = require('fs');
 const NM = '/tmp/claude-0/-home-claude/1cb5d628-4a67-5c85-b2f5-b06b9468717d/scratchpad/npm/node_modules/three';
-const DIST = '/home/claude/dob16/dist';
+const DIST = '/home/claude/3d-printed-dobsonian/goto-rebuild/dist';
 (async () => {
   const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--use-gl=swiftshader','--enable-webgl','--ignore-gpu-blocklist'] });
   for (const [w,h,scheme,tag,alt,view] of [[1400,900,'light','side',45,'side'],[1400,900,'light','three',20,'three']]) {

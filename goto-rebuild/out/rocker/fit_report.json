@@ -1,18 +1,19 @@
 {
   "box_swing_ok": true,
   "bearing_clashes_in3": {},
-  "pad_inside_ebony_band": true,
+  "pad_inside_running_band": true,
+  "bearing_kind": "rollers",
   "rim_bands_from_inner_face_in": {
     "bare": [
       0.0,
-      0.15
+      0.16
     ],
     "belt": [
-      0.15,
-      0.51
+      0.16,
+      0.52
     ],
-    "ebony": [
-      0.51,
+    "track": [
+      0.52,
       1.15
     ],
     "tape": [
@@ -25,7 +26,7 @@
       "part": "rocker_floor",
       "qty": 1,
       "size_in": [
-        24.05,
+        24.06,
         27.42
       ],
       "stock": "18 mm Baltic birch",
@@ -58,7 +59,7 @@
       "part": "rocker_end",
       "qty": 2,
       "size_in": [
-        22.63,
+        22.64,
         4.0
       ],
       "stock": "18 mm Baltic birch",
@@ -125,14 +126,6 @@
   "bracket_holes_yh_in": {
     "drive": [
       [
-        8.67,
-        9.16
-      ],
-      [
-        8.67,
-        10.16
-      ],
-      [
         -0.75,
         7.57
       ],
@@ -167,14 +160,6 @@
     ],
     "plain": [
       [
-        8.67,
-        9.16
-      ],
-      [
-        8.67,
-        10.16
-      ],
-      [
         4.5,
         1.5
       ],
@@ -193,9 +178,9 @@
     ]
   },
   "dims": {
-    "inside_w": 22.63,
+    "inside_w": 22.64,
     "box_clearance": 0.48,
-    "floor_w": 24.05,
+    "floor_w": 24.06,
     "floor_l": 27.42,
     "h_alt": 22.66,
     "h_pad": 10.54,
@@ -204,7 +189,7 @@
     "y_horn": 9.64,
     "end_h": 4.0,
     "end_h_max": 4.41,
-    "rocker_top": 15.03,
+    "rocker_top": 15.63,
     "chord_e": 3.62,
     "alt_min": 15,
     "pad_angle": 30,
@@ -212,7 +197,7 @@
     "ring_id": 23.0,
     "foot_r": 14.0,
     "az_pad_r": 12.75,
-    "cap_z": 11.39
+    "cap_z": 11.99
   },
   "ev6_ok_under_23in": true,
   "bearing_lb_each": 6.55,
@@ -423,7 +408,39 @@
   "blank_parts_unplaced": {
     "rocker_floor": 1
   },
-  "floor_note": "rocker_floor: rip the 24.4 strip to 24.05 and crosscut to 27.42 on the table saw; the AltMill (or a hand drill from the DXF) does the pivot and pilot holes",
+  "floor_note": "rocker_floor: rip the 24.4 strip to 24.06 and crosscut to 27.42 on the table saw; the AltMill (or a hand drill from the DXF) does the pivot and pilot holes",
   "sheets_5x5": "3: each ripped into two 24.4 x 60 strips; sheet 3 strip B = floor (27.4) + ring thirds blank (32.3)",
-  "layout_ok": true
+  "layout_ok": true,
+  "az_track_nest_12x48_ok": true,
+  "az_track_quarter_bbox_in": [
+    18.74,
+    4.59
+  ],
+  "rollers": {
+    "roller": "R10 5/8 x 1-3/8 x 11/32",
+    "axle": "5/8 x 1 shoulder bolt",
+    "track_alt": "1/16 x 5/8 6061 strip on the rim",
+    "track_az": "1/8 6061 ring r 12.25-13.25 in four 90 deg segments",
+    "block_w_l_in": [
+      1.4,
+      2.0
+    ],
+    "block_h_alt_az_in": [
+      2.2,
+      1.1
+    ],
+    "axle_below_block_top_in": 0.45,
+    "slot_w_d_in": [
+      0.45,
+      1.3
+    ],
+    "saddle_depth_in": 0.5,
+    "r_track": 14.0625,
+    "r_axle": 14.75,
+    "r_block_top": 14.3,
+    "r_notch_wall_top": 16.0,
+    "cross_bolt_r": 16.3,
+    "floor_over_ground_ring_in": 0.754,
+    "lateral_tab_clearance_in": 0.05
+  }
 }

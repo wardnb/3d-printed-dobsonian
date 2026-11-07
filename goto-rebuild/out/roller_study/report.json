@@ -1,0 +1,112 @@
+{
+ "alt": {
+  "roller_load_lb": 21.4,
+  "hertz_MPa": 75,
+  "hertz_3g_MPa": 130,
+  "al_yield_MPa": 276,
+  "foundation_MPa": 1.28,
+  "strip_deflection_in": 0.00018,
+  "strip_char_length_in": 0.17,
+  "roller_support_stiffness_lb_in": 119000.0,
+  "friction_in_lb": 10.8,
+  "friction_old_in_lb": 145.0,
+  "drive_in_lb": 35.8,
+  "drive_old_in_lb": 170.0
+ },
+ "az": {
+  "roller_load_lb": 25.6,
+  "hertz_MPa": 82,
+  "foundation_MPa": 0.51,
+  "friction_in_lb": 6.6,
+  "friction_old_in_lb": 183.0
+ },
+ "drive": {
+  "alt": {
+   "gearbox_oz_in": 5.1,
+   "margin": 8.8
+  },
+  "alt_old": {
+   "gearbox_oz_in": 24.2,
+   "margin": 1.9
+  },
+  "az": {
+   "gearbox_oz_in": 2.2,
+   "margin": 20.5
+  },
+  "az_old": {
+   "gearbox_oz_in": 24.3,
+   "margin": 1.9
+  }
+ },
+ "preload": {
+  "alt_friction_in_lb": 10.8,
+  "imbalance_in_lb": 25.0,
+  "train_preloaded": true,
+  "bias_recommended_in_lb": [
+   20,
+   30
+  ],
+  "note": "balance with the lightest eyepiece and let every heavier one add nose-heavy bias; with ~10 in-lb of friction the drive torque never reverses, so no backlash crossing at transit"
+ },
+ "brake": {
+  "alt": {
+   "hold_in_lb": 100.0,
+   "tangential_lb": 7.1,
+   "shoe_normal_lb": 14.3,
+   "eyepiece_push_lb": 1.6
+  },
+  "az": {
+   "hold_in_lb": 120.0,
+   "tangential_lb": 9.4,
+   "shoe_normal_lb": 18.8,
+   "eyepiece_push_lb": null
+  }
+ },
+ "runout": {
+  "radial_runout_in": 0.01,
+  "tube_tilt_arcsec": 95,
+  "note": "differential left/right rim runout tilts the tube about the vertical; smooth with altitude"
+ },
+ "bearing_fe_point_loads": {
+  "grav_pinion_15deg_as": [
+   24.56,
+   24.8
+  ],
+  "fastener_3g_max_lb": [
+   145,
+   148
+  ],
+  "note": "D rim/joint windup unchanged with point loads: the joint, not the rim, sets it"
+ },
+ "assumed": {
+  "seal_drag_N_mm": 10.0,
+  "rocker_weight_lb": 28.0,
+  "mu_tab": 0.1,
+  "mu_brake": 0.5,
+  "e_ply_inplane_MPa": 7000.0,
+  "gearbox_oz_in": 45.0,
+  "imbalance_in_lb": 25.0
+ },
+ "parts": {
+  "roller": {
+   "name": "R10 (5/8 x 1-3/8 x 11/32)",
+   "od": 1.375,
+   "bore": 0.625,
+   "w": 0.344,
+   "C0_lb": 830,
+   "C_lb": 1400
+  },
+  "track_alt": {
+   "t": 0.0625,
+   "w": 0.625,
+   "alloy": "6061-T6 flat, bent elastically around the rim, epoxy-bonded"
+  },
+  "track_az": {
+   "t": 0.125,
+   "alloy": "6061 plate ring, 3 x 120 deg segments, r 12.25-13.25"
+  },
+  "qty_rollers": 8,
+  "axle": "5/8 x 1 shoulder bolt, 1/2-13 thread, 8 off",
+  "pivot": "3/8 shoulder bolt in an FR6-2RS flanged bearing (zero play)"
+ }
+}
