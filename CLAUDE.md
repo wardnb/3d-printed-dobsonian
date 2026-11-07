@@ -6,6 +6,7 @@ decisions; this file is the working knowledge needed to continue the engineering
 - Design doc (Claude Docs, editable): https://claude.ai/code/artifact/a2bd133b-cebf-4c55-a572-9a930c1ab10f
   (project id a2bd133b-cebf-4c55-a572-9a930c1ab10f, tab 765a3677-140b, body node ae7985e7-5528).
   `docs/design.md` is a Markdown export; re-export after changes.
+- `docs/predictions.md` is the register of every simulated number (drift, stiffness, friction, weights) with how to measure each and a blank Measured column: fill it as the real scope is tested, and when a measurement disagrees, change the model input and re-run rather than editing the number.
 - `docs/measurements.md` is the log of as-built measurements; `docs/dobstuff_kit_reference.md` is what the DobStuff blog shows.
 - 3D viewer artifact: https://claude.ai/artifact/J1dg2GqFYWfny88NzJT5gF (republish from `goto-rebuild/dist/index.html`
   with the seven `*.glb.txt` files; see "Viewer" below).
