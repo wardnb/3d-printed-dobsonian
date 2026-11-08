@@ -94,6 +94,16 @@ were still in the terminals: check whether the matching motor cables came with t
 4. Enter the ticks per rev from §2, set slew to 2°/s, confirm a commanded 360° of the gearbox output is 360° (mark the
    shaft). Save to flash.
 
+**Stage 0 results (2026-11-08):** ServoConfig 1.30 talks over USB; firmware **9.7** (current, no flash needed), serial 57447,
+12.2 V bench supply, CPU 80 °F. GM9213 on the AZM/RA block (= protocol axis **Y**; ALT/DEC is **X**, per ServoConfig's
+"Azimuth/RA YBits / Altitude/Dec XBits"): counts up with RIGHT, no inversion bits needed, holds position at error ±1 with
+0.00–0.01 A, **0.03 A at 2°/s no-load**, even running; `Y<pos+39400>` from the Terminal Window turned the output shaft
+exactly one revolution (confirms 500 CPR × 4 × 19.7). Ticks per rev entered: az 4,746,912, alt 4,431,712 (type without
+commas: the field keeps only the first digit otherwise); slew 2 DPS, pan 3 MPS, guide 60 SPS; PID 15000/1500/4000,
+accel 1000, error limit 12,800, current limit 0.70 A, integral limit 22,000. ServoConfig's on-screen hand pad buttons
+latch over USB: All-Stop or a second click stops them; commanding a channel with no motor (`X…` here) trips it to
+MANUAL, cleared by Reset. GM9413: pending its adapter board.
+
 **Stage 1 — one drive module, no rim.** Cut the four arm plates (1/4" 6061, from the centre drop of the cage-ring discs
 in the cut plan) and assemble one module: jackshaft in the F608s, 20T pinion, 16T on the motor, 32T + 152 mm loop.
 Run it in air: belt tracking, tension, pulley set-screw security, pinion runout. Swap to the 48T/170 mm set and keep
