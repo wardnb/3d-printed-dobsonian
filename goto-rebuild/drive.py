@@ -77,7 +77,7 @@ def numbers():
 
 
 # hardware drawn so that every part touches what it mounts to (2026-11-08; all ASSUMED until the parts are in hand)
-FLANGE_SQ, FLANGE_T = 2.0, 0.20                 # Pittman GM9000 gearbox face: 2.00" square (measured 2026-11-08, 1.992-1.997), thickness ASSUMED
+FLANGE_SQ, FLANGE_T = 2.0, 0.16                 # Pittman GM9000 gearbox face: 2.00" square x 0.16" thick, both MEASURED 2026-11-08
 PILOT_R, PILOT_H = 0.0, 0.0                     # no pilot boss: the flange face is flat right up to the shaft (photo 2026-11-08)
 PIVOT_SPACER_R = 0.35                           # turned 6061 spacer on the pivot bolt between the bracket and plate A/B
 NUT_AF, NUT_T = 0.5625, 0.22                    # 3/8-16 nyloc on the pivot bolt
