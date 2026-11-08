@@ -42,10 +42,11 @@ C_NOM = 52.0 / IN                               # motor-to-jackshaft centre dist
 SLOT = 0.10                                     # +/- motor slot along u
 U_PIVOT = 4.0
 U_TAIL = -1.3                                   # spring / cam rod
-R_LOBE = dict(jack=0.75, motor=0.98, pivot=0.50, tail=0.42)
+R_LOBE = dict(jack=0.75, motor=1.05, pivot=0.50, tail=0.42)   # motor lobe takes the Ø1.125 pilot slot + #10 screws at +/-0.75
 # ---- motor (Pittman GM9000 family) -- ASSUMED until Nick measures the gearbox face
 MOTOR_R, MOTOR_L = 0.80, 4.6
-MOTOR_HOLES = [(0.0, 0.62), (0.0, -0.62)]       # ASSUMED: two #6 on a 1.24" line across the arm, slotted along u
+MOTOR_HOLES = [(0.0, 0.75), (0.0, -0.75)]       # Pittman GM9000 face: two #10-32 x 0.25 deep on a 1.500" BC (drawing); the four corner
+                                                # holes on Nick's flanges (spacing TBD 2026-11-08) may replace these. Slotted along u
 # ---- spring / clutch
 PRELOAD_LB = 25.0                               # at the pinion (rim force ~12 lb; GT2 rack-style mesh needs ~2x)
 LIFT = 0.12                                     # pinion lift when the cam is thrown (3 mm)
@@ -71,6 +72,15 @@ def numbers():
     return out
 
 
+# hardware drawn so that every part touches what it mounts to (2026-11-08; all ASSUMED until the parts are in hand)
+FLANGE_SQ, FLANGE_T = 2.0, 0.20                 # Pittman GM9000 gearbox face: 2.00" square (measured 2026-11-08, 1.992-1.997), thickness ASSUMED
+PILOT_R, PILOT_H = 0.5625, 0.06                 # gearbox pilot boss Ø1.125 (-0.002/+0, GM9000 drawing) into a 1.13" hole in plate B; height ASSUMED
+PIVOT_SPACER_R = 0.35                           # turned 6061 spacer on the pivot bolt between the bracket and plate A/B
+NUT_AF, NUT_T = 0.5625, 0.22                    # 3/8-16 nyloc on the pivot bolt
+ROD_R = 0.125                                   # 1/4" guide rod through the tail
+SPRING_R, SPRING_WIRE = 0.28, 0.06              # alt compression spring (19 lb at the working length)
+
+
 def arm_poly():
     """Arm plate outline in (u, w) as a shapely polygon (convex hull of the four lobes)."""
     lobes = [Point(0, 0).buffer(R_LOBE["jack"], 64), Point(C_NOM, 0).buffer(R_LOBE["motor"], 64),
@@ -78,7 +88,7 @@ def arm_poly():
     return unary_union(lobes).convex_hull
 
 
-STANDOFFS = [(-0.55, 0.55), (U_PIVOT - 0.9, 0.45), (C_NOM, -0.82)]
+STANDOFFS = [(-0.55, 0.55), (U_PIVOT - 0.9, 0.45), (U_PIVOT - 0.9, -0.45)]   # third moved off the motor lobe 2026-11-08 (it sat on the #10-32 screw)
 
 
 def arm_holes(plate):
@@ -87,8 +97,8 @@ def arm_holes(plate):
          (U_TAIL, 0, 0.281, "1/4 guide rod")]
     h += [(u, w, 0.201, "#10 standoff") for u, w in STANDOFFS]
     if plate == "B":
-        h.append((C_NOM, 0, 0.55, "motor shaft / pilot clearance"))
-        h += [(C_NOM + du, dw, 0.15, f"#6 motor screw, slot +/-{SLOT}") for du, dw in MOTOR_HOLES]
+        h.append((C_NOM, 0, 2 * PILOT_R + 0.005, f"gearbox pilot Ø1.125, slot +/-{SLOT} (locates the motor in w, slides for belt tension)"))
+        h += [(C_NOM + du, dw, 0.201, f"#10-32 motor screw, slot +/-{SLOT}") for du, dw in MOTOR_HOLES]
     return h
 
 
@@ -166,15 +176,6 @@ def _hex(pl, sgn, u, w, s0, length, af):
     """Hex nut / bolt head across-flats af, axis along s."""
     return cq.Workplane(pl).center(u * IN, sgn * w * IN).polygon(6, af / math.cos(math.pi / 6) * IN).extrude(length * IN).translate(
         pl.zDir.multiply(s0 * IN))
-
-
-# hardware drawn so that every part touches what it mounts to (2026-11-08; all ASSUMED until the parts are in hand)
-FLANGE_SQ, FLANGE_T = 1.6, 0.20                 # Pittman GM9000 gearbox face plate (square) and its thickness
-PILOT_R, PILOT_H = 0.25, 0.06                   # gearbox pilot boss into plate B
-PIVOT_SPACER_R = 0.35                           # turned 6061 spacer on the pivot bolt between the bracket and plate A/B
-NUT_AF, NUT_T = 0.5625, 0.22                    # 3/8-16 nyloc on the pivot bolt
-ROD_R = 0.125                                   # 1/4" guide rod through the tail
-SPRING_R, SPRING_WIRE = 0.28, 0.06              # alt compression spring (19 lb at the working length)
 
 
 def module(G, axis, ratio="2:1", engaged=True):

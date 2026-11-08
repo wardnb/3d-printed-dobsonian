@@ -216,10 +216,10 @@
     },
     "spring_force_lb": 18.9,
     "tail_stroke_in": 0.159,
-    "arm_plates_lb_per_axis": 0.43,
+    "arm_plates_lb_per_axis": 0.44,
     "arm_plate_size_in": [
       6.22,
-      1.96
+      2.1
     ],
     "holes_A": [
       [
@@ -253,8 +253,8 @@
         "#10 standoff"
       ],
       [
-        2.047,
-        -0.82,
+        3.1,
+        -0.45,
         0.201,
         "#10 standoff"
       ]
@@ -291,28 +291,28 @@
         "#10 standoff"
       ],
       [
-        2.047,
-        -0.82,
+        3.1,
+        -0.45,
         0.201,
         "#10 standoff"
       ],
       [
         2.047,
         0,
-        0.55,
-        "motor shaft / pilot clearance"
+        1.13,
+        "gearbox pilot \u00d81.125, slot +/-0.1 (locates the motor in w, slides for belt tension)"
       ],
       [
         2.047,
-        0.62,
-        0.15,
-        "#6 motor screw, slot +/-0.1"
+        0.75,
+        0.201,
+        "#10-32 motor screw, slot +/-0.1"
       ],
       [
         2.047,
-        -0.62,
-        0.15,
-        "#6 motor screw, slot +/-0.1"
+        -0.75,
+        0.201,
+        "#10-32 motor screw, slot +/-0.1"
       ]
     ],
     "az_module_clears_ground_board_360": true,
