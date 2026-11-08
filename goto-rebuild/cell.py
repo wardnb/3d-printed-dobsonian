@@ -43,7 +43,13 @@ C = dict(
     fan_hole=3.2,
     load_posts=(225, 315), guard_posts=(90, 210, 330),
     post_guard=(0.5, 0.5),                 # (radial, tangential)
-    gusset_t=0.5, gusset_base=1.8, gusset_top=0.75,   # load posts: 1/2" 6061 gussets standing on edge
+    # load posts (2026-11-07, lift-out cell): untapered 0.6" deep x 2.5" wide 6061 blocks so the whole cell + mirror
+    # stays inside r 8.75 and lifts straight out through the box's 18" top ring. Was a 1/2" x 1.8" tapered gusset
+    # (74,000 lb/in, 0.008 mm shift; r_max 10.82, trapped by the spacer tubes)
+    gusset_t=2.0, gusset_base=0.6, gusset_top=0.6,
+    handle_lugs=(60, 240), handle_r=8.3,   # lugs on a diameter (clear of the arms/gussets; 0/180 would overrun the 17 x 18 plate) with 3/8-16 holes for screw-in lifting handles
+    lift_out=True, ring_id=18.0, lift_clear=0.25,   # the unit must pass the box's 18" top ring with 0.25" radial clearance;
+                                                    # frame and posts are clipped to r = ring_id/2 - lift_clear
     arm_w=1.5, hub_r=2.45, branch_w=1.4, fan_holes=2.815,
     edge_pad_t=0.125, edge_pad_h=1.4,     # Delrin face on the load posts, spans both plates
     guard_gap=0.02, tab_over=0.2, tab_gap=0.04, tab_t=0.125,
@@ -106,12 +112,25 @@ def frame_poly(c=C):
     for a in c["load_posts"]:
         arm = min(c["tri_angles"], key=lambda t: abs((t - a + 180) % 360 - 180))
         p0 = Point(*pol(c["r_bolt"] - 0.3, arm))
-        r_out = R + c["edge_pad_t"] + c["gusset_base"] + 0.2
-        p1 = Point(*pol(R + c["edge_pad_t"] - 0.2, a)); p2 = Point(*pol(r_out, a))
-        foot = unary_union([p1, p2]).buffer(c["branch_w"] / 2, 16)
-        link = unary_union([p0, p1]).buffer(c["branch_w"] / 2, 16)
-        parts += [foot.convex_hull, link.convex_hull]
+        if c.get("lift_out"):
+            # square-ended foot: from r 7.3 to the post's outer face + 0.05, as wide as the post (+0.2)
+            r_out = R + c["edge_pad_t"] + c["gusset_base"] + 0.05
+            foot = affinity.rotate(sbox(7.3, -(c["gusset_t"] + 0.2) / 2, r_out, (c["gusset_t"] + 0.2) / 2), a, origin=(0, 0))
+            p1 = Point(*pol(7.6, a))
+            link = unary_union([p0, p1]).buffer(c["branch_w"] / 2, 16)
+            parts += [foot, link.convex_hull]
+        else:
+            r_out = R + c["edge_pad_t"] + c["gusset_base"] + 0.2
+            p1 = Point(*pol(R + c["edge_pad_t"] - 0.2, a)); p2 = Point(*pol(r_out, a))
+            foot = unary_union([p1, p2]).buffer(c["branch_w"] / 2, 16)
+            link = unary_union([p0, p1]).buffer(c["branch_w"] / 2, 16)
+            parts += [foot.convex_hull, link.convex_hull]
+    if c.get("lift_out"):
+        for a in c["handle_lugs"]:
+            parts.append(affinity.rotate(sbox(c["hub_r"] - 0.5, -0.7, c["handle_r"] + 0.45, 0.7), a, origin=(0, 0)))
     poly = unary_union(parts).buffer(0.25).buffer(-0.25)
+    if c.get("lift_out"):
+        poly = poly.intersection(Point(0, 0).buffer(c["ring_id"] / 2 - c["lift_clear"], 128))
     return poly.difference(Point(0, 0).buffer(c["fan_hole"] / 2, 64))
 
 
@@ -127,6 +146,10 @@ def frame_holes(c=C):
     for k in range(4):
         x, z = pol(c["fan_holes"] / math.sqrt(2), 45 + 90 * k)
         h.append((x, z, 0.144, "#6 clearance: 80 mm fan"))
+    if c.get("lift_out"):
+        for a in c["handle_lugs"]:
+            x, z = pol(c["handle_r"], a)
+            h.append((x, z, 0.3125, "3/8-16 tap: screw-in lifting handle (removed for observing)"))
     return h
 
 
@@ -137,8 +160,12 @@ def post_slots(c=C):
     s = []
     for a in c["load_posts"]:
         r0 = R + c["edge_pad_t"]
-        for u in (0.4, c["gusset_base"] - 0.4):
-            s.append((r0 + u, a, 0.0, 0.4, 0.27))
+        if c.get("lift_out"):                       # two slots side by side across the wide post
+            for t_off in (-0.6, 0.6):
+                s.append((r0 + c["gusset_base"] / 2, a, t_off, 0.4, 0.27))
+        else:
+            for u in (0.4, c["gusset_base"] - 0.4):
+                s.append((r0 + u, a, 0.0, 0.4, 0.27))
     for a in c["guard_posts"]:
         s.append((R + c["guard_gap"] + c["post_guard"][0] / 2, a, 0.0, 0.3, 0.205))
     return s
@@ -188,7 +215,11 @@ def gusset_solid(c, L, a):
          .extrude(c["gusset_t"] * IN).translate((0, 0, -c["gusset_t"] / 2 * IN)))
     pad = (cq.Workplane("XY").box(c["edge_pad_t"] * IN, c["edge_pad_h"] * IN, c["gusset_t"] * IN)
            .translate(((R + c["edge_pad_t"] / 2) * IN, L["cg"] * IN, 0)))
-    return g.union(pad).rotate((0, 0, 0), (0, 1, 0), -a)
+    g = g.union(pad)
+    if c.get("lift_out"):                      # clip the outer corners to the lift-out radius
+        r_clip = c["ring_id"] / 2 - c["lift_clear"]
+        g = g.intersect(cq.Workplane("XZ").circle(r_clip * IN).extrude(-20 * IN).translate((0, -10 * IN, 0)))
+    return g.rotate((0, 0, 0), (0, 1, 0), -a)
 
 
 def to_tube(flat, y_top):

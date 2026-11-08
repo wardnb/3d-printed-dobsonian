@@ -37,6 +37,14 @@ for a in params["mcage_spacer_angles"]:
         hits.append(f"spacer {a}")
 rep["box_clashes"] = hits
 rep["frame_r_max_in"] = round(max(math.hypot(x, z) for x, z in frame.exterior.coords), 2)
+# lift-out: the whole unit (frame, posts, mirror) must pass the top ring's ID with margin, and clear the socket blocks'
+# inner faces above the ring (block 2.0 wide centred on the stub: inner face at stub r - 1.0)
+r_unit = max([rep["frame_r_max_in"], R + c["guard_gap"] + c["post_guard"][0]] +
+             [math.hypot(v.X, v.Z) / IN for v in P["edge_posts"].vertices().vals()])
+rep["lift_out_unit_r_max_in"] = round(r_unit, 2)
+rep["lift_out_clearance_to_top_ring_in"] = round(c["ring_id"] / 2 - r_unit, 2)
+rep["lift_out_clearance_to_socket_blocks_in"] = round(min(r for _, r in stubs) - 1.0 - r_unit, 2)
+rep["lift_out_ok"] = rep["lift_out_clearance_to_top_ring_in"] >= 0.2 and rep["lift_out_clearance_to_socket_blocks_in"] >= 0.2
 rep["bolt_circle_r_in"] = c["r_bolt"]
 
 # --- cut files

@@ -11,16 +11,16 @@
   "cg": -0.825
  },
  "weights_lb": {
-  "frame": 2.47,
+  "frame": 3.23,
   "triangles": 0.89,
   "pivots": 0.1,
-  "edge_posts": 0.5,
+  "edge_posts": 0.96,
   "guard_posts": 0.31,
   "pads": 0.11,
   "collimation_bolts": 0.13,
   "fan": 0.0
  },
- "cell_lb": 4.91,
+ "cell_lb": 6.13,
  "pivot_r": 4.143,
  "pads_in": [
   [
@@ -66,11 +66,15 @@
    ]
   ]
  ],
- "edge_post_k_lbin": 73946,
- "edge_support_k_lbin": 73946,
- "mirror_shift_horizon_mm": 0.0079,
+ "edge_post_k_lbin": 27922,
+ "edge_support_k_lbin": 27922,
+ "mirror_shift_horizon_mm": 0.021,
  "clashes_in3": [],
  "box_clashes": [],
- "frame_r_max_in": 10.82,
+ "frame_r_max_in": 8.75,
+ "lift_out_unit_r_max_in": 8.75,
+ "lift_out_clearance_to_top_ring_in": 0.25,
+ "lift_out_clearance_to_socket_blocks_in": 0.5,
+ "lift_out_ok": true,
  "bolt_circle_r_in": 6.5
 }

@@ -22,7 +22,7 @@ motion; a star drift or plate-solve series measures pointing.
 | C5 | Truss with preloaded cone joints (≥ 50,000 lb/in) | ≤ 0.03–0.05 mm | Drawbolt pulled 80–150 lb by hand; plugs bonded with zero play | `mcage_fe.py` sweep of `sock_k` | Same as C3 | |
 | C6 | Mirror box as built (ply, spacers bolted, stubs pinned at both boards), extra drift 0→90 | 0.012–0.016 mm over the rigid-box truss (0.054 total vs 0.038 rigid; 0.035 with both-board pins) | Ply E 1.2 Msi; stubs pinned axially at the top ring and mirror board | `mcage_fe.py` | Laser with everything assembled minus the cell term (C6 is the remainder after C1 + C3) | |
 | C7 | Mirror box with the cell studs clocked away from the stubs (60° off) | 0.17–0.23 mm | Shows why the new cell's collimation bolts sit next to the stubs at 90/210/330° | `mcage_fe.py cell_angles` | n/a (design choice) | |
-| C8 | Primary mirror lateral shift at the horizon in the new cell | 0.008 mm | Two edge gussets at 225/315°, 74,000 lb/in each, set touching; 23 lb mirror | `cell.py report()` | Dial indicator on the mirror's edge (through the box) horizon vs zenith; was 0.2–0.8 mm possible on the old spring-knob cell | |
+| C8 | Primary mirror lateral shift at the horizon in the new cell | 0.021 mm (lift-out posts; 0.008 with the earlier tapered gussets) | Two 0.6 × 2.0" edge posts at 225/315°, 28,000 lb/in, set touching; 23 lb mirror | `cell.py report()` | Dial indicator on the mirror's edge (through the box) horizon vs zenith; was 0.2–0.8 mm possible on the old spring-knob cell | |
 | C9 | Collimation-bolt bushing play at the focal plane | ≤ 0.05 mm | 5/16 bolt in SAE 841 bushing, 0.001–0.002" clearance, r 6.5" bolt circle | geometry | Push the cell sideways with the box horizontal; indicator on the mirror edge | |
 | C10 | Whole-scope drift 0→90 | ≈ 0.2–0.25 mm (sum of C1 + C5 + C6 + C8 + C9 with margins) | | budget | Barlowed laser at 15/45/90 after collimating at 45°; repeat after three cage off/on cycles | |
 | C11 | Secondary mirror tilt from spider vane thermal change, 20 °C drop | ≈ 0 (vane tension falls 2.6 lb, geometry unchanged) | 0.020" stainless vanes, 4 studs | hand calc | Laser spot at dusk vs 2 h later, tube stationary | |
@@ -98,7 +98,7 @@ motion; a star drift or plate-solve series measures pointing.
 | --- | --- | --- | --- |
 | W1 | Upper cage metal (rings, posts, diagonals, board, rails) | 9.3 lb (12.2 lb with focuser, finder cradle, spider) | |
 | W2 | Each D bearing (two 18 mm layers) | 6.6 lb | |
-| W3 | New mirror cell | 4.9 lb | |
+| W3 | New mirror cell | 6.1 lb (lift-out version with handle lugs) | |
 | W4 | Drive arm plates per axis | 0.43 lb | |
 | W5 | Tube total (everything that tilts) | 74.3 lb | |
 | W6 | Rocker (birch, drives, electronics) | 28 lb ASSUMED | |
