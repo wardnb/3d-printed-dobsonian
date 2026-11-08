@@ -48,9 +48,9 @@ U_TAIL = -1.3                                   # spring / cam rod
 R_LOBE = dict(jack=0.75, motor=1.32, pivot=0.50, tail=0.42)   # motor lobe takes the 1.63" square screw pattern (corner holes at r 1.15)
 # ---- motor (Pittman GM9000 family) -- ASSUMED until Nick measures the gearbox face
 MOTOR_R, MOTOR_L = 0.80, 4.6
-MOTOR_HOLES = [(sx * 0.815, sw * 0.815) for sx in (1, -1) for sw in (1, -1)]   # MEASURED 2026-11-08: four Ø0.15 clearance holes
-                                                # (not tapped) on a 1.63" square at the flange corners -> #6-32 screws through the
-                                                # flange and plate B's slots, nyloc nuts between the plates
+MOTOR_HOLES = [(sx * 0.815, sw * 0.815) for sx in (1, -1) for sw in (1, -1)]   # MEASURED 2026-11-08: four free, plain Ø0.15 holes
+                                                # on a 1.63" square (the flange's countersunk set is taken by the gearbox screws) ->
+                                                # #6-32 socket heads through the flange and plate B's slots, nyloc nuts between the plates
 # ---- spring / clutch
 PRELOAD_LB = 25.0                               # at the pinion (rim force ~12 lb; GT2 rack-style mesh needs ~2x)
 LIFT = 0.12                                     # pinion lift when the cam is thrown (3 mm)
@@ -78,7 +78,7 @@ def numbers():
 
 # hardware drawn so that every part touches what it mounts to (2026-11-08; all ASSUMED until the parts are in hand)
 FLANGE_SQ, FLANGE_T = 2.0, 0.20                 # Pittman GM9000 gearbox face: 2.00" square (measured 2026-11-08, 1.992-1.997), thickness ASSUMED
-PILOT_R, PILOT_H = 0.0, 0.0                     # no pilot boss: the flange face is flat right up to the shaft (photo 2026-11-08); holes countersunk outside
+PILOT_R, PILOT_H = 0.0, 0.0                     # no pilot boss: the flange face is flat right up to the shaft (photo 2026-11-08)
 PIVOT_SPACER_R = 0.35                           # turned 6061 spacer on the pivot bolt between the bracket and plate A/B
 NUT_AF, NUT_T = 0.5625, 0.22                    # 3/8-16 nyloc on the pivot bolt
 ROD_R = 0.125                                   # 1/4" guide rod through the tail
@@ -102,7 +102,7 @@ def arm_holes(plate):
     h += [(u, w, 0.201, "#10 standoff") for u, w in STANDOFFS]
     if plate == "B":
         h.append((C_NOM, 0, 0.55, f"motor shaft clearance, slot +/-{SLOT} (no pilot boss on the GM9000 flange)"))
-        h += [(C_NOM + du, dw, 0.15, f"#6-32 flat-head motor screw (flange holes are countersunk), slot +/-{SLOT}") for du, dw in MOTOR_HOLES]
+        h += [(C_NOM + du, dw, 0.15, f"#6-32 motor screw (plain Ø0.15 flange holes; the countersunk set holds the gearbox), slot +/-{SLOT}") for du, dw in MOTOR_HOLES]
     return h
 
 

@@ -119,7 +119,7 @@ BUY = [
         B("p48", "GT2 48T + 170 mm loop (3:1)", 2, "", "test", ""),
         B("shaft8", "8 mm ground shaft, 100 mm + shaft collars", 2, "Jackshafts", "now", ""),
         B("f608", "F608ZZ flanged bearing", 4, "", "now", ""),
-        B("m6fh", "#6-32 × 3/4 flat-head screws (82°) + nyloc nuts", 8, "Motor flange to plate B: the Pittman flange holes are countersunk, 1.63\" square pattern", "now", ""),
+        B("m6fh", "#6-32 × 3/4 socket-head screws + nyloc nuts", 8, "Motor flange to plate B through the four free Ø0.15 holes on the 1.63\" square (the countersunk set is the gearbox's own screws)", "now", ""),
         B("shoulder", "3/8\" shoulder bolt + flanged bronze bushing 3/8 × 1/2", 2, "Arm pivots", "now", ""),
         B("stand10", "#10-32 standoff 0.80\"", 6, "Between arm plates A and B", "now", ""),
         B("springs", "Clutch springs (alt compression ~19 lb, az extension)", 1, "Rate them once the brackets are detailed", "later", ""),
