@@ -114,7 +114,13 @@ def block(center, deg, t, h, r, fillet=0.2):
     rd, td = rad_tan(deg)
     pl = cq.Plane(origin=v(*center), xDir=cq.Vector(*td), normal=cq.Vector(*rd))
     w = cq.Workplane(pl).box(t * IN, h * IN, r * IN)
-    return w.edges("|Y").fillet(fillet * IN) if fillet else w
+    if fillet:
+        w = w.edges("|Y").fillet(fillet * IN)
+        try:                                                   # looks: 0.06 chamfer on the top and bottom perimeters
+            w = w.faces(">Y or <Y").chamfer(0.06 * IN)
+        except Exception:
+            pass
+    return w
 
 
 def along(p, d, s):

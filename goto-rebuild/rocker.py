@@ -268,6 +268,16 @@ def roller_block(G, h, saddle):
     slot_w wide (X) x slot_d deep from the top, axle hole along X at -axle_from_top, saddle groove (ply + 0.02 wide in X)
     saddle_d deep from the bottom (alt only), two 1/4 cross holes along X through the saddle cheeks."""
     b = box(0, 0, -h / 2, G["blk_w"], G["blk_l"], h)
+    # looks (2026-11-08): the roller-side face is an arch concentric-ish with the axle (R 0.9 centred 0.9 below the
+    # top) so the cheeks fall away 0.33" at the corners, and the long edges carry a 0.06 chamfer
+    arch = (cq.Workplane("XZ").circle(0.9 * IN).extrude(-(G["blk_l"] + 1) * IN, both=True)
+            .translate((0, 0, -0.9 * IN)))
+    keep = box(0, 0, -h / 2 - 0.5, G["blk_w"] + 1, G["blk_l"] + 1, h - 0.9 + 1.0)      # everything below the arch's centre line
+    b = b.intersect(arch.union(keep))
+    try:
+        b = b.edges("|Y").chamfer(0.06 * IN)
+    except Exception:
+        pass
     b = b.cut(box(0, 0, -G["slot_d"] / 2, G["slot_w"], G["blk_l"] + 0.1, G["slot_d"]))
     b = b.cut(cyl_x(-1, 2 + G["blk_w"], G["axle_d"] / 2, 0, -G["axle_from_top"]))
     if saddle:
