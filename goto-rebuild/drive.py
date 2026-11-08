@@ -34,6 +34,9 @@ MOTOR_T = 16                                    # 1/4" bore (the gearbox shaft i
 JACK_T = {"2:1": 32, "3:1": 48}
 LOOP_MM = {"2:1": 152, "3:1": 170}              # standard GT2-6 mm closed loops
 SHAFT_D = 8 / IN
+MOTOR_SHAFT_L = 0.75                            # GM9000 drawing 0.750 +/- 0.030; measured dia 0.245 (1/4" bore pulley, set screw on the flat)
+PULLEY_W = 0.55                                 # GT2 pulley hub + teeth width
+S_PULLEY_FROM_B = 0.65                          # pulleys sit this far inboard of plate B so the 16T is on the outer 0.4" of the 0.75" shaft (the flats)
 BRG_OD, BRG_W, BRG_FL = 22 / IN, 7 / IN, 25 / IN     # F608ZZ flanged
 PLATE_T = 0.25
 PLATE_GAP = 0.80                                # between plates A and B (pulleys live here)
@@ -212,10 +215,10 @@ def module(G, axis, ratio="2:1", engaged=True):
         # F608ZZ flanged bearings: flange on the inner face of each plate
         "jack_bearing_A": (_cyl(pl, sgn, 0, wof(0), sA + PLATE_T, 0.06, 0.43), "ALU"),
         "jack_bearing_B": (_cyl(pl, sgn, 0, wof(0), sB - 0.06, 0.06, 0.43), "ALU"),
-        f"pulley_{j}T": (_cyl(pl, sgn, 0, wof(0), sA + PLATE_T + 0.10, 0.55, OD(j) / 2 + 0.03), "BLACK"),
-        "pulley_16T": (_cyl(pl, sgn, C_NOM, wof(C_NOM), sA + PLATE_T + 0.10, 0.55, 0.26), "BLACK"),
+        f"pulley_{j}T": (_cyl(pl, sgn, 0, wof(0), sB - S_PULLEY_FROM_B, PULLEY_W, OD(j) / 2 + 0.03), "BLACK"),
+        "pulley_16T": (_cyl(pl, sgn, C_NOM, wof(C_NOM), sB - S_PULLEY_FROM_B, PULLEY_W, 0.26), "BLACK"),
         # gearmotor: 1/4" output shaft through plate B to the 16T, square gearbox face on plate B, body behind it
-        "motor_shaft": (_cyl(pl, sgn, C_NOM, wof(C_NOM), sA + PLATE_T + 0.10, sB + PLATE_T - (sA + PLATE_T + 0.10), 0.125), "ALU"),
+        "motor_shaft": (_cyl(pl, sgn, C_NOM, wof(C_NOM), sB + PLATE_T - MOTOR_SHAFT_L, MOTOR_SHAFT_L, 0.1225), "ALU"),
         "motor_flange": (_box(pl, sgn, C_NOM, wof(C_NOM), sB + PLATE_T, FLANGE_SQ, FLANGE_SQ, FLANGE_T), "MOTOR"),
         "motor_GM9000": (_cyl(pl, sgn, C_NOM, wof(C_NOM), sB + PLATE_T + FLANGE_T, MOTOR_L - FLANGE_T, MOTOR_R), "MOTOR"),
         # pivot: 3/8 shoulder bolt with a turned spacer between the plates and a nyloc on the far end

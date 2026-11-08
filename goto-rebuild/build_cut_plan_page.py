@@ -114,7 +114,7 @@ BUY = [
     dict(group="Drives (two identical modules)", items=[
         B("belt9", "GT2 9 mm open belt, 5 m", 1, "Glued teeth-out on the alt rim (~23\") and around the 30\" ground ring (~95\")", "now", ""),
         B("pin20", "GT2 20T flangeless pinion, 8 mm bore, ≥ 9 mm wide", 3, "2 + spare. Hub ≤ 12.5 mm dia (hubless long-toothed type, or turn/file a 16 mm hub down): on the alt rim it runs 0.04\" under the roller track strip", "now", ""),
-        B("p16", "GT2 16T, 6 mm belt, bore to suit the motor shaft", 2, "On the gearmotor (1/4\" ASSUMED: measure the Pittman shaft)", "measure", ""),
+        B("p16", "GT2 16T, 6 mm belt, 1/4\" (6.35 mm) bore, set screw", 2, "On the gearmotor: shaft measured Ø0.245 = 1/4\" with a flat (not 6 mm)", "now", ""),
         B("p32", "GT2 32T + 152 mm loop (2:1)", 2, "Buy both ratio sets; they are cheap", "test", ""),
         B("p48", "GT2 48T + 170 mm loop (3:1)", 2, "", "test", ""),
         B("shaft8", "8 mm ground shaft, 100 mm + shaft collars", 2, "Jackshafts", "now", ""),
