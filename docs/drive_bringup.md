@@ -102,7 +102,7 @@ exactly one revolution (confirms 500 CPR × 4 × 19.7). Ticks per rev entered: a
 commas: the field keeps only the first digit otherwise); slew 2 DPS, pan 3 MPS, guide 60 SPS; PID 15000/1500/4000,
 accel 1000, error limit 12,800, current limit 0.70 A, integral limit 22,000. ServoConfig's on-screen hand pad buttons
 latch over USB: All-Stop or a second click stops them; commanding a channel with no motor (`X…` here) trips it to
-MANUAL, cleared by Reset. GM9413: pending its adapter board.
+MANUAL, cleared by Reset. GM9413 on the ALT/DEC block (axis X): board soldered, `X39400` = one output turn, no inversion needed, ~0.16 A start-up peak then the same as the other motor (at rest holding: az 0.04 A / alt 0.06 A, error 0, output ~40 = integrator bias against gearbox stiction, normal). The two motors are equivalent; assignment stays GM9413 alt / GM9213 az for cable reach. **Stage 0 complete 2026-11-08.**
 
 **Stage 1 — one drive module, no rim.** Cut the four arm plates (1/4" 6061, from the centre drop of the cage-ring discs
 in the cut plan) and assemble one module: jackshaft in the F608s, 20T pinion, 16T on the motor, 32T + 152 mm loop.
