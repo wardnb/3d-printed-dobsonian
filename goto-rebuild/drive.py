@@ -150,6 +150,33 @@ def _strip(pl, sgn, p0, p1, width, s0, ds):
             .translate(pl.zDir.multiply(s0 * IN)))
 
 
+def _wpt(F, u, w, s):
+    """Local (u, w, s) -> world cq.Vector in mm."""
+    O, eu, ew, es = F["O"], F["e_u"], F["e_w"], F["e_s"]
+    return cq.Vector(*[(O[i] + u * eu[i] + w * ew[i] + s * es[i]) * IN for i in range(3)])
+
+
+def _cyl_w(F, u, w0, w1, s, r):
+    """Cylinder along the local w axis from w0 to w1 (springs, guide rods)."""
+    d = cq.Vector(*F["e_w"]) if w1 > w0 else cq.Vector(*F["e_w"]) * -1
+    return cq.Workplane("XY").add(cq.Solid.makeCylinder(r * IN, abs(w1 - w0) * IN, _wpt(F, u, min(w0, w1) if w1 > w0 else max(w0, w1), s), d))
+
+
+def _hex(pl, sgn, u, w, s0, length, af):
+    """Hex nut / bolt head across-flats af, axis along s."""
+    return cq.Workplane(pl).center(u * IN, sgn * w * IN).polygon(6, af / math.cos(math.pi / 6) * IN).extrude(length * IN).translate(
+        pl.zDir.multiply(s0 * IN))
+
+
+# hardware drawn so that every part touches what it mounts to (2026-11-08; all ASSUMED until the parts are in hand)
+FLANGE_SQ, FLANGE_T = 1.6, 0.20                 # Pittman GM9000 gearbox face plate (square) and its thickness
+PILOT_R, PILOT_H = 0.25, 0.06                   # gearbox pilot boss into plate B
+PIVOT_SPACER_R = 0.35                           # turned 6061 spacer on the pivot bolt between the bracket and plate A/B
+NUT_AF, NUT_T = 0.5625, 0.22                    # 3/8-16 nyloc on the pivot bolt
+ROD_R = 0.125                                   # 1/4" guide rod through the tail
+SPRING_R, SPRING_WIRE = 0.28, 0.06              # alt compression spring (19 lb at the working length)
+
+
 def module(G, axis, ratio="2:1", engaged=True):
     """World-frame solids of one drive module: dict name -> (solid, colour key)."""
     F = frames(G)[axis]
@@ -180,11 +207,20 @@ def module(G, axis, ratio="2:1", engaged=True):
         # 16 mm hub would touch it. Use a hubless/long-toothed 20T pinion or turn the hub down to <= 12.5 mm
         "pinion_hub": (_cyl(pl, sgn, 0, wof(0), 0.20, 0.28, 0.24), "ALU"),
         "jackshaft_8mm": (_cyl(pl, sgn, 0, wof(0), -0.22, sB + PLATE_T + 0.1 + 0.22, SHAFT_D / 2), "ALU"),
+        # F608ZZ flanged bearings: flange on the inner face of each plate
+        "jack_bearing_A": (_cyl(pl, sgn, 0, wof(0), sA + PLATE_T, 0.06, 0.43), "ALU"),
+        "jack_bearing_B": (_cyl(pl, sgn, 0, wof(0), sB - 0.06, 0.06, 0.43), "ALU"),
         f"pulley_{j}T": (_cyl(pl, sgn, 0, wof(0), sA + PLATE_T + 0.10, 0.55, OD(j) / 2 + 0.03), "BLACK"),
         "pulley_16T": (_cyl(pl, sgn, C_NOM, wof(C_NOM), sA + PLATE_T + 0.10, 0.55, 0.26), "BLACK"),
-        "motor_GM9000": (_cyl(pl, sgn, C_NOM, wof(C_NOM), sB + PLATE_T, MOTOR_L, MOTOR_R), "MOTOR"),
-        "pivot_bolt": (_cyl(pl, sgn, U_PIVOT, 0, sA - 0.35, sB + PLATE_T + 0.6 - sA, 0.1875), "BLACK"),
+        # gearmotor: 1/4" output shaft through plate B to the 16T, square gearbox face on plate B, body behind it
+        "motor_shaft": (_cyl(pl, sgn, C_NOM, wof(C_NOM), sA + PLATE_T + 0.10, sB + PLATE_T - (sA + PLATE_T + 0.10), 0.125), "ALU"),
+        "motor_flange": (_box(pl, sgn, C_NOM, wof(C_NOM), sB + PLATE_T, FLANGE_SQ, FLANGE_SQ, FLANGE_T), "MOTOR"),
+        "motor_GM9000": (_cyl(pl, sgn, C_NOM, wof(C_NOM), sB + PLATE_T + FLANGE_T, MOTOR_L - FLANGE_T, MOTOR_R), "MOTOR"),
+        # pivot: 3/8 shoulder bolt with a turned spacer between the plates and a nyloc on the far end
+        "pivot_spacer_AB": (_cyl(pl, sgn, U_PIVOT, 0, sA + PLATE_T, PLATE_GAP, 0.30), "ALU"),
     }
+    for i, (mu, mw) in enumerate(MOTOR_HOLES):                                  # #6 screws into the gearbox face
+        parts[f"motor_screw_{i}"] = (_cyl(pl, sgn, C_NOM + mu, mw + wof(C_NOM), sB - 0.12, 0.12 + PLATE_T + FLANGE_T, 0.11), "BLACK")
     for (u, w) in STANDOFFS:
         parts[f"standoff_{u:+.2f}"] = (_cyl(pl, sgn, u, w + wof(u), sA + PLATE_T, PLATE_GAP, 0.19), "ALU")
     for k, v_ in parts.items():
@@ -192,14 +228,29 @@ def module(G, axis, ratio="2:1", engaged=True):
     # spring + guide rod + cam lever at the tail; base = the axis-specific bracket below
     tw = wof(U_TAIL)
     if axis == "alt":
-        # base plate on the wall's outer face (s between the wall and plate A), a spring block jutting out under the tail
+        # base plate on the wall's outer face (s between the wall and plate A): it carries the pivot (u 4.0, w 0, where
+        # the wall top is 0.5 above it) and a spring block under the tail; its top edge stays 0.14 under the jackshaft
         s_wall = G["wall_out"] - F["O"][0]
-        S["alt_base_plate"] = (_box(pl, sgn, 1.35, -1.25, s_wall, 4.9, 1.9, PLATE_T)
-                               .cut(_box(pl, sgn, 0, 0, s_wall - 0.1, 1.2, 1.3, 0.5)), "ALU")
-        S["alt_spring_block"] = (_box(pl, sgn, U_TAIL, -1.85, s_wall + PLATE_T, 0.9, 0.5, sB + PLATE_T - s_wall - PLATE_T), "ALU")
+        outline = [(-1.1, -2.2), (4.8, -2.2), (4.8, 0.45), (3.0, 0.45), (3.0, -0.3), (-1.1, -0.3)]
+        base = (cq.Workplane(pl).polyline([(u * IN, sgn * w * IN) for u, w in outline]).close().extrude(PLATE_T * IN)
+                .translate(pl.zDir.multiply(s_wall * IN)))
+        try:
+            base = base.edges("|Z").fillet(0.2 * IN)
+        except Exception:
+            pass
+        S["alt_base_plate"] = (base, "ALU")
+        S["alt_pivot_spacer"] = (_cyl(pl, sgn, U_PIVOT, 0, s_wall + PLATE_T, sA - (s_wall + PLATE_T), PIVOT_SPACER_R), "ALU")
+        S["alt_pivot_bolt"] = (_cyl(pl, sgn, U_PIVOT, 0, s_wall - 0.02, sB + PLATE_T + NUT_T - s_wall + 0.02, 0.1875), "BLACK")
+        S["alt_pivot_nut"] = (_hex(pl, sgn, U_PIVOT, 0, sB + PLATE_T, NUT_T, NUT_AF), "BLACK")
+        # tail: a block between the plates that the spring pushes and the rod passes through
+        s_blk = sB + PLATE_T - (s_wall + PLATE_T)
+        S["alt_spring_block"] = (_box(pl, sgn, U_TAIL, -1.85, s_wall + PLATE_T, 0.9, 0.5, s_blk), "ALU")
+        S["alt_tail_block"] = (_box(pl, sgn, U_TAIL, tw, sA + PLATE_T, 0.6, 0.6, PLATE_GAP), "ALU")
         sm = (sA + sB + PLATE_T) / 2
-        S["alt_spring"] = (_cyl(pl, sgn, U_TAIL, -1.0 + tw / 2, sm - 0.25, 0.5, 0.25), "BLACK")
-        S["alt_cam_lever"] = (_box(pl, sgn, U_TAIL, 0.75 + tw, sm - 0.2, 1.8, 0.25, 0.4), "BLACK")
+        S["alt_spring"] = (_cyl_w(F, U_TAIL, -1.6, -0.3 + tw, sm, SPRING_R)
+                           .cut(_cyl_w(F, U_TAIL, -1.65, -0.25 + tw, sm, SPRING_R - SPRING_WIRE)), "BLACK")
+        S["alt_guide_rod"] = (_cyl_w(F, U_TAIL, -2.1, 1.05 + tw, sm, ROD_R), "ALU")
+        S["alt_cam_lever"] = (_box(pl, sgn, U_TAIL + 0.6, 0.5 + tw, sm - 0.25, 1.8, 0.4, 0.5), "BLACK")
     else:
         # bracket: a 1/4" strip from the pivot (above plate B) back to an angle on the drive wall's outer face;
         # an extension spring from a post on the wall pulls the tail toward the ring (+w); the cam pushes it out
@@ -212,12 +263,16 @@ def module(G, axis, ratio="2:1", engaged=True):
         piv_w = (Ox + U_PIVOT * eu[0], Oy + U_PIVOT * eu[1])
         wu, ww = loc(G["wall_out"] + PLATE_T, piv_w[1])
         S["az_base_bracket"] = (_strip(pl, sgn, (U_PIVOT, 0.0), (wu, ww), 0.9, sb, PLATE_T), "ALU")
+        S["az_pivot_spacer"] = (_cyl(pl, sgn, U_PIVOT, 0, sB + PLATE_T, sb - (sB + PLATE_T), PIVOT_SPACER_R), "ALU")
+        S["az_pivot_bolt"] = (_cyl(pl, sgn, U_PIVOT, 0, sA - 0.30, sb + PLATE_T + NUT_T - sA + 0.30, 0.1875), "BLACK")
+        S["az_pivot_head"] = (_hex(pl, sgn, U_PIVOT, 0, sA - 0.30, 0.30, NUT_AF), "BLACK")
+        S["az_pivot_nut"] = (_hex(pl, sgn, U_PIVOT, 0, sb + PLATE_T, NUT_T, NUT_AF), "BLACK")
         zb = F["O"][2] + sb
         S["az_bracket_leg"] = (cq.Workplane("XY").box(PLATE_T * IN, 1.0 * IN, 1.6 * IN).translate(
             cq.Vector((G["wall_out"] + PLATE_T / 2) * IN, piv_w[1] * IN, (zb + 0.8) * IN)), "ALU")
         tu, twl = loc(G["wall_out"], Oy + U_TAIL * eu[1])
         sm = sA + PLATE_T + PLATE_GAP / 2
-        S["az_spring_post"] = (_box(pl, sgn, U_TAIL, twl - 0.15, sm - 0.5, 0.6, 0.3, 1.0), "ALU")
+        S["az_spring_post"] = (_box(pl, sgn, U_TAIL, twl - 0.1, sm - 0.5, 0.6, 0.5, 1.0), "ALU")   # 0.15 into the wall face: screwed to it
         S["az_spring"] = (_strip(pl, sgn, (U_TAIL, R_LOBE["tail"] + 0.05 + tw), (U_TAIL, twl - 0.3), 0.35, sm - 0.17, 0.34), "BLACK")
         S["az_cam_lever"] = (_box(pl, sgn, U_TAIL + 0.55, (R_LOBE["tail"] + twl) / 2, sB + PLATE_T, 0.3, 0.6, 0.35), "BLACK")
     return S

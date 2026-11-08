@@ -448,17 +448,27 @@ def build(G):
     ha = math.radians(G["alt_head_angle"])
     yh, zh = (R + 0.4) * math.sin(ha), za - (R + 0.4) * math.cos(ha)
     tb = G["bands"]["tape"]
-    head = box(xi + (tb[0] + tb[1]) / 2 + 0.1, yh, zh, 0.45, 0.8, 0.5)
+    hx_ = xi + (tb[0] + tb[1]) / 2 + 0.1
+    head = box(hx_, yh, zh, 0.45, 0.8, 0.5)
     y_br = G["arc_r"] * math.sin(ha)
     h_br = (G["h_horn"] + G["end_h"]) / 2
     z_lo = ft + h_br - 2.2
-    bracket = box(G["wall_out"] + 0.125, y_br, (z_lo + zh) / 2, 0.25, 1.2, zh - z_lo)
-    S["alt_read_head"] = (head.union(bracket), "ELEC")
+    # bracket: 1/4" strip up the wall's outer face, then an arm across the rim to the head (2026-11-08: the head used to float)
+    bracket = box(G["wall_out"] + 0.125, y_br, (z_lo + zh - 0.25) / 2, 0.25, 1.2, zh - 0.25 - z_lo)
+    arm = box((hx_ - 0.225 + G["wall_out"] + 0.25) / 2, yh, zh - 0.125, (G["wall_out"] + 0.25) - (hx_ - 0.225), 0.8, 0.25)
+    S["alt_read_head"] = (head.union(bracket).union(arm), "ELEC")
     px, py = G["az_pinion_xy"]
     # az tape read head beside the pinion, on the lower band
     phi = math.degrees(math.atan2(py, px)) + 7
     hx, hy = polar(G["ring_od"] / 2 + 0.3, phi)
-    S["az_read_head"] = (box(hx, hy, G["ring_z0"] + 0.13, 0.5, 0.8, 0.45), "ELEC")
+    head_az = box(hx, hy, G["ring_z0"] + 0.13, 0.5, 0.8, 0.45)
+    # L bracket from under the rocker floor out past the ring rim, then down to the head (2026-11-08)
+    z_top = G["ring_z0"] + 0.13 + 0.225
+    rx = hx + 0.35
+    leg = box(rx, hy, (z_top + G["floor_z0"]) / 2, 0.25, 0.8, G["floor_z0"] - z_top)
+    x_in = G["wall_out"] - 1.0
+    arm_az = box((x_in + rx + 0.125) / 2, hy, G["floor_z0"] - 0.125, rx + 0.125 - x_in, 0.8, 0.25)
+    S["az_read_head"] = (head_az.union(leg).union(arm_az), "ELEC")
     # ---- electronics box on the plain wall, front
     S["electronics_box_sitech"] = (box(-(G["wall_out"] + 1.3), 7.0, ft + 3.2, 2.4, 8.0, 5.0), "ELEC")
 
