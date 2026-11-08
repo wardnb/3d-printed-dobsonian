@@ -239,11 +239,11 @@ def helix_ring(cx, cy, r, z_from, z_to, step, feed, pts=48):
 
 def gcode_cup(f, g):
     """Socket cup: rough with a 1/4" 3-flute flat end mill in stepped rings, finish with a 1/8" ball on one continuous
-    helix that follows the 60 deg cone, then a 0.29" stud hole through the 0.10" web into the wheel pocket."""
+    helix that follows the 60 deg cone, then the Ø0.70 apex hole for the plug's head screw (gib clamp)."""
     cx, cy, za = g["feat"]
     z0 = g["top_z"] + 0.05
     sz = safe_z(g)
-    L = g_header(f"{f['label']}: 60 deg cup + stud hole; fixture tilt {math.degrees(g['st']['tau']):.2f} deg", g)
+    L = g_header(f"{f['label']}: 60 deg cup + 0.70 apex hole; fixture tilt {math.degrees(g['st']['tau']):.2f} deg", g)
     L += ["( T1 = 1/4 3FL carbide flat end mill, rough )", f"G0 Z{sz:.3f}", f"G0 X{cx:.4f} Y{cy:.4f}"]
     z = z0
     while z > za + 0.25:
@@ -276,8 +276,12 @@ def gcode_cup(f, g):
                 first = False
             L.append(f"G1 X{x:.4f} Y{y:.4f} Z{zc:.4f} F35")
         zw -= step
-    L += [f"G0 Z{sz:.3f}", "M5", "( T3 = 1/8 flat end mill, stud hole 0.290 )", "M0 (change to 1/8 flat, re-zero Z)", f"M3 S{RPM}", "G4 P3"]
-    L += helix_ring(cx, cy, 0.145 - 0.0625, za + 0.05, za - 0.30, 0.01, 12)
+    # apex hole for the head screw + spherical washer: Ø0.70 from the nose level (apex + 0.62, where the cone is that wide)
+    # down past the washer and head (apex - 0.50); helical with the 1/4 flat (already in the spindle for the roughing: do it first)
+    L += [f"G0 Z{sz:.3f}", "M5", "( T3 = 1/4 flat end mill, apex hole 0.700 for the head screw )", "M0 (change to 1/4 flat, re-zero Z)", f"M3 S{RPM}", "G4 P3"]
+    L += helix_ring(cx, cy, T.APEX_HOLE_D / 2 - 0.125 - 0.10, za + 0.62, za - 0.50, 0.02, 15)
+    L += helix_ring(cx, cy, T.APEX_HOLE_D / 2 - 0.125, za + 0.62, za - 0.50, 0.03, 15)
+    L.append(f"G1 X{cx:.4f} Y{cy:.4f} F20")
     L += g_footer(sz)
     return L
 
@@ -301,17 +305,62 @@ def gcode_bore(f, g):
 
 
 # ---------------------------------------------------------------- 2.5D ops (Aspire DXFs)
-def socket_pocket_dxf():
-    """Outside (radial) face of the socket block, viewed from outside: the two thumbwheel pockets."""
+def socket_gib_dxf():
+    """Outside (radial) face of the socket block, viewed from outside, block lying on its inside face (no fixture):
+    two Ø0.625 gib bores 1.25 deep at t = -/+0.8 (under each cup), axis GIB_Z above the apex level (apex = 1.0 above the
+    datum), and two #8-32 tap drills (0.136) at +/-0.55 either side of each bore for the retainer plate."""
     T_, R_, H_ = SOCK_STOCK
     w = cq.Workplane("XY").rect(T_ * IN, H_ * IN).extrude(0.1 * IN)              # x = t, y = u
     ys = -H_ / 2                                                                 # datum (stub top) in this view
+    holes = []
     for side in (-1, 1):
-        apex_u = 1.0
-        top = apex_u - T.POCKET_TOP
-        cxp = 0.8 * (1 if side < 0 else -1) * -1
-        w = w.cut(cq.Workplane("XY").center(cxp * IN, (ys + top - T.POCKET_H / 2) * IN).rect(T.POCKET_W * IN, T.POCKET_H * IN).extrude(0.1 * IN))
-    cq.exporters.export(w.section(0.05 * IN), os.path.join(OUT, "socket_op2_wheel_pockets_outside_face.dxf"))
+        cx = 0.8 * side
+        cy = ys + 1.0 + T.GIB_Z
+        w = w.cut(cq.Workplane("XY").center(cx * IN, cy * IN).circle(T.GIB_D / 2 * IN).extrude(0.1 * IN))
+        holes.append((cx, 1.0 + T.GIB_Z, T.GIB_D, T.GIB_BORE_DEPTH))
+        for dt in (-0.55, 0.55):
+            w = w.cut(cq.Workplane("XY").center((cx + dt) * IN, cy * IN).circle(0.068 * IN).extrude(0.1 * IN))
+            holes.append((cx + dt, 1.0 + T.GIB_Z, 0.136, 0.40))
+    cq.exporters.export(w.section(0.05 * IN), os.path.join(OUT, "socket_op2_gib_bores_outside_face.dxf"))
+    for old in ("socket_op2_wheel_pockets_outside_face.dxf", "wedge_washer_x6.step"):
+        if os.path.exists(os.path.join(OUT, old)):
+            os.remove(os.path.join(OUT, old))
+    return holes
+
+
+def gcode_gib_bores():
+    """Op2 G-code: block on its inside face, outside face up, XY zero at the block's bottom-left corner of that face
+    (t = -1.8, u = 0 = datum), Z zero on the face. Two Ø0.625 bores by helical interpolation with a 1/4 flat (LOC >= 1.3),
+    then the four #8 tap drills with a 1/8 flat (peck)."""
+    T_, R_, H_ = SOCK_STOCK
+    L = ["( socket block Op2: gib bores + plate tap drills, outside face up, zero at the face's bottom-left corner )",
+         "G20 G90 G94 G17", f"M3 S{RPM}", "G4 P3", "( T1 = 1/4 3FL carbide flat end mill, LOC >= 1.3 )", "G0 Z0.5"]
+    for side in (-1, 1):
+        cx, cy = 0.8 * side + T_ / 2, 1.0 + T.GIB_Z
+        for r in (T.GIB_D / 2 - 0.125 - 0.08, T.GIB_D / 2 - 0.125 - 0.004):
+            L += helix_ring(cx, cy, r, 0.05, -T.GIB_BORE_DEPTH, 0.03, 12)
+            L.append(f"G1 X{cx:.4f} Y{cy:.4f} F20")
+            L.append("G0 Z0.5")
+    L += ["M5", "( T2 = 1/8 flat end mill: #8-32 tap drills 0.136 x 0.40 deep, peck )", "M0 (change to 1/8 flat, re-zero Z)", f"M3 S{RPM}", "G4 P3"]
+    for side in (-1, 1):
+        for dt in (-0.55, 0.55):
+            cx, cy = 0.8 * side + dt + T_ / 2, 1.0 + T.GIB_Z
+            L += [f"G0 X{cx:.4f} Y{cy:.4f}", "G0 Z0.1"]
+            L += helix_ring(cx, cy, 0.068 - 0.0625, 0.0, -0.40, 0.02, 10)
+            L.append("G0 Z0.5")
+    L += ["M5", "G0 Z1.0", "M30"]
+    open(os.path.join(OUT, "socket_op2_gib_bores.nc"), "w").write("\n".join(L) + "\n")
+    return len(L)
+
+
+def plate_dxf():
+    """Steel retainer plate (x6): 1/8 x 1.6 x 1.2, Ø0.26 centre hole (press a 1/4-20 PEM nut in, or tap and Loctite a
+    1/4-20 insert) and two 0.17 clearance holes at +/-0.55 for #8-32 screws into the block face."""
+    w = cq.Workplane("XY").rect(T.PLATE_W * IN, T.PLATE_H * IN).extrude(0.1 * IN)
+    w = w.cut(cq.Workplane("XY").circle(0.13 * IN).extrude(0.1 * IN))
+    for dt in (-0.55, 0.55):
+        w = w.cut(cq.Workplane("XY").center(dt * IN, 0).circle(0.085 * IN).extrude(0.1 * IN))
+    cq.exporters.export(w.section(0.05 * IN), os.path.join(OUT, "gib_retainer_plate_x6_eighth-inch-steel.dxf"))
 
 
 def socket_spigot_dxf():
@@ -337,18 +386,6 @@ def pair_top_dxf(t, feats):
         w = w.cut(cq.Workplane("XY").center(x * IN, y * IN).circle(d / 2 * IN).extrude(0.1 * IN))
     cq.exporters.export(w.section(0.05 * IN), os.path.join(OUT, f"pair_{t}_op1_top_face_holes.dxf"))
     return holes
-
-
-def wedge_washer():
-    tau = math.radians(13.43)
-    d = T.WEDGE_D
-    w = (cq.Workplane("XY").rect(0.95 * IN, (T.POCKET_H - 0.02) * IN).extrude((T.WEDGE_MIN + d * math.tan(tau)) * IN)
-         .cut(cq.Workplane("XY").circle(0.15 * IN).extrude(1 * IN)))
-    cutter = cq.Workplane("XY").box(3 * IN, 3 * IN, 2 * IN).translate((0, 0, (1 + T.WEDGE_MIN + d / 2 * math.tan(tau)) * IN))
-    cutter = cutter.rotate((0, 0, (T.WEDGE_MIN + d / 2 * math.tan(tau)) * IN), (1 * IN, 0, (T.WEDGE_MIN + d / 2 * math.tan(tau)) * IN), 13.43)
-    w = w.cut(cutter)
-    w.val().exportStep(os.path.join(OUT, "wedge_washer_x6.step"))
-    return round(T.WEDGE_MIN + d * math.tan(tau), 3)
 
 
 def main():
@@ -381,21 +418,23 @@ def main():
             block_top_high_vertex_xyz=[round(float(x), 4) for x in g["high_vertex"]],
             holddown_holes_xy_0p27=[[round(float(x), 3) for x in h] for h in g["holes"]],
             gcode=f"{tag}.nc", gcode_lines=len(code)))
-    socket_pocket_dxf()
+    rep["socket_op2_gib_holes_t_u_dia_depth"] = socket_gib_dxf()
+    rep["socket_op2_gcode_lines"] = gcode_gib_bores()
+    plate_dxf()
     socket_spigot_dxf()
     pair_holes = {t: [(round(x, 3), round(y, 3), d) for x, y, d in pair_top_dxf(t, feats)] for t in T.TOPS}
     rep["pair_top_face_holes_t_r_dia"] = pair_holes
-    rep["wedge_washer_max_thickness_in"] = wedge_washer()
     rep["tube_bond_length_in"] = round((T.PAIR_H - 0.6 + T.TUBE_PAST_APEX * 0.972) / 0.972, 2)
     rep["ops"] = {
         "socket block (x3: 1 point, 2 back), stock 2-1/4 square bar cut 3.70 (faced to 3.6 t x 2.0 r x 2.1 u)": [
             "Op1 vise: square the stock to 3.60 x 2.00 x 2.10",
-            "Op2 vise, outside (radial) face up: two wheel pockets 1.00 wide x 0.75 tall, 1.25 deep (socket_op2 DXF)",
-            "Op3/Op4 printed fixture, station L then R: 60 deg cup + 0.29 stud hole (.nc files, touch-plate zero on the post corner)",
+            "Op2 vise, outside (radial) face up: two Ø0.625 gib bores 1.25 deep at t -/+0.8, u 1.00 (helical, 1/4 flat LOC >= 1.3) + four #8-32 tap drills at +/-0.55 (socket_op2 DXF / .nc); tap #8-32 by hand",
+            "Op3/Op4 printed fixture, station L then R: 60 deg cup + Ø0.70 apex hole (.nc files, touch-plate zero on the post corner)",
             "Op5 vise, underside up: Ø0.504 register 0.12 deep + #7 (0.201) drill 0.70 deep on the centre, tap 1/4-20 0.60 deep (socket_op5 DXF)",
             "Spigot (x3, milled upright in the vise from 1-3/4 square cut 2.40, 0.75 grip): Ø1.569 x 1.50 (fit to the measured stub bore, 0.003 radial bond gap), Ø0.50 x 0.11 pilot on top, 0.266 through hole, Ø0.39 x 0.26 counterbore in the bottom (socket_spigot STEP)",
             "Assemble: bond the spigot's top face and pilot to the block (structural epoxy) and pull up with a 1/4-20 x 1-3/4 SHCS + Loctite from below; then bond the spigot into the stub as before",
-            "Wedge washer x2 per block under the thumbwheels (wedge_washer STEP, 13.4 deg; flat-bottomed, key in the pocket)"],
+            "Gib clamp x2 per block: 5/8 drill-rod gib 1.20 long, 0.34 slot 0.6 deep from the tip, underside milled to an 8 deg wedge (0.40 thick at the tip rising to the contact), 0.26 hole + 1/16 roll pin at the rear for the captive stud tip; 1/8 steel retainer plate with a 1/4-20 PEM nut (gib_retainer_plate DXF) on two #8-32; 1/4-20 x 1-3/4 stud knob Ø1.25 with a 0.09 groove near the tip",
+            "Plug nose: tap 1/4-20 x 0.55 deep on the axis (on the Vortex or a drill press in a V-block); 1/4-20 x 1 SHCS head-down with a 1/4 spherical washer set on the head"],
         "pair block (x3: 30, 150 mirror, 270), stock 1-3/4 square bar cut 3.70 (faced to 3.6 t x 1.6 r x 1.6 u)": [
             "Op1 vise, top (ring) face up: 0.281 stud hole through at r -0.45, 1 x 1/4 dowel hole reamed 0.50 deep at r +0.35 (1/4 x 3/4 dowel; stud + dowel locate it, rotation slop ±0.6° moves a node 0.008 in), 2 x 1/4 bond vents down to the bore floors (pair_<t> DXF)",
             f"Op2/Op3 printed fixture, block upside down, station L then R: {BORE_D:.3f} blind bore (tube OD + 0.004; re-run after measuring the tubes) to the tube-end floor (.nc files)",
@@ -405,7 +444,7 @@ def main():
     for s in rep["stations"]:
         print(f"{s['station']:16s} tilt {s['tilt_deg']:6.2f}  fixture {s['fixture_tilt_deg']:6.2f}  rot {s['block_rotation_deg']:8.2f}  "
               f"feature {s['feature_xyz_from_post_corner']}  lines {s['gcode_lines']}")
-    print("210 == 330:", same, " tube bond length", rep["tube_bond_length_in"], " wedge washer max t", rep["wedge_washer_max_thickness_in"])
+    print("210 == 330:", same, " tube bond length", rep["tube_bond_length_in"])
     return rep, feats
 
 
@@ -453,11 +492,12 @@ def sheet():
     ax.add_patch(Rectangle((-T.SPIGOT_PILOT_D / 2, 0), T.SPIGOT_PILOT_D, T.SPIGOT_PILOT_H + 0.01, fill=True, color="#ddd", lw=0))
     ax.add_patch(Rectangle((-0.1, 0), 0.2, T.SPIGOT_DRILL_DEPTH, fill=False, lw=0.6))
     for s in (-1, 1):
-        top = 1.0 - T.POCKET_TOP
-        ax.add_patch(Rectangle((0.8 * s - T.POCKET_W / 2, top - T.POCKET_H), T.POCKET_W, T.POCKET_H, fill=True, color="#ddd", lw=0))
+        ax.add_patch(Circle((0.8 * s, 1.0 + T.GIB_Z), T.GIB_D / 2, fill=True, color="#ddd", lw=0))
+        for dt in (-0.55, 0.55):
+            ax.add_patch(Circle((0.8 * s + dt, 1.0 + T.GIB_Z), 0.068, fill=False, lw=0.6))
         ax.plot(0.8 * s, 1.0, "k+", ms=8)
     ax.text(0, -SPIGOT_L / 2, f"turned spigot (separate part)\nØ{d_sp:.3f} x {SPIGOT_L:.2f}, bolted + bonded\n(bond in stub bore)", ha="center", va="center", fontsize=7)
-    ax.text(0.8, 1.0 - T.POCKET_TOP - T.POCKET_H / 2, f"{T.POCKET_W:.2f} x {T.POCKET_H:.2f}\n1.25 deep", ha="center", va="center", fontsize=6)
+    ax.text(0.8, 1.0 + T.GIB_Z - 0.55, f"gib bore Ø{T.GIB_D:.3f}\n{T.GIB_BORE_DEPTH:.2f} deep\n+ 2x #8-32", ha="center", va="top", fontsize=6)
     dim(ax, -T_ / 2, 0, -T_ / 2, T.BLOCK_H, f"{T.BLOCK_H:.2f} block", horiz=False)
     ax.text(T_ / 2 + 0.05, 0, "← datum (stub top)", ha="left", fontsize=6)
     ax.set_xlim(-2.6, 2.2); ax.set_ylim(-2.0, 2.6); ax.set_aspect("equal"); ax.axis("off")
@@ -496,7 +536,7 @@ def sheet():
     tb = ax.table(cellText=rows, colLabels=["station", "feature", "tilt °", "block rot °", "feature X Y Z from post corner", "fixture"],
                   loc="upper left", cellLoc="left", colWidths=[0.14, 0.07, 0.07, 0.09, 0.30, 0.25])
     tb.auto_set_font_size(False); tb.set_fontsize(8); tb.scale(1, 1.35)
-    ax.text(0, 0.02, f"Cup: 60° included, apex at the X Y Z shown (stud hole Ø0.290 continues 0.30 below). Bore: Ø{BORE_D:.3f} blind, floor at Z shown "
+    ax.text(0, 0.02, f"Cup: 60° included, apex at the X Y Z shown (Ø0.70 apex hole from +0.62 to −0.50 for the head screw). Bore: Ø{BORE_D:.3f} blind, floor at Z shown "
             "(= tube end, 0.30 past the pair node).\nTools: 1/4 3FL flat (cup rough, LOC ≥ 1.25), 1/8 ball and 1/8 flat (≥ 1.5 reach), 1/2 3FL flat (bore, LOC ≥ 1.5). "
             "Socket 210 and 330 are the same part (checked).", fontsize=7, va="bottom")
     # ops
@@ -507,7 +547,7 @@ def sheet():
         for o in ops:
             ax.text(0.02, y, "• " + o, fontsize=7, va="top", wrap=True); y -= 0.075
         y -= 0.03
-    ax.text(0, y, f"Bonded tube length into the pair block: {rep['tube_bond_length_in']} in (was 0.43). Wedge washer: 13.4°, max {rep['wedge_washer_max_thickness_in']} in.",
+    ax.text(0, y, f"Bonded tube length into the pair block: {rep['tube_bond_length_in']} in (was 0.43). Gib clamp replaces the thumbwheel pocket (2026-11-08).",
             fontsize=7, va="top")
     fig.savefig(os.path.join(OUT, "sheet.png"), dpi=110)
     plt.close(fig)

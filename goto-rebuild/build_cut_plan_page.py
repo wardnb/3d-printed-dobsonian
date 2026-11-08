@@ -31,7 +31,7 @@ BARS = [
     # Midwest and OnlineMetals prices checked 2-3 Nov 2026 (plates and the 3" round / 1-3/4 square from Midwest, the rest from OnlineMetals) (their per-piece cut fee is ~$7.50, so fewer, longer pieces win; a 72" piece of
     # 3/4" square costs less than a 48" one). 6061-T6 throughout.
     dict(id="sq34", stock="6061 square bar 3/4\" × 3/4\"", order="48\"", cuts="4 × 7.50\" + 3 × 4.15\"", parts="Upper cage posts; cell guard posts milled down to 1/2\" square"),
-    dict(id="fl34x114", stock="6061 flat bar 3/4\" × 1 1/4\"", order="36\"", cuts="3 × 1.20\" + 6 × 0.60\" + 2 × 7.50\" + 6\"", parts="Diagonal node (3) and clevis (6) blocks; focuser rails ripped to 1/2\" × 3/4\"; 6\" for the six wedge washers"),
+    dict(id="fl34x114", stock="6061 flat bar 3/4\" × 1 1/4\"", order="36\"", cuts="3 × 1.20\" + 6 × 0.60\" + 2 × 7.50\" + 6\"", parts="Diagonal node (3) and clevis (6) blocks; focuser rails ripped to 1/2\" × 3/4\" (the 6\" once meant for wedge washers is spare)"),
     dict(id="rd12", stock="6061 round bar 1/2\"", order="12\"", cuts="3 × 1.65\"", parts="Cell pivot posts"),
     dict(id="tube58", stock="6061-T6 drawn round tube 5/8\" OD × 0.058\" wall", order="72\"", cuts="6 × 9.27\"", parts="Upper cage diagonals (OnlineMetals has 0.058\"; Midwest only 0.065\")"),
     dict(id="rd3", stock="6061 round bar 3\"", order="6\"", cuts="1 × 5\"", parts="Secondary holder body (45° face milled)"),
@@ -63,11 +63,12 @@ BUY = [
         B("collar45", "45 mm two-piece shaft collar", 6, "Aluminium or steel clamp collar, 45 mm bore, ~2.75\" OD; one each side of the box's top ring on every stub", "now", "Ruland / McMaster"),
         B("pin14x234", "Steel dowel pin 1/4\" × 2-3/4\"", 3, "Board pins, radial through the mirror board's edge and both stub walls", "now", "McMaster"),
         B("pin14x34", "Steel dowel pin 1/4\" × 3/4\"", 3, "Pair block locating dowels (reamed 0.250\")", "now", "McMaster"),
-        B("stud14", "1/4-20 stainless stud, 1-1/2\" fully threaded", 8, "Drawbolts along the pole axis (6 + 2 spare); Loctite 0.6\" into the plug nose", "now", "McMaster"),
-        B("wheel14", "1/4-20 knurled thumb nut, ~0.9\" dia", 8, "Drawbolt thumbwheels (6 + 2 spare); ≤ 0.30\" thick to fit the 0.75\" pocket with its wedge washer", "now", "McMaster"),
-        B("knob14", "1/4-20 male-thread knob, 2-1/2\" stud", 3, "Pair block to cage ring, from below (check the stud length on the parts)", "now", "McMaster"),
-        B("shcs1474", "1/4-20 × 1-3/4\" SHCS", 3, "Spigot to socket block, from below", "now", "McMaster"),
-        B("rollpin", "1/8\" roll pin × 1\"", 8, "Keeps each thumbwheel captive across its pocket mouth", "now", "McMaster"),
+        B("shcs14", "1/4-20 × 1\" SHCS, alloy steel", 8, "Head screws in the plug noses (6 + 2 spare), head down; the gib wedges under the washer on the head", "now", "McMaster"),
+        B("sphw14", "1/4\" spherical washer set (ball + seat), steel", 6, "On each head screw: the screw leans 13° and the gib is horizontal", "now", "McMaster"),
+        B("gibrod", "5/8\" O1 drill rod, 12\"", 1, "Six 1.20\" gibs: 0.34 slot 0.6 deep from the tip, underside milled to an 8° wedge, 0.26 hole + 1/16 roll pin at the rear for the captive stud tip", "now", "McMaster"),
+        B("gibknob", "1/4-20 × 1-3/4\" stud knob, Ø1.25", 6, "Gib clamp knobs on the socket blocks' outside faces (~7 turns engaged ↔ released); cut a 0.09 groove near the tip for the roll pin", "now", "McMaster"),
+        B("gibplate", "1/8\" steel strip 1-1/4 × 12\" + 1/4-20 PEM nuts (6) + #8-32 × 1/2 screws (12)", 1, "Six gib retainer plates 1.6 × 1.2 (gib_retainer_plate DXF) on the socket blocks' outside faces", "now", "McMaster"),
+        B("rollpin", "1/16\" roll pin × 5/8\"", 8, "Captive stud tip in each gib (6 + 2 spare)", "now", "McMaster"),
         B("epoxy", "Structural epoxy + gun + nozzles", 1, "3M DP420 or DP460 (50 ml cartridges, 3): plugs in poles, poles in pair blocks, spigots in blocks and stubs, and the 1/16\" roller track strips on the D rims", "now", ""),
     ]),
     dict(group="Upper cage, spider, finder", items=[

@@ -52,7 +52,7 @@
     ]
    ],
    "gcode": "socket_point_L.nc",
-   "gcode_lines": 25737
+   "gcode_lines": 28670
   },
   {
    "station": "socket_point_R",
@@ -105,7 +105,7 @@
     ]
    ],
    "gcode": "socket_point_R.nc",
-   "gcode_lines": 25737
+   "gcode_lines": 28670
   },
   {
    "station": "socket_back_L",
@@ -158,7 +158,7 @@
     ]
    ],
    "gcode": "socket_back_L.nc",
-   "gcode_lines": 25959
+   "gcode_lines": 28892
   },
   {
    "station": "socket_back_R",
@@ -211,7 +211,7 @@
     ]
    ],
    "gcode": "socket_back_R.nc",
-   "gcode_lines": 25959
+   "gcode_lines": 28892
   },
   {
    "station": "pair_30_L",
@@ -532,6 +532,45 @@
    "gcode_lines": 5694
   }
  ],
+ "socket_op2_gib_holes_t_u_dia_depth": [
+  [
+   -0.8,
+   1.0,
+   0.625,
+   1.25
+  ],
+  [
+   -1.35,
+   1.0,
+   0.136,
+   0.4
+  ],
+  [
+   -0.25,
+   1.0,
+   0.136,
+   0.4
+  ],
+  [
+   0.8,
+   1.0,
+   0.625,
+   1.25
+  ],
+  [
+   0.25,
+   1.0,
+   0.136,
+   0.4
+  ],
+  [
+   1.35,
+   1.0,
+   0.136,
+   0.4
+  ]
+ ],
+ "socket_op2_gcode_lines": 12738,
  "pair_top_face_holes_t_r_dia": {
   "30": [
    [
@@ -600,17 +639,17 @@
    ]
   ]
  },
- "wedge_washer_max_thickness_in": 0.275,
  "tube_bond_length_in": 1.08,
  "ops": {
   "socket block (x3: 1 point, 2 back), stock 2-1/4 square bar cut 3.70 (faced to 3.6 t x 2.0 r x 2.1 u)": [
    "Op1 vise: square the stock to 3.60 x 2.00 x 2.10",
-   "Op2 vise, outside (radial) face up: two wheel pockets 1.00 wide x 0.75 tall, 1.25 deep (socket_op2 DXF)",
-   "Op3/Op4 printed fixture, station L then R: 60 deg cup + 0.29 stud hole (.nc files, touch-plate zero on the post corner)",
+   "Op2 vise, outside (radial) face up: two \u00d80.625 gib bores 1.25 deep at t -/+0.8, u 1.00 (helical, 1/4 flat LOC >= 1.3) + four #8-32 tap drills at +/-0.55 (socket_op2 DXF / .nc); tap #8-32 by hand",
+   "Op3/Op4 printed fixture, station L then R: 60 deg cup + \u00d80.70 apex hole (.nc files, touch-plate zero on the post corner)",
    "Op5 vise, underside up: \u00d80.504 register 0.12 deep + #7 (0.201) drill 0.70 deep on the centre, tap 1/4-20 0.60 deep (socket_op5 DXF)",
    "Spigot (x3, milled upright in the vise from 1-3/4 square cut 2.40, 0.75 grip): \u00d81.569 x 1.50 (fit to the measured stub bore, 0.003 radial bond gap), \u00d80.50 x 0.11 pilot on top, 0.266 through hole, \u00d80.39 x 0.26 counterbore in the bottom (socket_spigot STEP)",
    "Assemble: bond the spigot's top face and pilot to the block (structural epoxy) and pull up with a 1/4-20 x 1-3/4 SHCS + Loctite from below; then bond the spigot into the stub as before",
-   "Wedge washer x2 per block under the thumbwheels (wedge_washer STEP, 13.4 deg; flat-bottomed, key in the pocket)"
+   "Gib clamp x2 per block: 5/8 drill-rod gib 1.20 long, 0.34 slot 0.6 deep from the tip, underside milled to an 8 deg wedge (0.40 thick at the tip rising to the contact), 0.26 hole + 1/16 roll pin at the rear for the captive stud tip; 1/8 steel retainer plate with a 1/4-20 PEM nut (gib_retainer_plate DXF) on two #8-32; 1/4-20 x 1-3/4 stud knob \u00d81.25 with a 0.09 groove near the tip",
+   "Plug nose: tap 1/4-20 x 0.55 deep on the axis (on the Vortex or a drill press in a V-block); 1/4-20 x 1 SHCS head-down with a 1/4 spherical washer set on the head"
   ],
   "pair block (x3: 30, 150 mirror, 270), stock 1-3/4 square bar cut 3.70 (faced to 3.6 t x 1.6 r x 1.6 u)": [
    "Op1 vise, top (ring) face up: 0.281 stud hole through at r -0.45, 1 x 1/4 dowel hole reamed 0.50 deep at r +0.35 (1/4 x 3/4 dowel; stud + dowel locate it, rotation slop \u00b10.6\u00b0 moves a node 0.008 in), 2 x 1/4 bond vents down to the bore floors (pair_<t> DXF)",

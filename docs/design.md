@@ -448,7 +448,7 @@ Take-down is the reverse; the trunk cable, if it runs inside a pole, stays with 
 
 Near the horizon two poles pull up to 27 lb in tension. A side knob on a brass pad only locks the cone by friction and gives it no axial preload, so those cones could lift and rattle, and the stub could slide up in its holes.
 
-**Fix: an axial drawbolt.** A 1/4-20 stainless stud is Loctited along the pole axis into the plug nose and runs through the cup apex. A 0.9" knurled thumbwheel nut, in a pocket milled in from the socket block's outside face, pulls the cone into its cup with roughly 80–150 lb by hand, three to five times the worst tension. A pin across the pocket mouth keeps the wheel captive. The nut can't go under the block, because the pole axis below the cup runs into the stub (0.55–0.69" from its centre).
+**Fix: an axial preload, now a gib clamp (2026-11-08).** The first version (2026-10-31) was a 1/4-20 stud along the pole axis with a 0.9" thumbwheel nut in a pocket milled in from the socket block's outside face. Checked for reach a week later, it failed: the wheel sat 1.0" inside the block behind a 1.0 × 0.75" opening and could not be gripped, let alone turned to 100 lb. The nut cannot go under the block either, because the pole axis below the cup runs into the stub (0.55–0.69" from its centre), and a quick-release cam on the stud has no room to swing. The replacement keeps the geometry and moves the hand to the outside face: a 1/4-20 × 1" cap screw is screwed head-down into the plug nose with a 1/4" spherical washer set on its head (the screw leans 13° and the gib is horizontal), and hangs through a Ø0.70" hole at the cup apex. A 5/8" steel gib pin slides in a horizontal bore drilled 1.25" in from the block's outside face at the apex level; its forked tip straddles the screw shank and its underside is milled to an 8° wedge that bears on the washer. A 1/4-20 stud knob (Ø1.25") threaded through a 1/8" steel plate on the face pushes the gib in, its tip captive in the gib so backing off withdraws it (about 7 turns between released and tight). 5 in-lb on the knob gives ~100 lb of push and, through the wedge, ~200–300 lb of pull on the cone, self-locking, seven to ten times the worst tension. The machining gets simpler: no pocket, no wedge washer, the apex hole is cut with the cup, and the gib bores are two plain holes from a flat face with no fixture.
 
 **Geometry change.** The socket block grows to 2.1" tall, and the cone apex (the truss node) sits 1.0" above the stub top instead of 0.6". The poles shorten to 37.88" and 37.93" node to node, with the carbon cut at 35.8".
 
@@ -458,7 +458,7 @@ With the cones preloaded the joints are far stiffer than 50,000 lb/in, and above
 
 **Pair blocks.** They see at most 8 lb of pull and 12 lb of side load, so one knob's clamp friction holds them and the two reamed dowels only locate.
 
-**Setup.** Six thumbwheels and three knobs.
+**Setup.** Six gib knobs and three pair-block knobs.
 
 ## Mirror box and cell review
 

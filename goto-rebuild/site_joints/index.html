@@ -76,7 +76,7 @@ header .sub { color: var(--muted); font-size: 14px; }
     <h2>Section through one cone joint</h2>
     <p>Drawn along the pole axis. The pole hangs from the cage at the top and seats in the socket block at the bottom. Scale in inches.</p>
     <div class="diagram">
-      <svg viewBox="0 0 640 480" width="640" height="480" role="img" aria-label="Section through a cone joint: carbon tube with a bonded aluminium plug ending in a 60 degree cone, seated in a countersunk cup in the socket block; a stud along the pole axis runs from the plug nose through the cup apex into a pocket where a thumbwheel nut pulls the cone into the cup; the block's spigot sits in the 45 mm (1.77 inch) stub tube, held by clamp collars.">
+      <svg viewBox="0 0 640 480" width="640" height="480" role="img" aria-label="Section through a cone joint: carbon tube with a bonded aluminium plug ending in a 60 degree cone, seated in a countersunk cup in the socket block; a cap screw in the plug nose hangs through the cup apex and a horizontal gib pin, pushed in by a knob on the block's outside face, wedges under its washer and pulls the cone into the cup; the block's spigot sits in the 45 mm (1.77 inch) stub tube, held by clamp collars.">
         <!-- stub tube under the block -->
         <rect x="203" y="400" width="9" height="70" fill="#9d9fa5"/>
         <rect x="388" y="400" width="9" height="70" fill="#9d9fa5"/>
@@ -84,8 +84,9 @@ header .sub { color: var(--muted); font-size: 14px; }
         <path d="M150 200 H450 V400 H385 V445 H215 V400 H150 Z" fill="#b7bec7" stroke="#6c7682" stroke-width="1.5"/>
         <!-- cup (cut) -->
         <path d="M231 200 L300 320 L369 200 Z" fill="var(--scene)" stroke="#6c7682" stroke-width="1.2"/>
-        <!-- thumbwheel pocket, open to the outside face -->
-        <rect x="246" y="332" width="204" height="54" fill="var(--scene)" stroke="#6c7682" stroke-width="1"/>
+        <!-- apex hole for the head screw + gib bore in from the outside face -->
+        <rect x="282" y="300" width="36" height="78" fill="var(--scene)" stroke="#6c7682" stroke-width="1"/>
+        <rect x="300" y="305" width="150" height="32" fill="var(--scene)" stroke="#6c7682" stroke-width="1"/>
         <!-- carbon tube -->
         <rect x="231" y="20" width="7" height="136" fill="#1a1d22"/>
         <rect x="362" y="20" width="7" height="136" fill="#1a1d22"/>
@@ -95,9 +96,14 @@ header .sub { color: var(--muted); font-size: 14px; }
         <!-- epoxy line -->
         <rect x="236" y="20" width="2.5" height="136" fill="#cc9e40"/>
         <rect x="361.5" y="20" width="2.5" height="136" fill="#cc9e40"/>
-        <!-- stud along the axis + thumbwheel -->
-        <rect x="295" y="236" width="10" height="138" fill="#cc9e40" stroke="#7a5712" stroke-width="1"/>
-        <rect x="262" y="344" width="76" height="20" rx="3" fill="#2a2d33"/>
+        <!-- head screw (1/4-20 SHCS, head down) with a spherical washer, gib pin, retainer plate, knob -->
+        <rect x="295" y="282" width="10" height="60" fill="#cc9e40" stroke="#7a5712" stroke-width="1"/>
+        <rect x="286" y="342" width="28" height="12" fill="#cc9e40" stroke="#7a5712" stroke-width="1"/>
+        <rect x="284" y="332" width="32" height="10" fill="#8f98a3" stroke="#4d5661" stroke-width="1"/>
+        <path d="M318 308 H440 V334 H330 L318 331 Z" fill="#8f98a3" stroke="#4d5661" stroke-width="1"/>
+        <rect x="448" y="296" width="8" height="50" fill="#5d6673"/>
+        <rect x="456" y="316" width="30" height="10" fill="#2a2d33"/>
+        <rect x="486" y="300" width="22" height="42" rx="4" fill="#2a2d33"/>
         <!-- node -->
         <circle cx="300" cy="320" r="3.5" fill="#b8862b"/>
         <!-- dimension: 60 deg -->
@@ -114,12 +120,12 @@ header .sub { color: var(--muted); font-size: 14px; }
         <text x="20" y="225">cup machined</text>
         <text x="20" y="243">in the block</text>
         <path d="M120 230 L240 215" stroke="var(--muted)" stroke-width="1"/>
-        <text x="470" y="250" class="lbl">1/4-20 stud, Loctited</text>
-        <text x="470" y="268" class="lbl">into the plug nose</text>
-        <path d="M466 256 L306 290" stroke="var(--muted)" stroke-width="1"/>
-        <text x="470" y="352" class="lbl">thumbwheel nut in a</text>
-        <text x="470" y="370" class="lbl">pocket: pulls the cone in</text>
-        <path d="M466 358 L340 354" stroke="var(--muted)" stroke-width="1"/>
+        <text x="470" y="250" class="lbl">1/4-20 SHCS in the plug nose,</text>
+        <text x="470" y="268" class="lbl">head down, spherical washer</text>
+        <path d="M466 256 L306 300" stroke="var(--muted)" stroke-width="1"/>
+        <text x="470" y="372" class="lbl">gib pin, 8° wedge under the</text>
+        <text x="470" y="390" class="lbl">washer; knob on the face pushes it</text>
+        <path d="M466 378 L400 336" stroke="var(--muted)" stroke-width="1"/>
         <text x="20" y="300">cone apex: the node</text>
         <path d="M160 296 L297 318" stroke="var(--muted)" stroke-width="1"/>
         <text x="470" y="420">spigot bonded</text>
@@ -134,7 +140,7 @@ header .sub { color: var(--muted); font-size: 14px; }
 
   <section class="sheet">
     <h2>Why it holds collimation</h2>
-    <p>A pin in a hole always has clearance, and the truss analysis puts the whole error budget in that clearance: a 5,000 lb/in joint drifts a millimetre from horizon to zenith. A cone in a cup has no clearance by construction: it self-centres and the load spreads over the whole conical face. But near the horizon two poles are in tension, up to 27 lb, and one socket is pulled up by 46 lb, so gravity alone cannot keep the cones seated. The stud along each pole's axis and its thumbwheel pull the cone into the cup with roughly 80–150 lb by hand, more than the worst tension, so the joint stays closed and stiff at every altitude. Above 50,000 lb/in per socket the joints stop mattering (the mirror-box model shows 0.03 mm or less); a preloaded cone is far stiffer than that.</p>
+    <p>A pin in a hole always has clearance, and the truss analysis puts the whole error budget in that clearance: a 5,000 lb/in joint drifts a millimetre from horizon to zenith. A cone in a cup has no clearance by construction: it self-centres and the load spreads over the whole conical face. But near the horizon two poles are in tension, up to 27 lb, and one socket is pulled up by 46 lb, so gravity alone cannot keep the cones seated. A cap screw in each plug's nose hangs through the cup apex; a horizontal steel gib pin, pushed in by a 1.25 inch knob on the block's outside face, wedges under the screw's washer (8°, self-locking) and pulls the cone into the cup with roughly 200–300 lb from 5 in-lb of hand torque, far more than the worst tension, so the joint stays closed and stiff at every altitude. (The first version put a thumbwheel on a stud inside a pocket in the block; it could not be reached, let alone turned hard enough.) Above 50,000 lb/in per socket the joints stop mattering (the mirror-box model shows 0.03 mm or less); a preloaded cone is far stiffer than that.</p>
     <dl class="spec">
       <dt>Pole, node to node</dt><dd>37.30 in to the point socket, 37.35 in to the back sockets</dd>
       <dt>Carbon tube cut length</dt><dd>35.87 in (to the point socket) and 35.92 in (to the back sockets), two poles per 72 in tube; 1.08 in of each tube is bonded into its pair block. Tube: Rock West 45562, 1.125 ID × 1.24 OD, unidirectional (ordered 3 Nov)</dd>
@@ -144,7 +150,7 @@ header .sub { color: var(--muted); font-size: 14px; }
       <dt>Cups per socket, spaced on the tangent</dt><dd>2 at ±0.8 in</dd>
       <dt>Socket spigot, in the 40 mm stub bore</dt><dd>1.569 × 1.5 in, a separate turned part bolted (1/4-20) and bonded to the block</dd>
       <dt>Socket block</dt><dd>3.6 × 2.0 × 2.1 in, cone apex 1.0 in above the stub</dd>
-      <dt>Things to turn at setup</dt><dd>6 thumbwheels + 3 pair-block knobs</dd>
+      <dt>Things to turn at setup</dt><dd>6 gib knobs (about 7 turns each) + 3 pair-block knobs</dd>
       <dt>Worst pole tension (horizon)</dt><dd>27 lb; worst socket uplift 46 lb</dd>
       <dt>Truss drift after 45° collimation, preloaded joints</dt><dd>0.03 mm</dd>
     </dl>
@@ -161,9 +167,9 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const CAPTIONS = {
-  full: { h: "Whole truss, three pairs", p: "Each pair is two carbon poles bonded permanently into one block that hangs under the cage's lower ring on a single knob. The poles spread 60° each way to the socket blocks on the three stubs left in the mirror box, so every socket receives one pole from each neighbouring pair. Six cones pulled in by thumbwheels below, three knobs above." },
-  socket: { h: "Socket block on a stub", p: "An aluminium block on a turned spigot (bolted and bonded to the block, so the block is short enough to machine on the AltMill) bonded into the 45 mm (1.77 inch) DobStuff stub, 40 mm bore. Two countersunk cups, 0.8 inch either side of the stub's centre, point up along the two poles that meet here. A 1/4-20 stud along each pole's axis comes through the cup apex into a pocket open to the outside face; a thumbwheel nut there pulls the cone into its cup, so it stays seated when the pole goes into tension near the horizon. Two clamp collars, one above and one below the box's top ring, stop the stub sliding in its holes, and a 1/4 inch steel pin drilled radially in from the edge of the mirror board through both walls of the stub holds its bottom end, so the stub is fixed at both boards (twice as stiff as at the top ring only)." },
-  section: { h: "Cut-away through the cups", p: "Sectioned on the vertical plane through the stub's centre. The plug's cone sits fully in the cup with the shoulder flush at the block's top face; the stud runs from the plug nose through the apex into the thumbwheel pocket. The block's underside bears on the stub's end face; the spigot, bolted up into the block from below, locates it and takes the side and uplift loads into the stub and the mirror board." },
+  full: { h: "Whole truss, three pairs", p: "Each pair is two carbon poles bonded permanently into one block that hangs under the cage's lower ring on a single knob. The poles spread 60° each way to the socket blocks on the three stubs left in the mirror box, so every socket receives one pole from each neighbouring pair. Six cones pulled in by gib knobs below, three knobs above." },
+  socket: { h: "Socket block on a stub", p: "An aluminium block on a turned spigot (bolted and bonded to the block, so the block is short enough to machine on the AltMill) bonded into the 45 mm (1.77 inch) DobStuff stub, 40 mm bore. Two countersunk cups, 0.8 inch either side of the stub's centre, point up along the two poles that meet here. A 1/4-20 cap screw in each plug's nose hangs through a 0.70 inch hole at the cup apex; a 5/8 inch steel gib pin in a horizontal bore from the outside face, driven by a knob on that face, wedges under the screw's washer and pulls the cone into its cup, so it stays seated when the pole goes into tension near the horizon. Two clamp collars, one above and one below the box's top ring, stop the stub sliding in its holes, and a 1/4 inch steel pin drilled radially in from the edge of the mirror board through both walls of the stub holds its bottom end, so the stub is fixed at both boards (twice as stiff as at the top ring only)." },
+  section: { h: "Cut-away through the cups", p: "Sectioned on the vertical plane through the stub's centre. The plug's cone sits fully in the cup with the shoulder flush at the block's top face; the cap screw hangs from the plug nose through the apex hole, and the gib bore crosses under it from the outside face. The block's underside bears on the stub's end face; the spigot, bolted up into the block from below, locates it and takes the side and uplift loads into the stub and the mirror board." },
   pair: { h: "Pair block under the cage", p: "The two poles are bonded 1.33 inch deep into blind bores cut along the pole angles; the bore floor sets each pole's length, and a small vent over each floor lets the epoxy breathe. The pair comes out of the car as one rigid V. A stud 0.45 inch inboard of centre (on the centre it would break into both bores) and one dowel locate the block on the ring; a knob on the stud holds it. The block's top face is the ring's mirror-side face." },
 };
 

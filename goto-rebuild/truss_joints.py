@@ -41,13 +41,26 @@ S_NOSE = (NOSE_D / 2) / math.tan(HALF)         # apex -> nose along the pole axi
 S_SHOULDER = (POLE_OD / 2) / math.tan(HALF)    # apex -> full diameter
 SHOULDER_L, SHANK_L = 0.40, 1.75
 BLOCK_T, BLOCK_R, BLOCK_H = 3.6, 2.0, 2.1      # socket block: tangential x radial x tall (2.1: room for the wheel pocket)
-# drawbolt (2026-10-31): a 1/4-20 stainless stud along the pole axis, Loctited 0.6" into the plug nose, passes
-# through the cup apex into a pocket milled in from the block's outside face; a knurled thumbwheel nut in the
-# pocket pulls the cone into its cup (~80-150 lb preload by hand). Poles carry up to ~27 lb TENSION near the
-# horizon (truss_fe), so the old side knob on a brass pad, which only locks by friction, could let a cone lift.
-STUD_D, STUD_BELOW = 0.25, 0.60                # stud dia, length past the cone apex
-WHEEL_D, WHEEL_T = 0.90, 0.30                  # knurled thumbwheel nut
-POCKET_H, POCKET_W, POCKET_TOP = 0.75, 1.0, 0.10   # pocket height (along y), tangential width, top below the apex
+# GIB CLAMP (2026-11-08) replaces the drawbolt + thumbwheel of 2026-10-31: that wheel sat 1.0" inside the block behind a
+# 1.0 x 0.75 pocket mouth and could not be reached, let alone turned to 100 lb. Now: a 1/4-20 x 1 SHCS screwed into the
+# plug's nose (head down, a 1/4" spherical washer set riding on the head) hangs through a 0.70 hole at the cup apex. A 5/8" steel gib pin slides in a horizontal bore
+# drilled in from the block's OUTSIDE face, just above the apex; its forked tip straddles the screw shank and its underside
+# is milled to an 8 deg wedge that bears on the washer on the screw head, pulling the cone into the cup. A 1/4-20 knob stud
+# threaded through a 1/8" steel plate (PEM nut) on the outside face pushes the gib in; the stud tip is captive in the gib
+# so backing the knob off withdraws it. 5 in-lb on a 1.25" knob -> ~100 lb push -> ~200-300 lb pull (wedge 8 deg,
+# mu 0.1-0.15, self-locking). Poles carry up to ~27 lb TENSION near the horizon (truss_fe), so friction-only side knobs
+# were never enough; this keeps the cone preloaded with the knob where a hand can reach it.
+HEAD_D, HEAD_H, HEAD_SHANK = 0.375, 0.25, 0.50      # 1/4-20 x 1 SHCS (0.5 in the nose): head dia/height, exposed shank below the nose face
+WASHER_D, WASHER_T = 0.625, 0.19                    # 1/4" SPHERICAL washer set on the head (the screw leans 13 deg, the gib is horizontal:
+                                                    # a flat washer would load one tine only); the gib's tines bear on its flat seat, 0.14 each side
+APEX_HOLE_D = 0.70                                  # through the cup apex; head + washer pass down it (cone contact then r 0.35-0.62)
+GIB_D, GIB_L, GIB_SLOT, GIB_ANGLE_DEG = 0.625, 1.20, 0.34, 8.0   # slot clears the 0.25 shank leaning 13 deg; tines 0.14 thick
+GIB_Z = 0.0                                         # gib bore axis at the apex level (bore spans +/-0.3125; washer top at -0.094)
+GIB_TIP_ENGAGED = 1.15                              # tip depth from the outside face when tight (shank at BLOCK_R/2 = 1.0)
+GIB_BORE_DEPTH = 1.25                               # from the outside face; 0.75 wall left to the inside face
+GIB_TRAVEL = 0.35                                   # released tip at 0.80 (0.2 behind the head) -> ~7 turns of 1/4-20
+PLATE_T, PLATE_W, PLATE_H = 0.125, 1.6, 1.2         # steel retainer plate on the outside face, 1/4-20 PEM nut, 2 x #8-32 at +/-0.55
+KNOB_D, KNOB_T = 1.25, 0.45
 # Spigot = a separate turned 6061 part (2026-10-31: integral it made the socket stock 3.6" tall, too tall for the AltMill's
 # Z on the wedge fixtures). Short Ø0.50 x 0.11 pilot into a matching register in the block's underside, bonded, and a
 # 1/4-20 x 1-3/4 SHCS up from the spigot's bottom (counterbored) into the block (tapped 0.60 deep on the centreline).
@@ -56,9 +69,6 @@ SPIGOT_L = 1.5
 SPIGOT_PILOT_D, SPIGOT_PILOT_H = 0.50, 0.11       # register depth 0.12 (pocket floor is 0.15 above the underside)
 SPIGOT_CB_D, SPIGOT_CB_H = 0.39, 0.26              # SHCS head counterbore in the spigot's bottom
 SPIGOT_TAP_DEPTH, SPIGOT_DRILL_DEPTH = 0.60, 0.70  # 1/4-20 in the block (#7 drill 0.201)
-# the pocket ceiling is flat in the block but the stud leans ~13.4 deg: the thumbwheel bears on an aluminium wedge washer
-# (0.9" dia, 13.4 deg, keyed square in the pocket) so it seats square to the stud
-WEDGE_D, WEDGE_MIN = 0.9, 0.06
 # pair end (2026-10-31 detailing): the carbon tube runs 0.30" PAST the pair node into a blind bonded bore, so ~1.33" of
 # tube is bonded (it was 0.43": the tube stopped 0.6" short of the node); the bore floor locates the tube length
 TUBE_PAST_APEX = 0.05                          # was 0.30: trimmed 2026-11-03 so two poles come out of one 72" tube
@@ -99,11 +109,12 @@ def cone(r0, r1, length, p0, d):
     return cq.Workplane("XY").add(cq.Solid.makeCone(r0 * IN, r1 * IN, length * IN, v(*p0), d))
 
 
-def block(center, deg, t, h, r):
+def block(center, deg, t, h, r, fillet=0.2):
     """Box centred at `center`, t along the tangent, h vertical, r along the radius at angle deg."""
     rd, td = rad_tan(deg)
     pl = cq.Plane(origin=v(*center), xDir=cq.Vector(*td), normal=cq.Vector(*rd))
-    return cq.Workplane(pl).box(t * IN, h * IN, r * IN).edges("|Y").fillet(0.2 * IN)
+    w = cq.Workplane(pl).box(t * IN, h * IN, r * IN)
+    return w.edges("|Y").fillet(fillet * IN) if fillet else w
 
 
 def along(p, d, s):
@@ -177,28 +188,42 @@ def socket_block(b):
     blk = blk.cut(cyl(0.1005, SPIGOT_DRILL_DEPTH, (bx, Y_STUB_TOP, bz), (0, 1, 0)))                       # tap drill
     sbolt = cyl(0.125, 1.75, (bx, Y_STUB_TOP - SPIGOT_L + SPIGOT_CB_H, bz), (0, 1, 0))
     sbolt = sbolt.union(cyl(0.1875, 0.25, (bx, Y_STUB_TOP - SPIGOT_L + 0.01, bz), (0, 1, 0)))
-    wheels, studs = None, None
+    knobs, screws = None, None
     for side in (-1, +1):
         t = (b - 60 * side) % 360                       # the apex this cup's pole comes from
         A, B = node_points(t, side)
         d_up = cq.Vector(*[a - c for a, c in zip(A, B)]).normalized()
         d_dn = d_up * -1
-        blk = blk.cut(cyl(0.145, 3.0, along(B, d_up, 1.5), d_dn))            # stud clearance through the apex
         cup = cone(0.02, 3.0 * math.tan(HALF), 3.0 - 0.02 / math.tan(HALF), along(B, d_up, 0.02 / math.tan(HALF)), d_up)
         blk = blk.cut(cup)
-        # pocket under the apex, open to the radial-outside face
-        pc = along(B, d_dn, POCKET_TOP / abs(d_dn.y) + POCKET_H / 2 / abs(d_dn.y))
-        pl = cq.Plane(origin=v(pc[0] + rd[0] * (BLOCK_R / 2 + 0.5), pc[1], pc[2] + rd[2] * (BLOCK_R / 2 + 0.5)),
-                      xDir=cq.Vector(*td), normal=cq.Vector(*rd))
-        pocket = cq.Workplane(pl).box(POCKET_W * IN, POCKET_H * IN, (BLOCK_R + 1.0) * IN)
-        pocket = pocket.translate(v(-rd[0] * 0.5, 0, -rd[2] * 0.5))
-        # keep the pocket on this side of the stud axis line (it must not break into the cup)
-        blk = blk.cut(pocket)
-        stud = cyl(STUD_D / 2, S_NOSE + 0.6 + STUD_BELOW, along(B, d_up, S_NOSE + 0.6), d_dn)
-        wheel = cyl(WHEEL_D / 2, WHEEL_T, along(pc, d_up, WHEEL_T / 2), d_dn)
-        wheels = wheel if wheels is None else wheels.union(wheel)
-        studs = stud if studs is None else studs.union(stud)
-    return dict(block=blk, knobs=wheels, pads=studs, spigot=spigot, spigot_bolt=sbolt)
+        # apex hole for the head screw: from the plug's nose level down past the head
+        blk = blk.cut(cyl(APEX_HOLE_D / 2, S_NOSE + 0.02 + 0.50, along(B, d_up, S_NOSE + 0.02), d_dn))   # to apex - 0.50, as the G-code cuts
+        # gib bore: horizontal, radial, in from the outside face, axis GIB_Z above the apex, under this cup
+        p_ax = (B[0], B[1] + GIB_Z, B[2])
+        # B sits on the stub's radial line +/- NODE_OFF tangentially, so the face point is B moved out radially
+        p_face = (B[0] + rd[0] * BLOCK_R / 2, p_ax[1], B[2] + rd[2] * BLOCK_R / 2)
+        blk = blk.cut(cyl(GIB_D / 2, GIB_BORE_DEPTH + 0.2, along(p_face, rd, 0.2), (-rd[0], 0, -rd[2])))
+        for dt in (-0.55, 0.55):                       # #8-32 tap drill for the retainer plate
+            q = (p_face[0] + td[0] * dt, p_face[1], p_face[2] + td[2] * dt)
+            blk = blk.cut(cyl(0.068, 0.40, along(q, rd, 0.01), (-rd[0], 0, -rd[2])))
+        # solids: gib (engaged), retainer plate, knob + stud, head screw on the plug
+        gib = cyl(GIB_D / 2, GIB_TIP_ENGAGED, p_face, (-rd[0], 0, -rd[2]))
+        tip = along(p_face, (-rd[0], 0, -rd[2]), GIB_TIP_ENGAGED)
+        slot = block((tip[0] + rd[0] * 0.3, tip[1], tip[2] + rd[2] * 0.3), b, GIB_SLOT, GIB_D + 0.1, 0.6, fillet=0)
+        gib = gib.cut(slot)
+        # wedge underside: drawn flat at the head-top level (the real face rises 8 deg toward the tip)
+        y_head_top = B[1] - (HEAD_SHANK - WASHER_T - S_NOSE) * abs(d_dn.y)    # washer top
+        gib = gib.cut(cq.Workplane("XY").box(6 * IN, 2 * IN, 6 * IN).translate(v(B[0], y_head_top - 1.0, B[2])))
+        plate = block((p_face[0] + rd[0] * PLATE_T / 2, p_face[1], p_face[2] + rd[2] * PLATE_T / 2), b, PLATE_W, PLATE_H, PLATE_T, fillet=0)
+        knob = cyl(KNOB_D / 2, KNOB_T, along(p_face, rd, PLATE_T + 0.05), rd)
+        stud = cyl(0.125, PLATE_T + 0.05 + KNOB_T + 0.3, along(p_face, (-rd[0], 0, -rd[2]), 0.3), rd)
+        hw = gib.union(plate).union(knob).union(stud)
+        knobs = hw if knobs is None else knobs.union(hw)
+        screw = cyl(0.125, HEAD_SHANK, along(B, d_up, S_NOSE), d_dn)
+        screw = screw.union(cyl(HEAD_D / 2, HEAD_H, along(B, d_dn, HEAD_SHANK - S_NOSE), d_dn))
+        screw = screw.union(cyl(WASHER_D / 2, WASHER_T, along(B, d_dn, HEAD_SHANK - S_NOSE - WASHER_T), d_dn))
+        screws = screw if screws is None else screws.union(screw)
+    return dict(block=blk, knobs=knobs, pads=screws, spigot=spigot, spigot_bolt=sbolt)
 
 def pair_block(t):
     ax, az = polar(R_TOP, t)
@@ -271,8 +296,8 @@ def build_full():
         sb = socket_block(b)
         a.add(sb["block"], name=f"socket_{b}", color=ALU)
         a.add(sb["spigot"], name=f"spigot_{b}", color=ALU)
-        a.add(sb["knobs"], name=f"thumbwheels_{b}", color=KNOB)
-        a.add(sb["pads"], name=f"drawbolt_studs_{b}", color=BRASS)
+        a.add(sb["knobs"], name=f"gib_clamps_{b}", color=KNOB)
+        a.add(sb["pads"], name=f"head_screws_{b}", color=BRASS)
         stub, ring, collars = stub_and_ring(b)
         a.add(stub, name=f"stub_{b}", color=STUB)
         a.add(ring, name=f"box_ring_{b}", color=BIRCH)
@@ -283,7 +308,7 @@ def build_full():
 
 def build_viewer():
     """The chosen truss as the main 3D viewer shows it: poles, plugs, pair blocks with knobs and dowels, socket
-    blocks with drawbolt studs and thumbwheels, stub collars (the stubs and rings come from dob_model)."""
+    blocks with head screws and gib clamps, stub collars (the stubs and rings come from dob_model)."""
     a = cq.Assembly(name="truss_zigzag")
     poles = plugs = pblk = pk = dw = None
     U = lambda acc, s: s if acc is None else acc.union(s)
@@ -302,7 +327,7 @@ def build_viewer():
         st = U(st, board_pin(b)[0])
     for name, part, color in (("truss_poles", poles, CARBON), ("pole_plugs", plugs, ALU), ("pair_blocks", pblk, ALU),
                               ("pair_knobs", pk, KNOB), ("pair_dowels", dw, BRASS), ("socket_blocks", sb_, ALU),
-                              ("thumbwheels", wh, KNOB), ("drawbolt_studs_and_board_pins", st, BRASS), ("stub_collars", col, KNOB)):
+                              ("gib_clamps", wh, KNOB), ("head_screws_and_board_pins", st, BRASS), ("stub_collars", col, KNOB)):
         a.add(part, name=name, color=color)
     return a
 
@@ -325,8 +350,8 @@ def build_socket_detail(b=90, section=False):
     add(sb["block"], "socket_block", ALU)
     add(sb["spigot"], "spigot", ALU)
     add(sb["spigot_bolt"], "spigot_bolt", BRASS)
-    add(sb["knobs"], "thumbwheels", KNOB)
-    add(sb["pads"], "drawbolt_studs", BRASS)
+    add(sb["knobs"], "gib_clamps", KNOB)
+    add(sb["pads"], "head_screws", BRASS)
     stub, ring, collars = stub_and_ring(b)
     add(stub, "stub", STUB)
     add(ring, "box_ring", BIRCH)
