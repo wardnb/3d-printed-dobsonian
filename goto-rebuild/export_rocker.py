@@ -235,9 +235,9 @@ if G["kind"] == "rollers":
         quarter = quarter.cut(cq.Workplane("XY").center(ra * math.sin(a) * IN, ra * math.cos(a) * IN).circle(0.085 * IN).extrude(0.05 * IN))
     cq.exporters.export(quarter.section(0.025 * IN), os.path.join(OUT, "az_track_quarter_x4_eighth-inch-6061.dxf"))
     plate = cq.Workplane("XY").rect((G["blk_w"] + 1.0) * IN, (G["blk_l"] + 1.0) * IN).extrude(0.05 * IN)
-    plate = plate.cut(cq.Workplane("XY").slot2D(1.5 * IN, 0.5 * IN, 90).extrude(0.05 * IN))      # roller clearance slot
-    for dx, dy in ((0, -0.6), (0, 0.6)):                      # 1/4-20 into the block
-        plate = plate.cut(cq.Workplane("XY").center(dx * IN, dy * IN).circle(0.135 * IN).extrude(0.05 * IN))
+    for dx in (-0.46, 0.46):                                  # #10-32 into the block's cheeks (roller hangs below)
+        for dy in (-0.6, 0.6):
+            plate = plate.cut(cq.Workplane("XY").center(dx * IN, dy * IN).circle(0.1 * IN).extrude(0.05 * IN))
     for dx in (-(G["blk_w"] / 2 + 0.3), G["blk_w"] / 2 + 0.3):   # #10 wood screws into the floor
         for dy in (-1.0, 1.0):
             plate = plate.cut(cq.Workplane("XY").center(dx * IN, dy * IN).circle(0.1 * IN).extrude(0.05 * IN))

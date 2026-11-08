@@ -102,7 +102,7 @@ motion; a star drift or plate-solve series measures pointing.
 | W4 | Drive arm plates per axis | 0.43 lb | |
 | W5 | Tube total (everything that tilts) | 74.3 lb | |
 | W6 | Rocker (birch, drives, electronics) | 28 lb ASSUMED | |
-| W7 | Rocker height / eyepiece height at zenith / nested transport height | 15.6" / 63.8" / 13.5" | |
+| W7 | Rocker height / eyepiece height at zenith / nested transport height | 16.0" / 64.2" / 13.5" | |
 
 ## Known weaknesses of the models (where to expect the largest misses)
 

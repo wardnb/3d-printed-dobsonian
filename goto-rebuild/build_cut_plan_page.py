@@ -39,7 +39,7 @@ BARS = [
     dict(id="sq134", stock="6061 square bar 1 3/4\" × 1 3/4\"", order="20\"", cuts="3 × 3.70\" + 3 × 2.40\"", parts="Truss pair blocks (faced to 1.6 × 1.6) and socket spigots (milled upright, 0.75\" grip)"),
     dict(id="rd138", stock="6061 round bar 1 3/8\"", order="48\"", cuts="12 × 3.10\"", parts="Truss cone plugs (1.25\" max dia) if made in-house; skip if the turning service supplies material"),
     # roller bearings (2026-11-07, roller_study.py): not yet ordered
-    dict(id="bar1520", stock="6061 rectangular bar 1 1/2\" × 2\"", order="18\"", cuts="4 × 2.20\" + 4 × 1.10\"", parts="Alt roller blocks (2.2 tall, saddle over the wall) and four az roller blocks (1.1, hung through the floor at its corners); faced to 1.4 wide"),
+    dict(id="bar1520", stock="6061 rectangular bar 1 1/2\" × 2\"", order="18\"", cuts="4 × 2.20\" + 4 × 1.50\"", parts="Alt roller blocks (2.2 tall, saddle over the wall) and four az roller blocks (1.5, roller down, hung through the floor at its corners); faced to 1.4 wide"),
     dict(id="fl116x58", stock="6061-T6 flat bar 1/16\" × 5/8\"", order="2 × 48\"", cuts="2 × ~40\" (trim on the rim)", parts="Alt roller tracks, bent around the D rims and epoxy-bonded (elastic at R 14: strap-clamp while curing)"),
     dict(id="pl18", stock="6061 plate 1/8\" × 12\" × 48\"", order="1", cuts="4 × 90° ring segments (r 12.25–13.25, 18.7 × 4.6 each) + 4 flange plates 2.4 × 3.0", parts="Az roller track ring on the ground ring (joints at 45°+k·90°, off the birch joints); az block flange plates (DXFs in out/rocker/)"),
 ]
@@ -102,7 +102,7 @@ BUY = [
         B("thandle", "3/8-16 T handles (or lifting eye bolts), 5.5\" rod", 2, "Screw into the cell frame's lugs at 60/240° to lift the mirror + cell out through the top ring; removed for observing (`cell_case.py`)", "later", "McMaster"),
         B("case", "Mirror-cell case: 1/2\" birch 19 × 19 × 8\" (or 18 mm offcuts), 3/4\" closed-cell foam ring, weatherstrip, 2 side handles, 2 draw latches", 1, "Mirror + cell lives in it between sessions; three blocks with two 5/16 pins locate the frame (DXFs out/cell/case_*). ~16 lb case, ~45 lb carried", "later", ""),
         B("xbolt", "1/4-20 × 2\" bolts + nyloc nuts", 8, "Alt roller block cross bolts, through both cheeks and the wall", "now", ""),
-        B("trackscr", "#8 × 3/4\" stainless FHCS (az track segments, countersunk flush) + #10 × 1\" wood screws (flange plates)", 1, "~20 of the #8, 16 of the #10", "now", ""),
+        B("trackscr", "#8 × 3/4\" stainless FHCS (az track segments, countersunk flush) + #10 × 1\" wood screws (flange plates)", 1, "~20 of the #8, 16 of the #10 (flange plates: #10-32 × 3/4 machine screws into the block cheeks, 16)", "now", ""),
         B("ptfe", "Virgin PTFE sheet 1/16\"", 1, "Lateral tab faces (4) on the alt roller blocks, 0.05\" off the D; 3 × 3\"", "now", ""),
         B("brake", "Brake shoes: 1\" neoprene/cork pads + compression springs", 2, "Hand-push brake on each axis, pressed on by the same cam lever that lifts the pinion (~15–20 lb on the track = 100–120 in-lb hold); not drawn yet", "later", ""),
         B("dowel38", "Steel dowel pin 3/8\" + drill bushing 3/8\" ID × 1/2\" OD", 4, "D bearing to box (2 per side)", "now", "McMaster"),

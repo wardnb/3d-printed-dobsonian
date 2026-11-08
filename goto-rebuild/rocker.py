@@ -91,9 +91,10 @@ def derive(P, R, swing, panel_x):
     G["track_t"] = 0.0625                                          # alt: 1/16 x 5/8 strip on the rim
     G["az_track_t"] = 0.125                                        # az: 1/8 plate ring on the ground ring
     G["blk_w"], G["blk_l"] = 1.4, 2.0                              # block: across the roller axis x along it... see build()
-    G["blk_h_alt"], G["blk_h_az"] = 2.2, 1.1
     G["axle_from_top"] = 0.45                                      # roller protrudes od/2 - 0.45 = 0.24 past the block
-    G["slot_w"], G["slot_d"] = 0.45, 1.30
+    G["slot_w"] = 0.45
+    G["slot_d"] = round(G["axle_from_top"] + G["roller_od"] / 2 + 0.05, 2)   # 1.19: the roller + 0.05 clearance
+    G["blk_h_alt"], G["blk_h_az"] = 2.2, 1.5                       # az: 0.31 bridge over the slot (was 1.1: the slot cut it in two)
     G["saddle_d"] = 0.5                                            # alt block straddles the wall top this deep
     G["tab_t"], G["tab_clear"] = 0.125, 0.05                       # 1/8 Al lateral tab + 1/16 PTFE, 0.05 off the D's face
     G["az_blk_below_floor"] = G["blk_h_az"] - ply                  # the az block hangs through a floor cutout, 0.39 below
@@ -274,8 +275,10 @@ def roller_block(G, h, saddle):
         for dy in (-0.6, 0.6):
             b = b.cut(cyl_x(-1, 2 + G["blk_w"], 0.13, dy, -h + G["saddle_d"] - 0.30))
     else:
-        for dy in (-0.6, 0.6):                                             # 1/4-20 tapped from the top (flange plate)
-            b = b.cut(cyl_z(-0.7, 0.8, 0.10, 0, dy))
+        # az: the block hangs roller-side DOWN; four #10-32 tapped 0.6 into the cheeks' upper face (-h) for the flange plate
+        for dx in (-0.46, 0.46):
+            for dy in (-0.6, 0.6):
+                b = b.cut(cyl_z(-h - 0.01, 0.61, 0.08, dx, dy))
     roller = cyl_x(-G["roller_w"] / 2, G["roller_w"], G["roller_od"] / 2, 0, -G["axle_from_top"])
     # 5/8 x 1 shoulder bolt from the +X cheek (head 0.9 dia x 0.4 outside that face), 1/2-13 in the -X cheek
     axle = cyl_x(-G["blk_w"] / 2 + 0.2, G["blk_w"] - 0.2, G["axle_d"] / 2, 0, -G["axle_from_top"])
@@ -318,14 +321,18 @@ def roller_parts(G):
     # (the rim track strips rotate with the D: dob_model.py draws them on the tube, not here)
     # az blocks: hang through the floor cutouts, roller axis radial, flange plate on the floor top
     blocks = rollers = axles = plates = None
-    z_top = G["floor_z0"] + ply                                            # block top flush with the floor top
+    z_top = G["floor_z0"] + ply                                            # block's upper face flush with the floor top
     for a in G["az_roller_angles"]:
         x, y = polar(G["az_pad_r"], a)
         b, r, ax = roller_block(G, G["blk_h_az"], False)
         def place(p):
+            # block frame has the roller side at z = 0 and the body at -z: flip it so the roller faces DOWN, then the
+            # block's -h face (now up) sits flush with the floor top and the roller hangs below the floor onto the track
+            p = p.rotate((0, 0, 0), (0, 1, 0), 180).translate(v(0, 0, -G["blk_h_az"]))
             return p.rotate((0, 0, 0), (0, 0, 1), a).translate(v(x, y, z_top))
         bw, rw, aw = place(b), place(r), place(ax)
-        pl = place(box(0, 0, 0.125, G["blk_w"] + 1.0, G["blk_l"] + 1.0, 0.25).cut(box(0, 0, 0.125, 0.5, 1.5, 0.3)))   # roller clearance slot
+        pl = (box(0, 0, 0.125, G["blk_w"] + 1.0, G["blk_l"] + 1.0, 0.25)                        # flange plate on the floor top
+              .rotate((0, 0, 0), (0, 0, 1), a).translate(v(x, y, z_top)))
         blocks = bw if blocks is None else blocks.union(bw)
         rollers = rw if rollers is None else rollers.union(rw)
         axles = aw if axles is None else axles.union(aw)
