@@ -42,11 +42,12 @@ C_NOM = 52.0 / IN                               # motor-to-jackshaft centre dist
 SLOT = 0.10                                     # +/- motor slot along u
 U_PIVOT = 4.0
 U_TAIL = -1.3                                   # spring / cam rod
-R_LOBE = dict(jack=0.75, motor=1.05, pivot=0.50, tail=0.42)   # motor lobe takes the Ø1.125 pilot slot + #10 screws at +/-0.75
+R_LOBE = dict(jack=0.75, motor=1.32, pivot=0.50, tail=0.42)   # motor lobe takes the Ø1.125 pilot slot + the 1.63" square screw pattern
 # ---- motor (Pittman GM9000 family) -- ASSUMED until Nick measures the gearbox face
 MOTOR_R, MOTOR_L = 0.80, 4.6
-MOTOR_HOLES = [(0.0, 0.75), (0.0, -0.75)]       # Pittman GM9000 face: two #10-32 x 0.25 deep on a 1.500" BC (drawing); the four corner
-                                                # holes on Nick's flanges (spacing TBD 2026-11-08) may replace these. Slotted along u
+MOTOR_HOLES = [(sx * 0.815, sw * 0.815) for sx in (1, -1) for sw in (1, -1)]   # MEASURED 2026-11-08: four Ø0.15 clearance holes
+                                                # (not tapped) on a 1.63" square at the flange corners -> #6-32 screws through the
+                                                # flange and plate B's slots, nyloc nuts between the plates
 # ---- spring / clutch
 PRELOAD_LB = 25.0                               # at the pinion (rim force ~12 lb; GT2 rack-style mesh needs ~2x)
 LIFT = 0.12                                     # pinion lift when the cam is thrown (3 mm)
@@ -98,7 +99,7 @@ def arm_holes(plate):
     h += [(u, w, 0.201, "#10 standoff") for u, w in STANDOFFS]
     if plate == "B":
         h.append((C_NOM, 0, 2 * PILOT_R + 0.005, f"gearbox pilot Ø1.125, slot +/-{SLOT} (locates the motor in w, slides for belt tension)"))
-        h += [(C_NOM + du, dw, 0.201, f"#10-32 motor screw, slot +/-{SLOT}") for du, dw in MOTOR_HOLES]
+        h += [(C_NOM + du, dw, 0.15, f"#6-32 motor screw, slot +/-{SLOT}") for du, dw in MOTOR_HOLES]
     return h
 
 
@@ -220,7 +221,7 @@ def module(G, axis, ratio="2:1", engaged=True):
         # pivot: 3/8 shoulder bolt with a turned spacer between the plates and a nyloc on the far end
         "pivot_spacer_AB": (_cyl(pl, sgn, U_PIVOT, 0, sA + PLATE_T, PLATE_GAP, 0.30), "ALU"),
     }
-    for i, (mu, mw) in enumerate(MOTOR_HOLES):                                  # #6 screws into the gearbox face
+    for i, (mu, mw) in enumerate(MOTOR_HOLES):                                  # #6-32 screws through the flange and plate B
         parts[f"motor_screw_{i}"] = (_cyl(pl, sgn, C_NOM + mu, mw + wof(C_NOM), sB - 0.12, 0.12 + PLATE_T + FLANGE_T, 0.11), "BLACK")
     for (u, w) in STANDOFFS:
         parts[f"standoff_{u:+.2f}"] = (_cyl(pl, sgn, u, w + wof(u), sA + PLATE_T, PLATE_GAP, 0.19), "ALU")
