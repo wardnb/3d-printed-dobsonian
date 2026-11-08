@@ -1,0 +1,22 @@
+{
+ "inside_in": 18.0,
+ "inside_h_in": 7.08,
+ "outside_in": 18.94,
+ "outside_h_in": 8.02,
+ "unit_to_wall_in": 0.25,
+ "fan_to_floor_in": 0.6,
+ "foam_inner_r_minus_mirror_r_in": 0.25,
+ "foam_bottom_above_face_in": 0.15,
+ "handle_grip_above_face_in": 1.52,
+ "case_lb_est": 15.6,
+ "carry_lb_est": 44.7,
+ "case_lb_if_18mm": 23.5,
+ "case_lb_if_6mm": 8.0,
+ "blocks_under_arms_deg": [
+  90,
+  210,
+  330
+ ],
+ "pins_in_bolt_holes": 2,
+ "ok": true
+}

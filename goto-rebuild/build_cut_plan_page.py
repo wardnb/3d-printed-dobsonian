@@ -98,6 +98,8 @@ BUY = [
         B("r10", "R10-2RS or R10-ZZ ball bearing (5/8 × 1-3/8 × 11/32)", 9, "Roller wheels: 4 alt + 4 az + spare (roller_study.py: 21–34 lb each, Hertz ≤ 130 MPa at 3 g on 6061). ZZ shields drag ~1/5 of 2RS seals", "now", "McMaster / VXB"),
         B("sb58", "5/8\" × 1\" shoulder bolt, 1/2-13 thread, 18-8", 8, "Roller axles; the far cheek of each block is tapped 1/2-13", "now", "McMaster"),
         B("fr6", "FR6-2RS flanged bearing (3/8 × 7/8 × 9/32) + 3/8 × 1-1/2 shoulder bolt", 1, "Zero-play az pivot in a 6061 housing on the floor; 5/16-18 steel insert in the ground hub", "now", "McMaster"),
+        B("thandle", "3/8-16 T handles (or lifting eye bolts), 5.5\" rod", 2, "Screw into the cell frame's lugs at 60/240° to lift the mirror + cell out through the top ring; removed for observing (`cell_case.py`)", "later", "McMaster"),
+        B("case", "Mirror-cell case: 1/2\" birch 19 × 19 × 8\" (or 18 mm offcuts), 3/4\" closed-cell foam ring, weatherstrip, 2 side handles, 2 draw latches", 1, "Mirror + cell lives in it between sessions; three blocks with two 5/16 pins locate the frame (DXFs out/cell/case_*). ~16 lb case, ~45 lb carried", "later", ""),
         B("xbolt", "1/4-20 × 2\" bolts + nyloc nuts", 8, "Alt roller block cross bolts, through both cheeks and the wall", "now", ""),
         B("trackscr", "#8 × 3/4\" stainless FHCS (az track segments, countersunk flush) + #10 × 1\" wood screws (flange plates)", 1, "~20 of the #8, 16 of the #10", "now", ""),
         B("ptfe", "Virgin PTFE sheet 1/16\"", 1, "Lateral tab faces (4) on the alt roller blocks, 0.05\" off the D; 3 × 3\"", "now", ""),
