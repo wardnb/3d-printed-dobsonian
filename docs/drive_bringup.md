@@ -63,6 +63,23 @@ only reverses the count and is fixed with the invert bit in ServoConfig.
 Order of operations on first power (SiTech manual): all grounds to the battery negative first; white-striped lead is
 positive; reversed polarity blows the fuse and can take components with it. Plug in ONE motor only for the first test.
 
+### Servo II panel (photo 2026-11-08; silkscreen flaking, so recorded here; printable strip `docs/servo2/terminal_legend.pdf`)
+
+Top edge, left to right: GUIDE (RJ) · POWER barrel (+ centre, rating worn, reads 12–28 V) · USB-B with COMM/DATA LED ·
+RS232 (RJ) · HAND PAD (RJ). LEDs SLEW/PAN/GUIDE top left, a MOTOR STATUS LED under each motor block.
+Bottom edge, four pluggable terminal blocks (5.08 mm), left to right:
+
+| Block | Terminals |
+| --- | --- |
+| ALT/DEC INPUTS | +LIMIT · −LIMIT · HOME · PSYNC · AN IN · +5V · GND |
+| AZM/R.A. INPUTS | +LIMIT · −LIMIT · HOME · PSYNC · AN IN · +5V · GND |
+| ALT/DEC MOTORS | M.E. A · M.E. B · S.E. A · S.E. B · +5V · GND · MOT+ · MOT− |
+| AZM/R.A. MOTORS | M.E. A · M.E. B · S.E. A · S.E. B · +5V · GND · MOT+ · MOT− |
+
+M.E. = motor encoder, S.E. = scope encoder. A motor cable therefore lands on six screws of its block (A, B, +5V, GND,
+MOT+, MOT−); the scope encoder for that axis shares the block's +5V/GND on S.E. A/B. Leads from a previous installation
+were still in the terminals: check whether the matching motor cables came with the controller before buying.
+
 ## 4. Bench sequence
 
 **Stage 0 — controller and motors, no mechanics (now).**
