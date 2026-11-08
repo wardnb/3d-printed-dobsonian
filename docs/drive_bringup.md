@@ -29,11 +29,13 @@ output rev**.
 | | Alt (`alt_ratio` 112.48 incl. 2:1) | Az (`az_ratio` 120.48 incl. 2:1) |
 | --- | --- | --- |
 | Rim radius / pinion pitch radius | (14.0 + 0.06) / 0.25 = 56.24 | (15.0 + 0.06) / 0.25 = 60.24 |
-| Ticks per axis rev, 2:1 belt stage | 39,400 × 112.48 = **4,431,700** | 39,400 × 120.48 = **4,746,900** |
+| Ticks per axis rev, 2:1 belt stage | 39,400 × 112.48 = **4,431,712** | 39,400 × 120.48 = **4,746,912** |
 | Ticks per axis rev, 3:1 | 6,647,600 | 7,120,400 |
 | Resolution (2:1) | 0.29"/tick | 0.27"/tick |
 | Motor-encoder count rate at 12°/s slew (2:1) | 148 kHz | 158 kHz |
 | Raw speed for 12°/s (ticks × dps × 0.09321) | 4.96 M | 5.31 M |
+
+Cross-checked 2026-11-08 with SiTech's online Drive Calculator (5600 rpm, 2000 quadrature counts, 19.7, 2, 56.24/60.24): 4,431,712 / 4,746,912 ticks, 3.420 / 3.663 ticks per arcsec, max slew 15.2 / 14.2°/s no-load, 51 / 55 ticks per second at sidereal.
 
 SiTech's own guidance (Servo I manual): 4–10 million ticks per rev is the good range, raw speed below ~6 M, motor
 encoder inputs up to 248 kHz. Both ratios fit; 2:1 sits at the low end of the tick range, 3:1 in the middle. The belt
