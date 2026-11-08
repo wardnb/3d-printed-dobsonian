@@ -315,16 +315,7 @@ def roller_parts(G):
     S["alt_rollers"] = (rollers, "STEEL")
     S["alt_axles"] = (axles, "STEEL")
     S["alt_lateral_tabs"] = (tabs, "PTFE")
-    # alt track strips: 1/16 x 5/8 6061 on each rim (full arc drawn)
-    xi = G["bearing_x_in"]
-    tb = G["run_band"]
-    strips = None
-    for sx in (1, -1):
-        x0 = xi + tb[0] + (tb[1] - tb[0] - 0.625) / 2
-        st = (cq.Workplane("YZ").circle(G["r_track"] * IN).circle(R * IN).extrude(0.625 * IN)
-              .translate(v(sx * x0 if sx > 0 else -(x0 + 0.625), 0, za)))
-        strips = st if strips is None else strips.union(st)
-    S["alt_track_strips"] = (strips, "ALU")
+    # (the rim track strips rotate with the D: dob_model.py draws them on the tube, not here)
     # az blocks: hang through the floor cutouts, roller axis radial, flange plate on the floor top
     blocks = rollers = axles = plates = None
     z_top = G["floor_z0"] + ply                                            # block top flush with the floor top

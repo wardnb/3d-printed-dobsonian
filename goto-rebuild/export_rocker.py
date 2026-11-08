@@ -55,7 +55,7 @@ def bb_overlap(a, b):
     return p.xmin <= q.xmax and q.xmin <= p.xmax and p.ymin <= q.ymax and q.ymin <= p.ymax and p.zmin <= q.zmax and q.zmin <= p.zmax
 
 clash = {}
-fixed = {k: s_ for k, (s_, _) in solids.items() if k not in ("alt_ptfe_pads", "alt_rollers", "alt_track_strips")}
+fixed = {k: s_ for k, (s_, _) in solids.items() if k not in ("alt_ptfe_pads", "alt_rollers")}
 for alt in (G["alt_min"], 45, 90):
     for side, x_lo in (("drive", F["bearing_x_in"]), ("plain", -F["bearing_x_out"])):
         b = bearing_world(x_lo, alt)
