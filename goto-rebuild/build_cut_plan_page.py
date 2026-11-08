@@ -127,7 +127,7 @@ BUY = [
     dict(group="Encoders and electronics", items=[
         B("enc", "Scope encoders: Astro Devices HD kit (owned) on the SiTech, or magnetic tape + heads", 0, "Decide from the Servo II scope-encoder input limits (docs/drive_bringup.md §5): tape at r 14\" is ~1.2 M counts/rev and 39 kHz at 12°/s, over a Servo I's 500 k / 25 kHz", "measure", ""),
         B("power", "12.8 V LiFePO4 20–30 Ah + 12→24 V boost ≥ 6 A for the SiTech only", 1, "One 12 V bus (Pegasus cuts out above ~14 V); the boost feeds the SiTech/motors. Battery + boost on the rocker floor (docs/drive_bringup.md)", "now", ""),
-        B("bench", "Bench: 12 V ≥ 5 A supply, USB-B cable, 22 AWG 5-cond shielded encoder cable, 3/8 bolt + nylon washers (test-rim pivot)", 1, "Stage 0–2 of docs/drive_bringup.md; the old DobStuff D bearing is the test rim", "now", ""),
+        B("bench", "Bench: 2 × SiTech motor cables (modular + barrel; the motors have SiTech adapter boards), 12 V ≥ 5 A supply, USB-B cable, 3/8 bolt + nylon washers (test-rim pivot)", 1, "Stage 0–2 of docs/drive_bringup.md; the old DobStuff D bearing is the test rim", "now", ""),
         B("pc", "Mini PC, USB3 + 12 V trunk, enclosure, connectors", 1, "Electronics box not laid out yet", "later", ""),
     ]),
     dict(group="Shop consumables (truss blocks and fixtures)", items=[

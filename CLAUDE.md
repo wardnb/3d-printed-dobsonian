@@ -48,7 +48,7 @@ decisions; this file is the working knowledge needed to continue the engineering
   originally strings and a single upper ring "pre-installed for a 3-vane spider". Ebony Star on Teflon bearings,
   detachable D bearings with wingnuts. DobStuff closed 2024-12-31 (densteele@gmail.com).
 - SiTech Servo Controller II; Nexus DSC Pro.
-- Pittman gearmotors, both 24 V, 19.7:1, 500 CPR encoders (LO-COG family), bought on eBay 2022: **GM94136G982** and **GM9213C386-R4**. Ametek lists GM9213 as the newer number for the GM9413 family, so they are effectively the same size; a 24 V GM9213 motor runs ~5,600 rpm no-load with Kt ≈ 5.6 oz-in/A → ~284 rpm at the 19.7:1 output.
+- Pittman gearmotors, both 24 V, 19.7:1, 500 CPR encoders (LO-COG family), bought on eBay 2022: **GM9413G982** (1993) and **GM9213C386-R4** (1997), both with SiTech motor adapter boards (Hansen Motor 116-8224B-5M: modular jack = encoder GND/A/5V/B, barrel = motor; seen 2026-11-08) so SiTech's standard motor cables plug straight in. Ametek lists GM9213 as the newer number for the GM9413 family, so they are effectively the same size; a 24 V GM9213 motor runs ~5,600 rpm no-load with Kt ≈ 5.6 oz-in/A → ~284 rpm at the 19.7:1 output.
 - 1800Destiny 180 Series Professional curved 3-vane spider (vanes 1.5" × 1/16", 1/4-20 clinch nut at each tip).
 - Feather Touch FTF2015BCR focuser: 1.4" racked in, 3.0" out, 1.5" travel, 1.55" of drawtube below the
   mounting face when racked in, 3 lb.

@@ -48,11 +48,17 @@ backlash 0 until the Backlash Help Tool is run. Pan 3′/s, guide 60"/s, slew 12
 
 ## 3. Wiring
 
-Pittman encoder (HEDS-5500 family, Pittman "H" 500-line 3-channel): pin 1 ground, 2 index (unused), 3 channel A,
-4 +5 V, 5 channel B; single-ended TTL, 85 mA at 5 V, 100 kHz rated (ASSUMED these motors carry that encoder: confirm the
-label and count the pins; ours were bought on eBay in 2022 as GM94136G982 and GM9213C386-R4). The SiTech Servo I motor
-connector is an 8-position modular jack carrying motor +/−, A, B, +5 V and ground; the Servo II uses terminal blocks
-(Astrofox). Wire colours vary by batch: identify A/B/5 V/ground with a meter and scope before powering, not by colour.
+Both motors came with SiTech's own motor adapter boards (Hansen Motor 116-8224B-5M, photo 2026-11-08): a small PCB
+on the encoder end with an 8-pin modular jack for the encoder (pads silkscreened GND, A, 5V, B) and a 2.1 mm barrel
+jack for the motor (pads +, −). The GM9213's board is soldered to its 5-pin encoder header (white/orange/blue/green)
+and motor leads (red/black); the GM9413's board has a six-wire lead and still has to go on the motor. SiTech's standard
+motor cable mates with exactly this pair (modular plug + barrel plug) and runs to the Servo II's terminal blocks, so
+two of those cables are the whole motor wiring.
+
+Pittman encoder (HEDS-5500 family / Pittman "H" 500-line): header pin 1 ground, 2 index (unused), 3 channel A, 4 +5 V,
+5 channel B; single-ended TTL, 85 mA at 5 V. Pin 1 is normally marked with a dot or square pad. Before first power,
+verify on each board that 5 V and GND land on the right header pins (a swap there destroys the encoder); an A/B swap
+only reverses the count and is fixed with the invert bit in ServoConfig.
 
 Order of operations on first power (SiTech manual): all grounds to the battery negative first; white-striped lead is
 positive; reversed polarity blows the fuse and can take components with it. Plug in ONE motor only for the first test.
@@ -93,8 +99,9 @@ prove except the vertical motor orientation.
 
 **Stage 4 — tape encoders** once §5 is settled; they are not needed for stages 0–3.
 
-Parts to add to the bench order beyond what `BUY` already lists: 12 V bench supply ≥ 5 A if none on hand, USB-B cable,
-a spool of 22 AWG 5-conductor shielded cable for the encoders, 3/8" bolt + nylon washers for the test-rim pivot.
+Parts to add to the bench order beyond what `BUY` already lists: two SiTech motor cables (modular + barrel ends; or
+flat 8-conductor + 2.1 mm barrel plugs to make them), 12 V bench supply ≥ 5 A if none on hand, USB-B cable, 3/8" bolt +
+nylon washers for the test-rim pivot.
 
 ## 5. Open checks (answer from the Servo II manual before buying heads)
 
