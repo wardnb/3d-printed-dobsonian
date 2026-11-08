@@ -45,7 +45,7 @@ C_NOM = 52.0 / IN                               # motor-to-jackshaft centre dist
 SLOT = 0.10                                     # +/- motor slot along u
 U_PIVOT = 4.0
 U_TAIL = -1.3                                   # spring / cam rod
-R_LOBE = dict(jack=0.75, motor=1.32, pivot=0.50, tail=0.42)   # motor lobe takes the Ø1.125 pilot slot + the 1.63" square screw pattern
+R_LOBE = dict(jack=0.75, motor=1.32, pivot=0.50, tail=0.42)   # motor lobe takes the 1.63" square screw pattern (corner holes at r 1.15)
 # ---- motor (Pittman GM9000 family) -- ASSUMED until Nick measures the gearbox face
 MOTOR_R, MOTOR_L = 0.80, 4.6
 MOTOR_HOLES = [(sx * 0.815, sw * 0.815) for sx in (1, -1) for sw in (1, -1)]   # MEASURED 2026-11-08: four Ø0.15 clearance holes
@@ -78,7 +78,7 @@ def numbers():
 
 # hardware drawn so that every part touches what it mounts to (2026-11-08; all ASSUMED until the parts are in hand)
 FLANGE_SQ, FLANGE_T = 2.0, 0.20                 # Pittman GM9000 gearbox face: 2.00" square (measured 2026-11-08, 1.992-1.997), thickness ASSUMED
-PILOT_R, PILOT_H = 0.5625, 0.06                 # gearbox pilot boss Ø1.125 (-0.002/+0, GM9000 drawing) into a 1.13" hole in plate B; height ASSUMED
+PILOT_R, PILOT_H = 0.0, 0.0                     # no pilot boss: the flange face is flat right up to the shaft (photo 2026-11-08); holes countersunk outside
 PIVOT_SPACER_R = 0.35                           # turned 6061 spacer on the pivot bolt between the bracket and plate A/B
 NUT_AF, NUT_T = 0.5625, 0.22                    # 3/8-16 nyloc on the pivot bolt
 ROD_R = 0.125                                   # 1/4" guide rod through the tail
@@ -101,8 +101,8 @@ def arm_holes(plate):
          (U_TAIL, 0, 0.281, "1/4 guide rod")]
     h += [(u, w, 0.201, "#10 standoff") for u, w in STANDOFFS]
     if plate == "B":
-        h.append((C_NOM, 0, 2 * PILOT_R + 0.005, f"gearbox pilot Ø1.125, slot +/-{SLOT} (locates the motor in w, slides for belt tension)"))
-        h += [(C_NOM + du, dw, 0.15, f"#6-32 motor screw, slot +/-{SLOT}") for du, dw in MOTOR_HOLES]
+        h.append((C_NOM, 0, 0.55, f"motor shaft clearance, slot +/-{SLOT} (no pilot boss on the GM9000 flange)"))
+        h += [(C_NOM + du, dw, 0.15, f"#6-32 flat-head motor screw (flange holes are countersunk), slot +/-{SLOT}") for du, dw in MOTOR_HOLES]
     return h
 
 
