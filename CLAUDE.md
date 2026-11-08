@@ -29,7 +29,8 @@ decisions; this file is the working knowledge needed to continue the engineering
   truss plugs, sockets and clamped/threaded blocks stay 6061.
 - Transport: Kia EV6; liftgate opening about 25" tall is the binding limit (every piece ≤ about 23" tall).
 - Finish / design language (Nick, 2026-11-08, "make the brackets beautiful"): every machined block gets R0.2 vertical corners and a 0.06" chamfer on
-  the top/bottom perimeters (`truss_joints.block()`, `rocker.roller_block()`); the roller blocks' track-side face is an arch (R0.9 centred 0.9 below
+  the top/bottom perimeters (`truss_joints.block()`, `rocker.roller_block()`); the socket block's whole top perimeter is instead rounded R0.25
+  (`truss_joints.TOP_ROUND`, a crown; leaves 0.115" of flat between the round and the cup rims, which are 0.365" from each face at the top); the roller blocks' track-side face is an arch (R0.9 centred 0.9 below
   the top) so the roller sits in a saddle rather than a slab. Chamfers are cosmetic: they are in the solids, so the DXFs/G-code already allow for them
   (cut with a 90° V-bit as a last pass, or by hand with a file). Intended finish: glass-bead blast then black Type II anodize for all 6061 blocks,
   plates and arms (a local anodizer batch job; MIC-6/ATP-5 plate anodizes blotchy, so the rings/cell frame are blasted + clear-coated or left as-milled);

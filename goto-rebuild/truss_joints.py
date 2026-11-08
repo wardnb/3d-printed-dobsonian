@@ -109,15 +109,22 @@ def cone(r0, r1, length, p0, d):
     return cq.Workplane("XY").add(cq.Solid.makeCone(r0 * IN, r1 * IN, length * IN, v(*p0), d))
 
 
-def block(center, deg, t, h, r, fillet=0.2):
-    """Box centred at `center`, t along the tangent, h vertical, r along the radius at angle deg."""
+TOP_ROUND = 0.25          # socket block: the whole top perimeter is rounded (crowned), 2026-11-08; cup-rim wall 0.365 at the top
+
+
+def block(center, deg, t, h, r, fillet=0.2, top_round=0.0):
+    """Box centred at `center`, t along the tangent, h vertical, r along the radius at angle deg.
+    fillet = vertical corner radius; top_round = radius on the whole top perimeter (else a 0.06 chamfer)."""
     rd, td = rad_tan(deg)
     pl = cq.Plane(origin=v(*center), xDir=cq.Vector(*td), normal=cq.Vector(*rd))
     w = cq.Workplane(pl).box(t * IN, h * IN, r * IN)
     if fillet:
         w = w.edges("|Y").fillet(fillet * IN)
-        try:                                                   # looks: 0.06 chamfer on the top and bottom perimeters
-            w = w.faces(">Y or <Y").chamfer(0.06 * IN)
+        try:                                                   # looks: crown or 0.06 chamfer on top, 0.06 chamfer below
+            if top_round:
+                w = w.faces(">Y").fillet(top_round * IN).faces("<Y").chamfer(0.06 * IN)
+            else:
+                w = w.faces(">Y or <Y").chamfer(0.06 * IN)
         except Exception:
             pass
     return w
@@ -185,7 +192,7 @@ def socket_block(b):
     bx, bz = base_xz(b)
     rd, td = rad_tan(b)
     centre = (bx, Y_STUB_TOP + BLOCK_H / 2, bz)
-    blk = block(centre, b, BLOCK_T, BLOCK_H, BLOCK_R)
+    blk = block(centre, b, BLOCK_T, BLOCK_H, BLOCK_R, top_round=TOP_ROUND)
     spigot = cyl(STUB_OD / 2 - STUB_WALL - 0.003, SPIGOT_L, (bx, Y_STUB_TOP, bz), (0, -1, 0))
     spigot = spigot.union(cyl(SPIGOT_PILOT_D / 2, SPIGOT_PILOT_H, (bx, Y_STUB_TOP, bz), (0, 1, 0)))
     spigot = spigot.cut(cyl(0.133, SPIGOT_L + 0.2, (bx, Y_STUB_TOP + 0.15, bz), (0, -1, 0)))
