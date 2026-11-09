@@ -68,6 +68,8 @@ P = dict(
     focuser_racked_in=1.405,      # Feather Touch 2" spec
     # Truss (design)
     truss_pole_od=1.24,           # ORDERED 2026-11-03: Rock West 45562, 1.125 ID x 1.24 OD x 72", UD (was 1.25 x 0.062 nominal)
+    truss_pole_id=1.117,          # MEASURED 2026-11-09 (tube 1: 1.10-1.12 around the bore, mostly 1.115-1.119; spec 1.125). Re-measure all 6 ends ≥ 1" deep
+    plug_shank_d=1.100,           # plug shank: sized to the MINIMUM bore reading so it enters everywhere; 0-0.010" radial epoxy gap, the cone aligns
     truss_top_radius=9.6,
     truss_bottom_radius=10.68,    # narrow-pair layout only (historical); the stubs use mcage_tube_radii
     mcage_tube_od=1.772,          # measured 2026-10-19 (calipers): DobStuff struts 45 mm OD x 40 mm ID, ring holes 45 mm

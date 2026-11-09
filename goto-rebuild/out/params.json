@@ -37,6 +37,8 @@
     "board_inner_from_axis": 8.75,
     "focuser_racked_in": 1.405,
     "truss_pole_od": 1.24,
+    "truss_pole_id": 1.117,
+    "plug_shank_d": 1.1,
     "truss_top_radius": 9.6,
     "truss_bottom_radius": 10.68,
     "mcage_tube_od": 1.772,

@@ -33,7 +33,8 @@ Y_STUB_TOP = F["y_mcage_top"] + PR["stub_proud"]
 Y_NODE = Y_STUB_TOP + PR.get("socket_node_above_stub", 0.6)   # cone apex (FE node) height
 NODE_OFF = 0.8                                 # the two cups at a socket sit +/-0.8" tangentially
 POLE_OD, POLE_WALL = PR["truss_pole_od"], 0.0575  # Rock West 45562: 1.125 ID x 1.24 OD (ordered 2026-11-03); measure before cutting plugs
-BORE = POLE_OD - 2 * POLE_WALL
+BORE = PR.get("truss_pole_id", POLE_OD - 2 * POLE_WALL)   # measured tube ID (mean) when known: dob_model P["truss_pole_id"]
+SHANK_D = PR.get("plug_shank_d", BORE - 0.006)             # plug shank: set from the MINIMUM measured bore (P["plug_shank_d"]), else bore - 0.006
 STUB_OD, STUB_WALL = PR["mcage_tube_od"], PR["mcage_tube_wall"]   # 45 x 2.5 mm DobStuff strut (measured)
 HALF = math.radians(30)                        # 60 deg included cone
 NOSE_D = 0.40
@@ -179,7 +180,7 @@ def pole_parts(A, B, full_pole=True):
     # cone plug at the base: nose at S_NOSE from the apex point B, growing toward the pole
     plug = cone(NOSE_D / 2, POLE_OD / 2, S_SHOULDER - S_NOSE, along(B, d_up, S_NOSE), d_up)
     plug = plug.union(cyl(POLE_OD / 2, SHOULDER_L, along(B, d_up, S_SHOULDER), d_up))
-    plug = plug.union(cyl(BORE / 2 - 0.003, SHANK_L, along(B, d_up, S_SHOULDER + SHOULDER_L), d_up))
+    plug = plug.union(cyl(SHANK_D / 2, SHANK_L, along(B, d_up, S_SHOULDER + SHOULDER_L), d_up))
     tube_start = S_SHOULDER + SHOULDER_L
     tube_len = (L + TUBE_PAST_APEX - tube_start) if full_pole else 4.0
     tube = cyl(POLE_OD / 2, tube_len, along(B, d_up, tube_start), d_up)
@@ -410,7 +411,7 @@ if __name__ == "__main__":
     L = math.dist(*node_points(30, 1))
     lens = {f'{t}->{(t + 60 * s) % 360}': round(math.dist(*node_points(t, s)), 3) for t in TOPS for s in (-1, 1)}
     print(json.dumps(dict(pole_node_to_node_in=round(L, 2), pole_lengths_in=lens, tube_len_in=round(L + TUBE_PAST_APEX - S_SHOULDER - SHOULDER_L, 2),
-                          plug_nose_to_shoulder_in=round(S_SHOULDER - S_NOSE, 3), shank_od_in=round(BORE - 0.006, 3),
+                          plug_nose_to_shoulder_in=round(S_SHOULDER - S_NOSE, 3), shank_od_in=round(SHANK_D, 3),
                           cup_depth_in=round(S_SHOULDER, 3), node_offset_in=NODE_OFF,
                           spigot_od_in=round(STUB_OD - 2 * STUB_WALL - 0.006, 3), stub_od_in=STUB_OD,
                           board_pin_len_in={b: board_pin(b)[1] for b in (90, 210, 330)}), indent=1))
