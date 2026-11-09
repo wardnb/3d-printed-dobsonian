@@ -21,9 +21,9 @@ Firmware Notes. Download list: https://www.siderealtechnology.com (Documentation
 - Scope-encoder resolution: Setup Manual says "as much as 500,000" counts per rev before ticks are missed at fast slews;
   the Quick Start says ~200,000+ tick encoders use Tick Management mode, lower ones Precise/Polite with the supervisory
   threshold at ~2.5× (SiTechExe help: 1.5–2×) the encoder resolution. The Astro Devices 311,296-step kit fits this;
-  a 1.2 M count tape does not unless SiTech confirms a higher Servo II limit. Plan (2026-11-08, `drive_bringup.md` §5a):
-  Astro Devices ring at the az pivot (311,296), RLS LM10 on 2 mm tape at 10 µm on the alt D rim (~223 k). Nexus DSC Pro
-  RJ45 for testing the Astro Devices sensors: 1 B-az, 2 +5V, 3 A-az, 4 GND, 5 B-alt, 6 +5V, 7 A-alt, 8 GND (TTL, 5 V).
+  a 1.2 M count tape does not. **Decision 2026-11-08 (`drive_bringup.md` §5a): no alt scope encoder (plate solving
+  gives position); az = the owned Astro Devices 8192-step shaft encoder on the pivot, Precise/Polite mode; a home
+  switch at the zenith park on the HOME input. The count-rate question is moot.**
 
 ## Our numbers (motor encoder 500 CPR × 4 = 2000; gearbox TRUE ratio 19.658119658:1, not 19.7)
 

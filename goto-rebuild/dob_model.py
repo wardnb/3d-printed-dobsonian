@@ -345,7 +345,7 @@ if G["kind"] == "rollers":        # 1/16 x 5/8 6061 roller track strips on both 
 else:
     tube.add(rim(-bearing_x, G["bearing_t"], R + 0.06, R), name="ebony_plain", color=EBONY)
     tube.add(rim(_xi + sum(_b["ebony"]) / 2, _b["ebony"][1] - _b["ebony"][0], R + 0.06, R), name="ebony_drive", color=EBONY)
-tube.add(rim(_xi + sum(_b["tape"]) / 2, _b["tape"][1] - _b["tape"][0], R + 0.04, R - 0.02), name="encoder_strip_alt", color=STRIP)
+# (no alt encoder tape since 2026-11-08: plate solving gives position; the "tape" rim band is spare)
 tube.add(rim(_xi + sum(_b["belt"]) / 2, _b["belt"][1] - _b["belt"][0], R + 0.09, R), name="alt_belt_on_rim", color=BLACK)   # GT2 belt, 9 mm, teeth out
 
 # upper cage: detailed parts from upper_cage.py (machining v1)

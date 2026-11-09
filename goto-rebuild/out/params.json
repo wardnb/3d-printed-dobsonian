@@ -81,16 +81,16 @@
   ],
   "checks": {
     "focal_length_in": 62.4,
-    "z_alt_axis_in": 26.73,
+    "z_alt_axis_in": 27.48,
     "lower_tube_swing_radius_in": 22.16,
     "secondary_y_in": 37.44,
     "truss_pole_length_in": 36.69,
     "truss_zigzag_pole_length_in": 37.69,
-    "eyepiece_height_zenith_in": 64.2,
+    "eyepiece_height_zenith_in": 64.9,
     "nested_transport_height_in": 13.5,
     "rocker_wall_height_at_pads_in": 10.54,
     "rocker_wall_height_horns_in": 11.96,
-    "rocker_overall_height_in": 16.03,
+    "rocker_overall_height_in": 16.78,
     "rocker_inside_width_in": 22.64,
     "rocker_box_clearance_in": 0.48,
     "rocker_floor_in": [
@@ -193,9 +193,9 @@
     "box_clearance": 0.48049999999999926,
     "inside_w": 22.639,
     "arm_t": 0.75,
-    "foot_h": 0.75,
-    "ring_z0": 1.5,
-    "ground_top": 2.209,
+    "foot_h": 1.5,
+    "ring_z0": 2.25,
+    "ground_top": 2.959,
     "az_pad_t": 0.15,
     "roller_od": 1.375,
     "roller_w": 0.344,
@@ -214,9 +214,9 @@
     "tab_clear": 0.05,
     "az_blk_below_floor": 0.791,
     "az_stack": 1.1535,
-    "floor_z0": 3.3625,
-    "floor_top": 4.0714999999999995,
-    "z_alt": 26.732506294841397,
+    "floor_z0": 4.1125,
+    "floor_top": 4.8214999999999995,
+    "z_alt": 27.482506294841397,
     "h_alt": 22.661006294841396,
     "arc_r": 14.4,
     "lam_t": 0.06,
@@ -257,7 +257,7 @@
     ],
     "pivot_d": 0.375,
     "pinion_pd": 0.5,
-    "cap_z": 12.392506294841397,
+    "cap_z": 13.142506294841397,
     "alt_head_angle": -50,
     "lateral_stop_angle": 37,
     "az_y": 6.0,
@@ -268,7 +268,8 @@
     ],
     "az_ratio": 120.48,
     "alt_ratio": 112.48,
-    "rocker_top": 16.031220807966918
+    "rocker_top": 16.781220807966918,
+    "az_encoder_ground_clearance": 0.42000000000000015
   },
   "rocker_holes": {
     "drive": [
@@ -295,14 +296,6 @@
       [
         2.3186655297302727,
         2.2809999999999997
-      ],
-      [
-        -11.031039980913283,
-        6.379860403983459
-      ],
-      [
-        -11.031039980913283,
-        7.37986040398346
       ]
     ],
     "plain": [
@@ -325,7 +318,7 @@
     ]
   },
   "frame": {
-    "z_alt": 26.732506294841397,
+    "z_alt": 27.482506294841397,
     "y_sec": 37.44,
     "y_mirror": -12.46,
     "y_ring_hi": 41.44,

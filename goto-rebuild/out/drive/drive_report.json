@@ -103,25 +103,25 @@
    2.862,
    0.815,
    0.15,
-   "#6-32 flat-head motor screw (flange holes are countersunk), slot +/-0.1"
+   "#6-32 motor screw (plain \u00d80.15 flange holes; the countersunk set holds the gearbox), slot +/-0.1"
   ],
   [
    2.862,
    -0.815,
    0.15,
-   "#6-32 flat-head motor screw (flange holes are countersunk), slot +/-0.1"
+   "#6-32 motor screw (plain \u00d80.15 flange holes; the countersunk set holds the gearbox), slot +/-0.1"
   ],
   [
    1.232,
    0.815,
    0.15,
-   "#6-32 flat-head motor screw (flange holes are countersunk), slot +/-0.1"
+   "#6-32 motor screw (plain \u00d80.15 flange holes; the countersunk set holds the gearbox), slot +/-0.1"
   ],
   [
    1.232,
    -0.815,
    0.15,
-   "#6-32 flat-head motor screw (flange holes are countersunk), slot +/-0.1"
+   "#6-32 motor screw (plain \u00d80.15 flange holes; the countersunk set holds the gearbox), slot +/-0.1"
   ]
  ],
  "az_module_clears_ground_board_360": true,

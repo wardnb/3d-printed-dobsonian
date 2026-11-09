@@ -63,7 +63,7 @@ def derive(P, R, swing, panel_x):
     rollers = G["kind"] == "rollers"
     # drive-side rim bands, inboard -> outboard (x from the inner face); the running band is the roller track
     # (1/16 x 5/8 6061 strip bonded to the rim) or the Ebony Star laminate
-    bands = ([("bare", 0.16), ("belt", 0.36), ("track", 0.63), ("tape", 0.26)] if rollers
+    bands = ([("bare", 0.16), ("belt", 0.36), ("track", 0.63), ("tape", 0.26)] if rollers      # "tape" = spare band since 2026-11-08 (no alt encoder)
              else [("bare", 0.15), ("belt", 0.36), ("ebony", 0.64), ("tape", 0.26)])
     x = 0.0
     G["bands"] = {}
@@ -82,7 +82,7 @@ def derive(P, R, swing, panel_x):
     G["inside_w"] = 2 * G["wall_in"]
     # --- heights
     G["arm_t"] = 0.75                                              # ground board arms + hub (3/4 ply)
-    G["foot_h"] = 0.75
+    G["foot_h"] = 1.5                                              # was 0.75; 1.5 since 2026-11-08 so the az encoder fits under the hub (levelling feet)
     G["ring_z0"] = G["foot_h"] + G["arm_t"]                        # ground ring bottom, 1.5
     G["ground_top"] = G["ring_z0"] + ply                           # ring top (az running surface), 2.21
     G["az_pad_t"] = 0.15
@@ -141,7 +141,7 @@ def derive(P, R, swing, panel_x):
     # --- drives
     G["pinion_pd"] = 0.5
     G["cap_z"] = G["z_alt"] - R - 0.09 - G["pinion_pd"] / 2        # alt pinion axis, under the rim at theta = 0
-    G["alt_head_angle"] = -50                                      # alt tape read head on the back horn
+    G["alt_head_angle"] = -50                                      # (unused since 2026-11-08: no alt tape head)
     G["lateral_stop_angle"] = G["pad_angle"] + 7                   # PTFE stop just ahead of the front pad
     G["az_y"] = 6.0                                                # az pinion station (drive.py): the arm's tail stays outboard of the drive wall
     G["az_pinion_r"] = G["ring_od"] / 2 + 0.09 + G["pinion_pd"] / 2
@@ -243,9 +243,6 @@ def wall_flat(G, drive, thick):
     if drive:
         import drive
         holes += [(y_, z_ - G["floor_top"]) for y_, z_ in drive.wall_holes(G)]       # alt base plate + az bracket leg
-        yh = G["arc_r"] * math.sin(math.radians(G["alt_head_angle"]))
-        hh = (G["h_horn"] + G["end_h"]) / 2
-        holes += [(yh, hh - 1.6), (yh, hh - 0.6)]                                   # alt read head bracket
     else:
         holes += [(yb, hz) for yb in (4.5, 9.5) for hz in (1.5, 4.5)]               # electronics box (plain wall)
     for y, h in holes:
@@ -391,11 +388,9 @@ def build(G):
         S["az_ptfe"] = (pads, "PTFE")
         S["pivot_disc"] = (cyl_z(G["ground_top"], G["az_pad_t"], 1.5).cut(cyl_z(0, 3, G["pivot_d"] / 2)), "ALU")
     S["pivot_stud"] = (cyl_z(G["foot_h"], ft - G["foot_h"] + 0.35, G["pivot_d"] / 2), "ALU")   # low nut: the box passes 0.5 over the floor
-    # belt (upper 0.36 of the ring rim, teeth out) and magnetic tape (lower 0.26) on the ground ring
+    # belt (upper 0.36 of the ring rim, teeth out) on the ground ring; no az tape since 2026-11-08 (shaft encoder at the pivot)
     S["az_belt_on_rim"] = (cyl_z(G["ground_top"] - 0.36, 0.36, G["ring_od"] / 2 + 0.09)
                            .cut(cyl_z(G["ground_top"] - 0.4, 0.5, G["ring_od"] / 2)), "BLACK")
-    S["encoder_strip_az"] = (cyl_z(G["ring_z0"], 0.26, G["ring_od"] / 2 + 0.03)
-                             .cut(cyl_z(G["ring_z0"] - 0.1, 0.5, G["ring_od"] / 2 - 0.05)), "STRIP")
     # ---- rocker
     floor = box(0, 0, G["floor_z0"] + ply / 2, G["floor_w"], G["floor_l"], ply).cut(cyl_z(0, 5, G["pivot_d"] / 2 + 0.02))
     if rollers:
@@ -444,31 +439,19 @@ def build(G):
     for _ax in ("alt", "az"):
         S.update(drive.module(G, _ax))
     xi = G["bearing_x_in"]
-    # alt tape read head on the back horn, over the tape band
-    ha = math.radians(G["alt_head_angle"])
-    yh, zh = (R + 0.4) * math.sin(ha), za - (R + 0.4) * math.cos(ha)
-    tb = G["bands"]["tape"]
-    hx_ = xi + (tb[0] + tb[1]) / 2 + 0.1
-    head = box(hx_, yh, zh, 0.45, 0.8, 0.5)
-    y_br = G["arc_r"] * math.sin(ha)
-    h_br = (G["h_horn"] + G["end_h"]) / 2
-    z_lo = ft + h_br - 2.2
-    # bracket: 1/4" strip up the wall's outer face, then an arm across the rim to the head (2026-11-08: the head used to float)
-    bracket = box(G["wall_out"] + 0.125, y_br, (z_lo + zh - 0.25) / 2, 0.25, 1.2, zh - 0.25 - z_lo)
-    arm = box((hx_ - 0.225 + G["wall_out"] + 0.25) / 2, yh, zh - 0.125, (G["wall_out"] + 0.25) - (hx_ - 0.225), 0.8, 0.25)
-    S["alt_read_head"] = (head.union(bracket).union(arm), "ELEC")
-    px, py = G["az_pinion_xy"]
-    # az tape read head beside the pinion, on the lower band
-    phi = math.degrees(math.atan2(py, px)) + 7
-    hx, hy = polar(G["ring_od"] / 2 + 0.3, phi)
-    head_az = box(hx, hy, G["ring_z0"] + 0.13, 0.5, 0.8, 0.45)
-    # L bracket from under the rocker floor out past the ring rim, then down to the head (2026-11-08)
-    z_top = G["ring_z0"] + 0.13 + 0.225
-    rx = hx + 0.35
-    leg = box(rx, hy, (z_top + G["floor_z0"]) / 2, 0.25, 0.8, G["floor_z0"] - z_top)
-    x_in = G["wall_out"] - 1.0
-    arm_az = box((x_in + rx + 0.125) / 2, hy, G["floor_z0"] - 0.125, rx + 0.125 - x_in, 0.8, 0.25)
-    S["az_read_head"] = (head_az.union(leg).union(arm_az), "ELEC")
+    # scope encoders (2026-11-08): NO tape heads. Plate solving (Waypoint) gives absolute position; the only scope
+    # encoder is the owned Astro Devices 8192-step shaft encoder on the az pivot, position-only (hand pushes, slip).
+    # Pivot inverted for it: FR6 in the ground hub, the 3/8 shoulder bolt turns with the rocker, its tail coupled to the
+    # encoder (Ø1.1 x 1.0 body ASSUMED, 1/4 shaft) sitting in a pocket under the hub; body hangs 0.4 below the hub,
+    # 0.35 above the ground. Encoder cable stays on the ground side.
+    ENC_BODY, ENC_D, COUP_L, POCKET = 0.8, 1.1, 0.6, 0.43            # ASSUMED: measure the Astro Devices az encoder
+    enc_top = G["foot_h"] + G["arm_t"] - POCKET                      # coupling in a Ø1.0 pocket in the hub's underside
+    S["az_coupling"] = (cyl_z(enc_top - COUP_L, COUP_L, 0.375), "ALU")   # 3/8 -> 1/4 flexible coupling
+    S["az_encoder"] = (cyl_z(enc_top - COUP_L - ENC_BODY, ENC_BODY, ENC_D / 2), "ELEC")
+    S["az_encoder_plate"] = (box(0, 0, enc_top - COUP_L - ENC_BODY + 0.5 * ENC_BODY, 2.6, 2.6, 0.0625)
+                             .cut(cyl_z(0, 9, ENC_D / 2 + 0.05)), "ALU")   # 1/16 plate on two standoffs to the hub (drawn as a plate)
+    G["az_encoder_ground_clearance"] = enc_top - COUP_L - ENC_BODY
+    assert G["az_encoder_ground_clearance"] >= 0.2, "az encoder would touch the ground"
     # ---- electronics box on the plain wall, front
     S["electronics_box_sitech"] = (box(-(G["wall_out"] + 1.3), 7.0, ft + 3.2, 2.4, 8.0, 5.0), "ELEC")
 

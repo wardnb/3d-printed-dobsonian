@@ -148,14 +148,6 @@
       [
         2.32,
         2.28
-      ],
-      [
-        -11.03,
-        6.38
-      ],
-      [
-        -11.03,
-        7.38
       ]
     ],
     "plain": [
@@ -189,7 +181,7 @@
     "y_horn": 9.64,
     "end_h": 4.0,
     "end_h_max": 4.41,
-    "rocker_top": 16.03,
+    "rocker_top": 16.78,
     "chord_e": 3.62,
     "alt_min": 15,
     "pad_angle": 30,
@@ -197,7 +189,7 @@
     "ring_id": 23.0,
     "foot_r": 14.0,
     "az_pad_r": 12.75,
-    "cap_z": 12.39
+    "cap_z": 13.14
   },
   "ev6_ok_under_23in": true,
   "bearing_lb_each": 6.55,
@@ -306,25 +298,25 @@
         2.862,
         0.815,
         0.15,
-        "#6-32 flat-head motor screw (flange holes are countersunk), slot +/-0.1"
+        "#6-32 motor screw (plain \u00d80.15 flange holes; the countersunk set holds the gearbox), slot +/-0.1"
       ],
       [
         2.862,
         -0.815,
         0.15,
-        "#6-32 flat-head motor screw (flange holes are countersunk), slot +/-0.1"
+        "#6-32 motor screw (plain \u00d80.15 flange holes; the countersunk set holds the gearbox), slot +/-0.1"
       ],
       [
         1.232,
         0.815,
         0.15,
-        "#6-32 flat-head motor screw (flange holes are countersunk), slot +/-0.1"
+        "#6-32 motor screw (plain \u00d80.15 flange holes; the countersunk set holds the gearbox), slot +/-0.1"
       ],
       [
         1.232,
         -0.815,
         0.15,
-        "#6-32 flat-head motor screw (flange holes are countersunk), slot +/-0.1"
+        "#6-32 motor screw (plain \u00d80.15 flange holes; the countersunk set holds the gearbox), slot +/-0.1"
       ]
     ],
     "az_module_clears_ground_board_360": true,

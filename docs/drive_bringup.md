@@ -127,7 +127,7 @@ This is the test that matters:
 **Stage 3 — az module** is the same module on the same test rim (the ring is only a bigger radius); nothing new to
 prove except the vertical motor orientation.
 
-**Stage 4 — tape encoders** once §5 is settled; they are not needed for stages 0–3.
+**Stage 4 — az shaft encoder** (the owned Astro Devices 8192-step unit) on the SiTech AZM S.E. inputs: set 8192 ticks, one turn by hand = ±8192. No alt scope encoder (decision 2026-11-08, §5a).
 
 Parts to add to the bench order beyond what `BUY` already lists: two SiTech motor cables (modular + barrel ends; or
 flat 8-conductor + 2.1 mm barrel plugs to make them), 12 V bench supply ≥ 5 A if none on hand, USB-B cable, 3/8" bolt +
@@ -148,41 +148,39 @@ nylon washers for the test-rim pivot.
 3. **Servo II connector pinouts** (motor, encoder, scope encoders, handpad): from the manual, written into this file
    when known.
 
-### 5a. Scope-encoder plan (2026-11-08) and the Astro Devices sensor test
+### 5a. Scope encoders: decision 2026-11-08 — none on alt, the owned 8192 shaft encoder on az, plate solving for position
 
-**What Nick owns (from Gmail, found 2026-11-08):** EyepiecesEtc order 5746, 2022-01-08, code 9409988 "NEXUS DSC ENCODER KIT
-FOR GSO DOBS", $299.95. Per Astro Devices' GSO installation guide: azimuth = 8192-step shaft encoder on a tangent arm (10 mA);
-altitude = magnetic-tape reader, **716,000 steps/rev on the GSO bearing** (20 mA), tape ~180° supplied (90° needed), reader
-gap 0.4 mm. Serge Antonov (Astro Devices, Jan 2022 thread "Magnetic tape") confirmed the tape and readers are Renishaw and
-sells extra tape at US$50/m via their LA distributor. NOT the 311,296-step ring kit assumed earlier. 716,000 steps on a
-~9" GSO bearing is ~1 µm per step (to MEASURE: plug into the Nexus, set 716000, slide the reader 100 mm along the tape,
-expect ~100,000; also read what is printed on the reader PCB). On our 28" D that reader would give ~2.2 M steps/rev and
-~75 kHz at 12°/s: over the Nexus's 999,999 and the SiTech's ~500 k, so it cannot go on the D with either controller.
+Every encoder on this mount is incremental (motor encoders, any tape head, a shaft encoder): none "knows" position; the
+SiTech learns it from an Init on a star or from a Waypoint plate solve, then dead-reckons on counts. A scope encoder
+therefore only adds (a) position kept through a hand push with the pinion lifted and (b) belt-slip detection. Both are
+also covered by re-solving after a push, which takes seconds. So:
 
-Plan: alt = a bought RLS LM10 head at 10 µm (below). Az = either the kit's 8192 shaft encoder at the pivot (2.6'/step,
-position-only, Precise/Polite mode) or the kit's tape reader on a pivot hub sized for ~716 k steps per turn (~9" dia at
-1 µm: 1.8"/step, 24 kHz at 12°/s, marginal under SiTech's limits; needs ~0.4 m more tape). Decide after the step-size
-measurement. (Earlier text below about an "Astro Devices ring" at the az pivot is superseded.) **Alt = a
-separate RLS LM10 read head on magnetic tape bonded to the D rim** (2 mm pole pitch, 10 µm interpolation: at R 14" that
-is 223 k counts/rev = 5.8"/count and 7.4 kHz at 12°/s, inside the "about 500,000" and 25 kHz figures). The D is too big
-and too open for a ring at the axis; a 14" radius tape is only a strip. Position-only duty (Tick Management mode) does
-not need better than ~5".
+- **Alt: no scope encoder.** Nothing on the D rim but the roller track and belt (the 0.26" "tape" band is spare).
+  The tape idea (RLS LM10 at 10 µm, 223 k counts) is dropped: $250, a bonded track, a 0.3–0.8 mm gap to hold, and it
+  only saved a plate solve. Gravity keeps the alt train loaded one way, so a belt skip is unlikely and shows at once.
+- **Az: the owned Astro Devices 8192-step shaft encoder** (from the GSO kit, below) on the pivot, 2.6'/step,
+  position-only (Precise/Polite mode in SiTechExe, not Tick Management). Pivot inverted for it (`rocker.py`): FR6 in the
+  ground hub, the 3/8 shoulder bolt fixed to the rocker floor and turning with it, its tail through a 0.43" pocket in
+  the hub's underside into a 3/8→1/4 flexible coupling and the encoder body hanging under the hub (0.42" above the
+  ground). Feet raised 0.75 → 1.5" to make the room (levelling feet; rocker 16.78" overall, eyepiece 64.9"). Encoder
+  body 1.1 × 0.8" and coupling 0.6" are ASSUMED: measure the unit. Fallback if it is taller: encoder on the hub top
+  beside the pivot with a 1:1 GT2 belt from a pulley on the bolt, in the 1.15" gap under the floor.
+- **Home switch** at the zenith parking position on the Servo II HOME input: from park the counts are already right, so
+  the first slew lands within the model error before any star or solve. Drawn with the brake and parking lock.
 
-Astro Devices sensor output format is not published. Test it before committing (either controller works as a tester):
+**What Nick owns (from Gmail):** EyepiecesEtc order 5746, 2022-01-08, code 9409988 "NEXUS DSC ENCODER KIT FOR GSO
+DOBS", $299.95: azimuth = 8192-step shaft encoder on a tangent arm (10 mA); altitude = Renishaw magnetic-tape reader,
+716,000 steps/rev on the GSO bearing (20 mA), tape ~180° supplied, 0.4 mm gap (Astro Devices GSO installation guide;
+Serge Antonov, Jan 2022 thread "Magnetic tape": tape and readers are Renishaw, extra tape US$50/m). The tape reader is
+~1 µm/step and would read ~2.2 M/rev on our 28" D, over both controllers' limits, so it is not used even if found.
 
-- **Nexus DSC Pro encoder port (RJ45), from the Nexus DSC Pro manual:** pin 1 B-az, 2 +5 V, 3 A-az, 4 GND, 5 B-alt,
-  6 +5 V, 7 A-alt, 8 GND. TTL quadrature, 5 V supply, up to 999,999 steps. The Astro Devices kit ships wired to this
-  port, so the sensors are TTL quadrature at 5 V, which is what the SiTech's S.E. inputs expect.
-- Before plugging into the SiTech: with the kit's cable unplugged, meter from the RJ45 pins to the sensor-end pins to
-  confirm which conductor is +5 V (pins 2/6) and GND (4/8) at each sensor: a supply swap destroys the sensor.
-- On the SiTech: one sensor's A → AZM/RA S.E. A, B → S.E. B, +5 V and GND to that block's +5V/GND. In ServoConfig set
-  the scope-encoder ticks to 311296 on that axis, turn the ring by hand one full turn and read Scope Encoder Location on
-  the main screen (or `YZ` in the terminal): expect ±311,296 ± a few counts. A count that only changes in one direction
-  or jumps in steps = A/B wiring or a bad sensor gap.
-- Or on the Nexus: plug the kit in as delivered, set 311296 steps, and compare one turn against the Nexus's encoder
-  readout; that only proves the sensor, not SiTech compatibility, so finish on the SiTech.
+Bench test of the az encoder on the SiTech: A → AZM/RA S.E. A, B → S.E. B, +5 V and GND to that block (meter the
+cable first: a supply swap destroys the encoder; the Nexus DSC Pro RJ45 it was wired for is 1 B-az, 2 +5 V, 3 A-az,
+4 GND, 5 B-alt, 6 +5 V, 7 A-alt, 8 GND, TTL 5 V). Set 8192 scope-encoder ticks on az, one turn by hand → ±8192 on
+"Scope Encoder Location" (`YZ` in the terminal). The SiTech count-rate question to sales@ is now moot (8192 × 12°/s
+= 273 Hz); the support@ address bounced.
 
-Sources: Nexus DSC Pro User Manual (astrodevices.com), Astro Devices GSO Encoder Installation guide and M2C/HD guides, Gmail (EyepiecesEtc order 5746; Astro Devices thread Jan 2022),
+Sources: Nexus DSC Pro User Manual (astrodevices.com), Astro Devices GSO Encoder Installation guide, Gmail (EyepiecesEtc order 5746; Astro Devices thread Jan 2022),
 SiTech Setup Manual, RLS LM10 datasheet.
 
 Sources: SiTech Servo I manual (`ServoDoc.pdf`, Sidereal Technology), Hubble Optics UL SiTech GOTO Quick Start R1.6
