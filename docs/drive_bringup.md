@@ -23,19 +23,20 @@ output, ~6°/s slew) with full torque authority at our loads; that is enough to 
 
 ## 2. SiTech numbers (from the model; confirm with ServoConfig's tick determination)
 
-Motor encoder 500 CPR × 4 (quadrature) = **2,000 counts per motor rev**; gearbox 19.7:1 → **39,400 counts per gearbox
-output rev**.
+Motor encoder 500 CPR × 4 (quadrature) = **2,000 counts per motor rev**; gearbox nominal 19.7:1 but the true tooth ratio is
+**19.658119658:1** (SiTech Setup Manual §2.3.4, GM9400 table: "19.7:1 … 19.658119658:1"; found 2026-11-08 evening, 0.21 % off
+nominal = 11′ over a 90° slew if ignored) → **39,316.2 counts per gearbox output rev**.
 
 | | Alt (`alt_ratio` 112.48 incl. 2:1) | Az (`az_ratio` 120.48 incl. 2:1) |
 | --- | --- | --- |
 | Rim radius / pinion pitch radius | (14.0 + 0.06) / 0.25 = 56.24 | (15.0 + 0.06) / 0.25 = 60.24 |
-| Ticks per axis rev, 2:1 belt stage | 39,400 × 112.48 = **4,431,712** | 39,400 × 120.48 = **4,746,912** |
-| Ticks per axis rev, 3:1 | 6,647,600 | 7,120,400 |
-| Resolution (2:1) | 0.29"/tick | 0.27"/tick |
+| Ticks per axis rev, 2:1 belt stage | 39,316.2 × 112.48 = **4,422,291** | 39,316.2 × 120.48 = **4,736,821** |
+| Ticks per axis rev, 3:1 | 6,633,400 | 7,105,200 |
+| Resolution (2:1) | 0.293"/tick (3.41 ticks/") | 0.274"/tick (3.66 ticks/") |
 | Motor-encoder count rate at 12°/s slew (2:1) | 148 kHz | 158 kHz |
 | Raw speed for 12°/s (ticks × dps × 0.09321) | 4.96 M | 5.31 M |
 
-Cross-checked 2026-11-08 with SiTech's online Drive Calculator (5600 rpm, 2000 quadrature counts, 19.7, 2, 56.24/60.24): 4,431,712 / 4,746,912 ticks, 3.420 / 3.663 ticks per arcsec, max slew 15.2 / 14.2°/s no-load, 51 / 55 ticks per second at sidereal.
+Cross-checked 2026-11-08 with SiTech's online Drive Calculator using the nominal 19.7 (4,431,712 / 4,746,912); with the exact 19.658119658 the calculator gives the values in the table. Enter the gearbox as the fraction 2300/117 if the calculator or ServoConfig takes fractions (2300/117 = 19.65812). The stage-2 test rim (R 12.19 + 0.06, 2:1): 39,316.2 × 98.0 = 3,853,000.
 
 SiTech's own guidance (Servo I manual): 4–10 million ticks per rev is the good range, raw speed below ~6 M, motor
 encoder inputs up to 248 kHz. Both ratios fit; 2:1 sits at the low end of the tick range, 3:1 in the middle. The belt
@@ -98,8 +99,8 @@ were still in the terminals: check whether the matching motor cables came with t
 12.2 V bench supply, CPU 80 °F. GM9213 on the AZM/RA block (= protocol axis **Y**; ALT/DEC is **X**, per ServoConfig's
 "Azimuth/RA YBits / Altitude/Dec XBits"): counts up with RIGHT, no inversion bits needed, holds position at error ±1 with
 0.00–0.01 A, **0.03 A at 2°/s no-load**, even running; `Y<pos+39400>` from the Terminal Window turned the output shaft
-exactly one revolution (confirms 500 CPR × 4 × 19.7). Ticks per rev entered: az 4,746,912, alt 4,431,712 (type without
-commas: the field keeps only the first digit otherwise); slew 2 DPS, pan 3 MPS, guide 60 SPS; PID 15000/1500/4000,
+one revolution to the eye (39,316 is exact; the 84-tick difference is 0.8° of shaft, below what a pen mark shows). Ticks per rev entered: az 4,746,912, alt 4,431,712 (nominal 19.7 — **to be corrected to 4,736,821 / 4,422,291** for the
+true 19.658:1 gearbox; type without commas: the field keeps only the first digit otherwise); slew 2 DPS, pan 3 MPS, guide 60 SPS; PID 15000/1500/4000,
 accel 1000, error limit 12,800, current limit 0.70 A, integral limit 22,000. ServoConfig's on-screen hand pad buttons
 latch over USB: All-Stop or a second click stops them; commanding a channel with no motor (`X…` here) trips it to
 MANUAL, cleared by Reset. GM9413 on the ALT/DEC block (axis X): board soldered, `X39400` = one output turn, no inversion needed, ~0.16 A start-up peak then the same as the other motor (at rest holding: az 0.04 A / alt 0.06 A, error 0, output ~40 = integrator bias against gearbox stiction, normal). The two motors are equivalent; assignment stays GM9413 alt / GM9213 az for cable reach. **Stage 0 complete 2026-11-08.**
