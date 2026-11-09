@@ -171,8 +171,13 @@ also covered by re-solving after a push, which takes seconds. So:
 **What Nick owns (from Gmail):** EyepiecesEtc order 5746, 2022-01-08, code 9409988 "NEXUS DSC ENCODER KIT FOR GSO
 DOBS", $299.95: azimuth = 8192-step shaft encoder on a tangent arm (10 mA); altitude = Renishaw magnetic-tape reader,
 716,000 steps/rev on the GSO bearing (20 mA), tape ~180° supplied, 0.4 mm gap (Astro Devices GSO installation guide;
-Serge Antonov, Jan 2022 thread "Magnetic tape": tape and readers are Renishaw, extra tape US$50/m). The tape reader is
-~1 µm/step and would read ~2.2 M/rev on our 28" D, over both controllers' limits, so it is not used even if found.
+Serge Antonov, Jan 2022 thread "Magnetic tape": tape and readers are Renishaw, extra tape US$50/m). The tape reader
+(photographed 2026-11-08: Astro Devices "HD SENSOR" carrier, 8P8C jack J1, two slotted mounting holes) carries an
+**RLS RLC2HD** miniature PCB readhead (2 mm pole, TTL A/B/Z, 5 V, < 20 mA; resolution fixed by part code = 2,000 µm ÷
+interpolation: 2D0 = 1 µm, 1D0 = 2 µm, D20 = 10 µm). The 716,000 steps on a GSO bearing put ours at 1–2 µm, i.e.
+1.1–2.2 M steps/rev on our 28" D, over both controllers' limits, so it is not used. If an alt scope encoder is ever
+wanted after all, an RLC2HD-D20 (10 µm) on RLS MS tape at R 14" gives 223 k counts (5.8"/step, 7.4 kHz at 12°/s) for
+~$100, not the $250 LM10 quoted earlier.
 
 Bench test of the az encoder on the SiTech: A → AZM/RA S.E. A, B → S.E. B, +5 V and GND to that block (meter the
 cable first: a supply swap destroys the encoder; the Nexus DSC Pro RJ45 it was wired for is 1 B-az, 2 +5 V, 3 A-az,
