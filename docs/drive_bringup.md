@@ -150,9 +150,19 @@ nylon washers for the test-rim pivot.
 
 ### 5a. Scope-encoder plan (2026-11-08) and the Astro Devices sensor test
 
-Plan: **az = the owned Astro Devices HD ring** (the M2C/"HD" guide sets 311,296 steps in the DSC, 20 mA per sensor) on a
-hub at the rocker pivot, where it is easy to mount: the ring is a Renishaw/RLS magnetic multi-pole ring and the sensor an
-RLS read head (confirm the part numbers printed on the sensor and ring; the installation guide names neither). **Alt = a
+**What Nick owns (from Gmail, found 2026-11-08):** EyepiecesEtc order 5746, 2022-01-08, code 9409988 "NEXUS DSC ENCODER KIT
+FOR GSO DOBS", $299.95. Per Astro Devices' GSO installation guide: azimuth = 8192-step shaft encoder on a tangent arm (10 mA);
+altitude = magnetic-tape reader, **716,000 steps/rev on the GSO bearing** (20 mA), tape ~180° supplied (90° needed), reader
+gap 0.4 mm. Serge Antonov (Astro Devices, Jan 2022 thread "Magnetic tape") confirmed the tape and readers are Renishaw and
+sells extra tape at US$50/m via their LA distributor. NOT the 311,296-step ring kit assumed earlier. 716,000 steps on a
+~9" GSO bearing is ~1 µm per step (to MEASURE: plug into the Nexus, set 716000, slide the reader 100 mm along the tape,
+expect ~100,000; also read what is printed on the reader PCB). On our 28" D that reader would give ~2.2 M steps/rev and
+~75 kHz at 12°/s: over the Nexus's 999,999 and the SiTech's ~500 k, so it cannot go on the D with either controller.
+
+Plan: alt = a bought RLS LM10 head at 10 µm (below). Az = either the kit's 8192 shaft encoder at the pivot (2.6'/step,
+position-only, Precise/Polite mode) or the kit's tape reader on a pivot hub sized for ~716 k steps per turn (~9" dia at
+1 µm: 1.8"/step, 24 kHz at 12°/s, marginal under SiTech's limits; needs ~0.4 m more tape). Decide after the step-size
+measurement. (Earlier text below about an "Astro Devices ring" at the az pivot is superseded.) **Alt = a
 separate RLS LM10 read head on magnetic tape bonded to the D rim** (2 mm pole pitch, 10 µm interpolation: at R 14" that
 is 223 k counts/rev = 5.8"/count and 7.4 kHz at 12°/s, inside the "about 500,000" and 25 kHz figures). The D is too big
 and too open for a ring at the axis; a 14" radius tape is only a strip. Position-only duty (Tick Management mode) does
@@ -172,7 +182,7 @@ Astro Devices sensor output format is not published. Test it before committing (
 - Or on the Nexus: plug the kit in as delivered, set 311296 steps, and compare one turn against the Nexus's encoder
   readout; that only proves the sensor, not SiTech compatibility, so finish on the SiTech.
 
-Sources: Nexus DSC Pro User Manual (astrodevices.com), Astro Devices M2C encoder installation guide (2026-01 PDF),
+Sources: Nexus DSC Pro User Manual (astrodevices.com), Astro Devices GSO Encoder Installation guide and M2C/HD guides, Gmail (EyepiecesEtc order 5746; Astro Devices thread Jan 2022),
 SiTech Setup Manual, RLS LM10 datasheet.
 
 Sources: SiTech Servo I manual (`ServoDoc.pdf`, Sidereal Technology), Hubble Optics UL SiTech GOTO Quick Start R1.6
