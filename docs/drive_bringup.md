@@ -138,13 +138,10 @@ nylon washers for the test-rim pivot.
 1. **Servo II input voltage and motor current.** The Servo I manual says 11.5–28 V, 2.4 A per motor, 4 A total; Astrofox
    says the Servo II doubles the motor amperage. Our motors need < 0.5 A at 24 V, so either is fine, but the boost
    converter is sized from this.
-2. **Scope-encoder input limits.** Servo I: telescope encoder inputs up to 25 kHz and "about 500,000" counts per rev
-   before missed ticks. A 2 mm-pole magnetic tape at r 14" read by an AS5311-class head gives ~1.2 M counts per rev and
-   ~39 kHz at 12°/s, over both limits on a Servo I; the Servo II advertises "extremely high speed" encoder inputs but no
-   number. If the Servo II is still ~25 kHz / 500 k, the right answer is the Astro Devices HD kit Nick already owns
-   (~311,296 steps/rev = 4.2"/step, 10 kHz at 12°/s), moved from the Nexus to the SiTech's scope-encoder inputs if its
-   outputs are 5 V quadrature (to confirm from Astro Devices' sensor spec), and the tape idea is dropped. Position-only
-   duty (pointing, slip recovery) does not need better than 4".
+2. **Scope-encoder input limits: ANSWERED 2026-11-09** (SiTech sales, Taj): decoder chips rated 9.6 M ticks/s,
+   hardware decode, count limit only the 2^32 counter; RS422 fine on short runs. The Servo I figures (25 kHz, ~500 k)
+   do not apply. Decision in §5a stands on other grounds (plate solving); the owned 1–2 µm tape reader would be usable
+   on the D (1.1–2.2 M counts/rev, 75–150 kHz at 12°/s) if an alt encoder is ever wanted: ~0.5 m of tape + a bracket.
 3. **Servo II connector pinouts** (motor, encoder, scope encoders, handpad): from the manual, written into this file
    when known.
 
@@ -187,7 +184,7 @@ wanted after all, an RLC2HD-D20 (10 µm) on RLS MS tape at R 14" gives 223 k cou
 Bench test of the az encoder on the SiTech: A → AZM/RA S.E. A, B → S.E. B, +5 V and GND to that block (meter the
 cable first: a supply swap destroys the encoder; the Nexus DSC Pro RJ45 it was wired for is 1 B-az, 2 +5 V, 3 A-az,
 4 GND, 5 B-alt, 6 +5 V, 7 A-alt, 8 GND, TTL 5 V). Set 311296 scope-encoder ticks on az, one turn by hand → ±311,296 on
-"Scope Encoder Location" (`YZ` in the terminal). The SiTech count-rate question to sales@ is now moot (311,296 × 12°/s / 360 = 10.4 kHz, under 25 kHz); the support@ address bounced.
+"Scope Encoder Location" (`YZ` in the terminal). SiTech answered 2026-11-09: 9.6 M ticks/s, hardware decode, so 10.4 kHz is nowhere near a limit; the support@ address bounced, sales@ answers.
 
 Sources: Nexus DSC Pro User Manual (astrodevices.com), Astro Devices GSO Encoder Installation guide, Gmail (EyepiecesEtc order 5746; Astro Devices thread Jan 2022),
 SiTech Setup Manual, RLS LM10 datasheet.

@@ -18,12 +18,15 @@ Firmware Notes. Download list: https://www.siderealtechnology.com (Documentation
   are the other way round: Az/RA left, Alt/Dec right).
 - Never swap motor and encoder leads: it can destroy the controller. Flat cable preferred; CAT5 acceptable, kept short
   and away from encoder leads.
-- Scope-encoder resolution: Setup Manual says "as much as 500,000" counts per rev before ticks are missed at fast slews;
-  the Quick Start says ~200,000+ tick encoders use Tick Management mode, lower ones Precise/Polite with the supervisory
-  threshold at ~2.5× (SiTechExe help: 1.5–2×) the encoder resolution. The Astro Devices 311,296-step kit fits this;
-  a 1.2 M count tape does not. **Decision 2026-11-08 (`drive_bringup.md` §5a): no alt scope encoder (plate solving
-  gives position); az = the owned Astro Devices 8192-step shaft encoder on the pivot, Precise/Polite mode; a home
-  switch at the zenith park on the HOME input. The count-rate question is moot.**
+- **Scope-encoder limits (SiTech sales, Taj Wurl-Koth, email 2026-11-09):** the Servo II's decoder chips are rated
+  9.6 M ticks/s, decoding in hardware; the only count limit is the 2^32 counter, irrelevant for one rotation or many.
+  RS422 encoders work on short runs; converters for long cables. So the Setup Manual's "about 500,000" counts/rev and
+  the Servo I's 25 kHz are NOT Servo II limits. (His advice: check encoder datasheets; magnetic encoders have poor
+  absolute accuracy — true, ±10–40 µm/m for RLS tape ≈ 0.1–0.3' at R 14", immaterial for position-only use.) The
+  support@siderealtechnology.com address bounces; sales@ answers.
+  **Decision 2026-11-08 (`drive_bringup.md` §5a) unchanged: no alt scope encoder (plate solving gives position);
+  az = the owned Astro Devices HD ring (311,296) on the pivot; home switch at the zenith park.** The owned 1–2 µm tape
+  reader would now be legal on the D (1.1–2.2 M counts, 75–150 kHz at 12°/s) if an alt encoder is ever wanted.
 
 ## Our numbers (motor encoder 500 CPR × 4 = 2000; gearbox TRUE ratio 19.658119658:1, not 19.7)
 
