@@ -148,5 +148,32 @@ nylon washers for the test-rim pivot.
 3. **Servo II connector pinouts** (motor, encoder, scope encoders, handpad): from the manual, written into this file
    when known.
 
+### 5a. Scope-encoder plan (2026-11-08) and the Astro Devices sensor test
+
+Plan: **az = the owned Astro Devices HD ring** (the M2C/"HD" guide sets 311,296 steps in the DSC, 20 mA per sensor) on a
+hub at the rocker pivot, where it is easy to mount: the ring is a Renishaw/RLS magnetic multi-pole ring and the sensor an
+RLS read head (confirm the part numbers printed on the sensor and ring; the installation guide names neither). **Alt = a
+separate RLS LM10 read head on magnetic tape bonded to the D rim** (2 mm pole pitch, 10 µm interpolation: at R 14" that
+is 223 k counts/rev = 5.8"/count and 7.4 kHz at 12°/s, inside the "about 500,000" and 25 kHz figures). The D is too big
+and too open for a ring at the axis; a 14" radius tape is only a strip. Position-only duty (Tick Management mode) does
+not need better than ~5".
+
+Astro Devices sensor output format is not published. Test it before committing (either controller works as a tester):
+
+- **Nexus DSC Pro encoder port (RJ45), from the Nexus DSC Pro manual:** pin 1 B-az, 2 +5 V, 3 A-az, 4 GND, 5 B-alt,
+  6 +5 V, 7 A-alt, 8 GND. TTL quadrature, 5 V supply, up to 999,999 steps. The Astro Devices kit ships wired to this
+  port, so the sensors are TTL quadrature at 5 V, which is what the SiTech's S.E. inputs expect.
+- Before plugging into the SiTech: with the kit's cable unplugged, meter from the RJ45 pins to the sensor-end pins to
+  confirm which conductor is +5 V (pins 2/6) and GND (4/8) at each sensor: a supply swap destroys the sensor.
+- On the SiTech: one sensor's A → AZM/RA S.E. A, B → S.E. B, +5 V and GND to that block's +5V/GND. In ServoConfig set
+  the scope-encoder ticks to 311296 on that axis, turn the ring by hand one full turn and read Scope Encoder Location on
+  the main screen (or `YZ` in the terminal): expect ±311,296 ± a few counts. A count that only changes in one direction
+  or jumps in steps = A/B wiring or a bad sensor gap.
+- Or on the Nexus: plug the kit in as delivered, set 311296 steps, and compare one turn against the Nexus's encoder
+  readout; that only proves the sensor, not SiTech compatibility, so finish on the SiTech.
+
+Sources: Nexus DSC Pro User Manual (astrodevices.com), Astro Devices M2C encoder installation guide (2026-01 PDF),
+SiTech Setup Manual, RLS LM10 datasheet.
+
 Sources: SiTech Servo I manual (`ServoDoc.pdf`, Sidereal Technology), Hubble Optics UL SiTech GOTO Quick Start R1.6
 (2019), Astrofox Servo II listing, Pittman incremental encoder catalogue (H series).
