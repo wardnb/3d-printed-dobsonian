@@ -12,7 +12,16 @@ Mark a line `[done <date>]` when it lands; keep done items until the next tidy.
   chamber 50 °C, slicer shrink compensation 99.5 % (a typical ASA figure, not measured on this spool: the
   README's caliper check against `block_fence_corner_xyz` still applies and will say whether 99.5 was right).
   About 6.0 h and 193 g per pair fixture, 6.9 h and 226 g per socket fixture, ~52 h and 1.7 kg for the set.
-  Slicing tool: `local/slice_trident.py` (`--fset` for filament overrides). Nothing printed yet.
+  Slicing tool: `local/slice_trident.py` (`--fset` for filament overrides).
+  **Printing log:** `fixture_pair_30_L` printed 2026-11-08 18:19 → 00:58 (6 h 16 min print, 78.8 m of ASA), looks
+  right on camera (slab, fences, datum post, three hold-down holes); post-print checks per the README still to do.
+  Getting there took four days: brittle silk PLA fragments in the AFC tubes/toolhead (air-print on 11-04, stuck
+  toolhead sensor 11-06), a Bowden that popped off the toolhead and fed ~1 m of ASA into the chamber, then two
+  first-layer failures on 11-08 (lines not fusing on textured PEI). What fixed adhesion: plate washed, bed 110 °C
+  (files resliced as `*_bed110.gcode`, both layers), Z offset −0.06 total (PRINT_START forces −0.03 absolutely
+  before the prime line, so the extra −0.03 is baby-stepped live after priming), chamber 50 °C. A 40 × 40 × 0.6 mm
+  ASA coupon (`coupon_40x40x0p6_ASA_firstlayer.gcode`) is on the printer for first-layer checks. Remaining seven
+  fixtures use the same settings, one per plate.
 - **[done 2026-11-04]** Z is now touched off on the block top above the feature (`block_top_z_at_feature_xy`, also in each `.nc` header); X/Y stay on the post with a caliper check against `block_fence_corner_xyz` (block side faces all lean ~13°, so there is no touchable vertical block face). Reasoning in `out/joint_machining/print/README.md`. **Request: let the operator touch off on the BLOCK, not the fixture's datum post.** Printed ASA shrinks
   about 0.4–0.8 % (PLA 0.2–0.4 %), so the fence-to-post distance on a 170–180 mm fixture is off by up to ~0.5 mm, and
   `feature_xyz_from_post_corner` (3.2–4.1" from the post) inherits ~0.3–0.6 mm (0.012–0.025") of that in X/Y. The block
