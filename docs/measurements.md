@@ -193,3 +193,13 @@ model frame: bearings on 0/180°, point hole at 90°.
 | Sideways location of the cell | nothing but knob/washer friction and stud bending; the stud's clearance in the board hole decides how far the cell can shift at the horizon | photos | to measure: hole diameter vs stud |
 | Knob positions | about 11, 3–4 and 7 o'clock looking at the back with the box on its side; their angle to the three strut stubs is not readable from this photo | photo | to measure |
 
+
+## Carbon truss tubes (Rock West 45562, 3 × 72"), 2026-11-09, calipers
+
+| Item | Value | How | Status |
+| --- | --- | --- | --- |
+| Tube 1 bore (ID) | 1.10–1.12" around the bore, mostly 1.115–1.119 (spec 1.125) | Nick, calipers, one end | applied in the cloud session (commit 3b91171): `P["truss_pole_id"]` 1.117, plug shank `P["plug_shank_d"]` set to the MINIMUM reading, 1.100 |
+| Other five tube ends, ID | | calipers, inside jaws ≥ 1" deep, two orientations 90° apart | OPEN: needed before the plugs are turned (shank must enter every end) |
+| OD, each tube | | calipers at both ends and the middle, two orientations | OPEN: sets the pair-block bore (`joint_machining.BORE_D` = OD + 0.004, 1.244 assumed); re-run `joint_machining.py` after |
+| Length, each tube | | tape | OPEN: confirms two 35.9" poles per tube |
+| Wall | | from OD − ID | derived |
