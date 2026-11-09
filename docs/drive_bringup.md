@@ -161,12 +161,14 @@ also covered by re-solving after a push, which takes seconds. So:
 - **Az: the owned Astro Devices HD azimuth assembly** on the pivot. It is an RLS MR magnetic ring (OD 48 mm MEASURED →
   76 poles × 4096 = **311,296 steps/rev**, 4.2"/step, 10.4 kHz at 12°/s; the HD guide's number) bonded to a carrier disc
   with a Ø6 boss, read by an RLC2HD potted in a block on a 3 mm floating plate whose Ø6.2 bearing rides the boss (gap
-  fixed by the kit), the plate held against rotation by a slot. Mount (`rocker.py`): FR6 in the ground hub, 3/8 shoulder
-  bolt fixed to the rocker floor and turning with it, shoulder extending below the hub carrying the disc through the kit's
-  shaft adapter, plate hung on the boss and anchored by one screw into the hub underside, nut on the 5/16-18 tail. Stack
-  below the hub ≈ 1.0" (plate 3 + block 15 mm; disc ~11 mm ASSUMED; nut), 0.65" to the ground on the 1.5" feet. No
-  coupling, no turned parts, nothing to align. SiTech: 311296 ticks, Tick Management (or Polite) mode. Still to measure:
-  disc thickness, boss OD/bore, adapter bores, plate length.
+  fixed by the kit), the plate held against rotation by a slot. Mounted the way the kit is meant to go (Nick): the pivot
+  bolt fixed in the ground hub (FR6 in the floor housing, as first drawn), the ring disc pressed onto the bolt by the
+  kit's printed hub and sitting on the hub top, static with the ground; the plate hangs under the rocker floor on the
+  boss with the 15 mm reader block in a ~0.1" relief pocket in the floor underside and one screw through its slot into
+  the floor. The reader goes round with the rocker, so its cable stays on the rocker with the SiTech and nothing crosses
+  the az axis. Stack = 11 (disc, ASSUMED) + 3 + 15 mm in the 1.15" hub-to-floor gap; feet stay 0.75", rocker 16.0".
+  SiTech: 311296 ticks, Tick Management (or Polite) mode. Still to measure: disc thickness, boss, printed-hub bore, plate
+  length. (An earlier draft today hung the assembly under the hub on an inverted pivot with 1.5" feet: superseded.)
 - **Home switch** at the zenith parking position on the Servo II HOME input: from park the counts are already right, so
   the first slew lands within the model error before any star or solve. Drawn with the brake and parking lock.
 

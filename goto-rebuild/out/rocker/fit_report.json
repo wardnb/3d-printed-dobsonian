@@ -181,7 +181,7 @@
     "y_horn": 9.64,
     "end_h": 4.0,
     "end_h_max": 4.41,
-    "rocker_top": 16.78,
+    "rocker_top": 16.03,
     "chord_e": 3.62,
     "alt_min": 15,
     "pad_angle": 30,
@@ -189,7 +189,7 @@
     "ring_id": 23.0,
     "foot_r": 14.0,
     "az_pad_r": 12.75,
-    "cap_z": 13.14
+    "cap_z": 12.39
   },
   "ev6_ok_under_23in": true,
   "bearing_lb_each": 6.55,

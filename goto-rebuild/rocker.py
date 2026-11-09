@@ -82,7 +82,7 @@ def derive(P, R, swing, panel_x):
     G["inside_w"] = 2 * G["wall_in"]
     # --- heights
     G["arm_t"] = 0.75                                              # ground board arms + hub (3/4 ply)
-    G["foot_h"] = 1.5                                              # was 0.75; 1.5 since 2026-11-08 so the az encoder fits under the hub (levelling feet)
+    G["foot_h"] = 0.75
     G["ring_z0"] = G["foot_h"] + G["arm_t"]                        # ground ring bottom, 1.5
     G["ground_top"] = G["ring_z0"] + ply                           # ring top (az running surface), 2.21
     G["az_pad_t"] = 0.15
@@ -387,7 +387,7 @@ def build(G):
             pads = p if pads is None else pads.union(p)
         S["az_ptfe"] = (pads, "PTFE")
         S["pivot_disc"] = (cyl_z(G["ground_top"], G["az_pad_t"], 1.5).cut(cyl_z(0, 3, G["pivot_d"] / 2)), "ALU")
-    S["pivot_stud"] = (cyl_z(G["foot_h"] - 0.9, ft - G["foot_h"] + 0.35 + 0.9, G["pivot_d"] / 2), "ALU")   # 3/8 shoulder bolt: head low on the floor (box passes 0.5 over), shoulder down through the hub to the encoder disc
+    S["pivot_stud"] = (cyl_z(G["foot_h"], ft - G["foot_h"] + 0.35, G["pivot_d"] / 2), "ALU")   # fixed in the hub; low nut: the box passes 0.5 over the floor
     # belt (upper 0.36 of the ring rim, teeth out) on the ground ring; no az tape since 2026-11-08 (shaft encoder at the pivot)
     S["az_belt_on_rim"] = (cyl_z(G["ground_top"] - 0.36, 0.36, G["ring_od"] / 2 + 0.09)
                            .cut(cyl_z(G["ground_top"] - 0.4, 0.5, G["ring_od"] / 2)), "BLACK")
@@ -442,20 +442,24 @@ def build(G):
     # scope encoders (2026-11-08): NO tape heads. Plate solving (Waypoint) gives absolute position; the only scope
     # encoder is the owned Astro Devices HD azimuth assembly (RLS MR ring Ø48 on a carrier disc, 76 poles x 4096 =
     # 311,296 steps/rev; RLC2HD reader potted in a block on a 3 mm floating plate whose Ø6.2 bearing rides the disc's
-    # boss). Pivot inverted for it: FR6 in the ground hub, the 3/8 shoulder bolt turns with the rocker, its shoulder
-    # extends below the hub and carries the disc (kit adapter), the plate hangs on the boss and is anchored by one
-    # screw into the hub; nut on the 5/16-18 tail. MEASURED 2026-11-08: ring OD 48 mm, plate 3 mm, bearing bore 6.2,
-    # block 18 mm tall incl. plate (11.5 and 6.8 steps). ASSUMED: disc thickness 11 mm, plate 130 x 25 mm, boss Ø6.
-    hub_bot = G["foot_h"]
-    PLATE_T, BLOCK_H, DISC_T, DISC_R, NUT_T = 3 / 25.4, 15 / 25.4, 11 / 25.4, 24 / 25.4, 0.3
-    S["az_enc_plate"] = (box(0, 2.0, hub_bot - PLATE_T / 2, 1.0, 5.1, PLATE_T).cut(cyl_z(0, 9, 0.25)), "ALU")
-    S["az_enc_reader"] = (box(0, DISC_R + 0.45, hub_bot - PLATE_T - BLOCK_H / 2, 0.9, 0.8, BLOCK_H), "ELEC")
-    S["az_enc_disc"] = (cyl_z(hub_bot - PLATE_T - DISC_T, DISC_T, DISC_R), "BLACK")
-    S["az_enc_ring"] = (cyl_z(hub_bot - PLATE_T - DISC_T + 0.05, DISC_T - 0.1, DISC_R + 0.01)
-                        .cut(cyl_z(0, 9, DISC_R - 0.12)), "STRIP")
-    S["az_enc_nut"] = (cyl_z(hub_bot - PLATE_T - DISC_T - NUT_T, NUT_T, 0.28), "ALU")
-    G["az_encoder_ground_clearance"] = hub_bot - PLATE_T - DISC_T - NUT_T
-    assert G["az_encoder_ground_clearance"] >= 0.2, "az encoder stack would touch the ground"
+    # boss). Mounted the way the kit is meant to be (Nick, 2026-11-08): the pivot bolt is fixed in the ground hub, the
+    # ring disc is pressed onto it (kit's printed hub) and sits on the hub top, static with the ground; the plate hangs
+    # under the rocker floor on the disc boss and the reader goes round WITH the rocker, so its cable stays on the
+    # rocker with the SiTech (nothing crosses the az axis). The 15 mm reader block is pocketed up into the 18 mm floor;
+    # one screw through the plate's slot into the floor stops it rotating. MEASURED: ring OD 48, plate 3, bearing bore
+    # 6.2, block 18 incl. plate. ASSUMED: disc thickness 11 mm, boss Ø6 x 6 mm, plate 130 x 25 mm.
+    PLATE_T, BLOCK_H, DISC_T, DISC_R, BOSS_H = 3 / 25.4, 15 / 25.4, 11 / 25.4, 24 / 25.4, 6 / 25.4
+    z_disc0 = G["ground_top"] + 0.02                                 # disc on the hub top (0.02 washer)
+    z_plate0 = z_disc0 + DISC_T + 0.02                                # plate rides the boss just above the disc
+    S["az_enc_disc"] = (cyl_z(z_disc0, DISC_T, DISC_R), "BLACK")
+    S["az_enc_ring"] = (cyl_z(z_disc0 + 0.05, DISC_T - 0.1, DISC_R + 0.01).cut(cyl_z(0, 9, DISC_R - 0.12)), "STRIP")
+    S["az_enc_boss"] = (cyl_z(z_disc0 + DISC_T, BOSS_H, 3 / 25.4), "BLACK")
+    S["az_enc_plate"] = (box(0, 2.0, z_plate0 + PLATE_T / 2, 1.0, 5.1, PLATE_T).cut(cyl_z(0, 9, 0.25)), "ALU")
+    S["az_enc_reader"] = (box(0, DISC_R + 0.45, z_plate0 + PLATE_T + BLOCK_H / 2, 0.9, 0.8, BLOCK_H), "ELEC")
+    G["az_enc_block_top"] = z_plate0 + PLATE_T + BLOCK_H
+    G["az_enc_floor_pocket"] = max(0.0, G["az_enc_block_top"] - G["floor_z0"] + 0.05)   # pocket depth into the floor underside
+    assert G["az_enc_floor_pocket"] <= ply - 0.3, "az encoder block would break through the floor"
+    assert z_plate0 + PLATE_T <= G["floor_z0"] - 0.02, "az encoder plate hits the floor underside"
     # ---- electronics box on the plain wall, front
     S["electronics_box_sitech"] = (box(-(G["wall_out"] + 1.3), 7.0, ft + 3.2, 2.4, 8.0, 5.0), "ELEC")
 
