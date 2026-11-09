@@ -269,6 +269,7 @@
     "az_ratio": 120.48,
     "alt_ratio": 112.48,
     "rocker_top": 16.031220807966918,
+    "az_enc_anchor_y": 5.118110236220473,
     "az_enc_block_top": 3.3907322834645672,
     "az_enc_floor_pocket": 0.07823228346456741
   },

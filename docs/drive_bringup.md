@@ -164,8 +164,9 @@ also covered by re-solving after a push, which takes seconds. So:
   fixed by the kit), the plate held against rotation by a slot. Mounted the way the kit is meant to go (Nick): the pivot
   bolt fixed in the ground hub (FR6 in the floor housing, as first drawn), the ring disc pressed onto the bolt by the
   kit's printed hub and sitting on the hub top, static with the ground; the plate hangs under the rocker floor on the
-  boss with the 15 mm reader block in a ~0.1" relief pocket in the floor underside and one screw through its slot into
-  the floor. The reader goes round with the rocker, so its cable stays on the rocker with the SiTech and nothing crosses
+  boss with the 15 mm reader block in a ~0.1" relief pocket in the floor underside; its anchor slot (130 mm from the
+  bearing, MEASURED) takes a #8 shoulder screw from the floor, close-fitting, with the kit's wire spring keeping the slot
+  loaded against it: slot play reads straight into azimuth (0.1 mm at 130 mm = 2.6'). The reader goes round with the rocker, so its cable stays on the rocker with the SiTech and nothing crosses
   the az axis. Stack = 11 (disc, ASSUMED) + 3 + 15 mm in the 1.15" hub-to-floor gap; feet stay 0.75", rocker 16.0".
   SiTech: 311296 ticks, Tick Management (or Polite) mode. Still to measure: disc thickness, boss, printed-hub bore, plate
   length. (An earlier draft today hung the assembly under the hub on an inverted pivot with 1.5" feet: superseded.)

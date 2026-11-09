@@ -454,8 +454,15 @@ def build(G):
     S["az_enc_disc"] = (cyl_z(z_disc0, DISC_T, DISC_R), "BLACK")
     S["az_enc_ring"] = (cyl_z(z_disc0 + 0.05, DISC_T - 0.1, DISC_R + 0.01).cut(cyl_z(0, 9, DISC_R - 0.12)), "STRIP")
     S["az_enc_boss"] = (cyl_z(z_disc0 + DISC_T, BOSS_H, 3 / 25.4), "BLACK")
-    S["az_enc_plate"] = (box(0, 2.0, z_plate0 + PLATE_T / 2, 1.0, 5.1, PLATE_T).cut(cyl_z(0, 9, 0.25)), "ALU")
+    # plate: bearing centre to anchor slot 130 mm MEASURED (overall ~150 x 25 mm); the anchor is a shoulder screw in the
+    # floor underside fitting the slot closely + the kit's wire spring loading it one way: slot play reads straight
+    # into azimuth (0.1 mm at 130 mm = 2.6')
+    ANCHOR_R = 130 / 25.4
+    S["az_enc_plate"] = (box(0, (ANCHOR_R + 0.75 - 0.6) / 2, z_plate0 + PLATE_T / 2, 1.0, ANCHOR_R + 0.75 + 0.6, PLATE_T)
+                         .cut(cyl_z(0, 9, 0.25)).cut(box(0, ANCHOR_R, z_plate0 + PLATE_T / 2, 0.2, 0.9, 1.0)), "ALU")
     S["az_enc_reader"] = (box(0, DISC_R + 0.45, z_plate0 + PLATE_T + BLOCK_H / 2, 0.9, 0.8, BLOCK_H), "ELEC")
+    S["az_enc_anchor"] = (cyl_z(z_plate0 - 0.1, G["floor_z0"] - z_plate0 + 0.5, 0.09, 0, ANCHOR_R), "ALU")   # #8 shoulder screw into the floor
+    G["az_enc_anchor_y"] = ANCHOR_R
     G["az_enc_block_top"] = z_plate0 + PLATE_T + BLOCK_H
     G["az_enc_floor_pocket"] = max(0.0, G["az_enc_block_top"] - G["floor_z0"] + 0.05)   # pocket depth into the floor underside
     assert G["az_enc_floor_pocket"] <= ply - 0.3, "az encoder block would break through the floor"
