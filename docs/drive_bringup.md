@@ -127,7 +127,7 @@ This is the test that matters:
 **Stage 3 — az module** is the same module on the same test rim (the ring is only a bigger radius); nothing new to
 prove except the vertical motor orientation.
 
-**Stage 4 — az shaft encoder** (the owned Astro Devices 8192-step unit) on the SiTech AZM S.E. inputs: set 8192 ticks, one turn by hand = ±8192. No alt scope encoder (decision 2026-11-08, §5a).
+**Stage 4 — az ring encoder** (the owned Astro Devices HD assembly) on the SiTech AZM S.E. inputs: set 311296 ticks, one turn of the disc by hand = ±311,296. No alt scope encoder (decision 2026-11-08, §5a).
 
 Parts to add to the bench order beyond what `BUY` already lists: two SiTech motor cables (modular + barrel ends; or
 flat 8-conductor + 2.1 mm barrel plugs to make them), 12 V bench supply ≥ 5 A if none on hand, USB-B cable, 3/8" bolt +
@@ -158,13 +158,15 @@ also covered by re-solving after a push, which takes seconds. So:
 - **Alt: no scope encoder.** Nothing on the D rim but the roller track and belt (the 0.26" "tape" band is spare).
   The tape idea (RLS LM10 at 10 µm, 223 k counts) is dropped: $250, a bonded track, a 0.3–0.8 mm gap to hold, and it
   only saved a plate solve. Gravity keeps the alt train loaded one way, so a belt skip is unlikely and shows at once.
-- **Az: the owned Astro Devices 8192-step shaft encoder** (from the GSO kit, below) on the pivot, 2.6'/step,
-  position-only (Precise/Polite mode in SiTechExe, not Tick Management). Pivot inverted for it (`rocker.py`): FR6 in the
-  ground hub, the 3/8 shoulder bolt fixed to the rocker floor and turning with it, its tail through a 0.43" pocket in
-  the hub's underside into a 3/8→1/4 flexible coupling and the encoder body hanging under the hub (0.42" above the
-  ground). Feet raised 0.75 → 1.5" to make the room (levelling feet; rocker 16.78" overall, eyepiece 64.9"). Encoder
-  body 1.1 × 0.8" and coupling 0.6" are ASSUMED: measure the unit. Fallback if it is taller: encoder on the hub top
-  beside the pivot with a 1:1 GT2 belt from a pulley on the bolt, in the 1.15" gap under the floor.
+- **Az: the owned Astro Devices HD azimuth assembly** on the pivot. It is an RLS MR magnetic ring (OD 48 mm MEASURED →
+  76 poles × 4096 = **311,296 steps/rev**, 4.2"/step, 10.4 kHz at 12°/s; the HD guide's number) bonded to a carrier disc
+  with a Ø6 boss, read by an RLC2HD potted in a block on a 3 mm floating plate whose Ø6.2 bearing rides the boss (gap
+  fixed by the kit), the plate held against rotation by a slot. Mount (`rocker.py`): FR6 in the ground hub, 3/8 shoulder
+  bolt fixed to the rocker floor and turning with it, shoulder extending below the hub carrying the disc through the kit's
+  shaft adapter, plate hung on the boss and anchored by one screw into the hub underside, nut on the 5/16-18 tail. Stack
+  below the hub ≈ 1.0" (plate 3 + block 15 mm; disc ~11 mm ASSUMED; nut), 0.65" to the ground on the 1.5" feet. No
+  coupling, no turned parts, nothing to align. SiTech: 311296 ticks, Tick Management (or Polite) mode. Still to measure:
+  disc thickness, boss OD/bore, adapter bores, plate length.
 - **Home switch** at the zenith parking position on the Servo II HOME input: from park the counts are already right, so
   the first slew lands within the model error before any star or solve. Drawn with the brake and parking lock.
 
@@ -181,9 +183,8 @@ wanted after all, an RLC2HD-D20 (10 µm) on RLS MS tape at R 14" gives 223 k cou
 
 Bench test of the az encoder on the SiTech: A → AZM/RA S.E. A, B → S.E. B, +5 V and GND to that block (meter the
 cable first: a supply swap destroys the encoder; the Nexus DSC Pro RJ45 it was wired for is 1 B-az, 2 +5 V, 3 A-az,
-4 GND, 5 B-alt, 6 +5 V, 7 A-alt, 8 GND, TTL 5 V). Set 8192 scope-encoder ticks on az, one turn by hand → ±8192 on
-"Scope Encoder Location" (`YZ` in the terminal). The SiTech count-rate question to sales@ is now moot (8192 × 12°/s
-= 273 Hz); the support@ address bounced.
+4 GND, 5 B-alt, 6 +5 V, 7 A-alt, 8 GND, TTL 5 V). Set 311296 scope-encoder ticks on az, one turn by hand → ±311,296 on
+"Scope Encoder Location" (`YZ` in the terminal). The SiTech count-rate question to sales@ is now moot (311,296 × 12°/s / 360 = 10.4 kHz, under 25 kHz); the support@ address bounced.
 
 Sources: Nexus DSC Pro User Manual (astrodevices.com), Astro Devices GSO Encoder Installation guide, Gmail (EyepiecesEtc order 5746; Astro Devices thread Jan 2022),
 SiTech Setup Manual, RLS LM10 datasheet.

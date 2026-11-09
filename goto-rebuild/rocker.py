@@ -387,7 +387,7 @@ def build(G):
             pads = p if pads is None else pads.union(p)
         S["az_ptfe"] = (pads, "PTFE")
         S["pivot_disc"] = (cyl_z(G["ground_top"], G["az_pad_t"], 1.5).cut(cyl_z(0, 3, G["pivot_d"] / 2)), "ALU")
-    S["pivot_stud"] = (cyl_z(G["foot_h"], ft - G["foot_h"] + 0.35, G["pivot_d"] / 2), "ALU")   # low nut: the box passes 0.5 over the floor
+    S["pivot_stud"] = (cyl_z(G["foot_h"] - 0.9, ft - G["foot_h"] + 0.35 + 0.9, G["pivot_d"] / 2), "ALU")   # 3/8 shoulder bolt: head low on the floor (box passes 0.5 over), shoulder down through the hub to the encoder disc
     # belt (upper 0.36 of the ring rim, teeth out) on the ground ring; no az tape since 2026-11-08 (shaft encoder at the pivot)
     S["az_belt_on_rim"] = (cyl_z(G["ground_top"] - 0.36, 0.36, G["ring_od"] / 2 + 0.09)
                            .cut(cyl_z(G["ground_top"] - 0.4, 0.5, G["ring_od"] / 2)), "BLACK")
@@ -440,18 +440,22 @@ def build(G):
         S.update(drive.module(G, _ax))
     xi = G["bearing_x_in"]
     # scope encoders (2026-11-08): NO tape heads. Plate solving (Waypoint) gives absolute position; the only scope
-    # encoder is the owned Astro Devices 8192-step shaft encoder on the az pivot, position-only (hand pushes, slip).
-    # Pivot inverted for it: FR6 in the ground hub, the 3/8 shoulder bolt turns with the rocker, its tail coupled to the
-    # encoder (Ø1.1 x 1.0 body ASSUMED, 1/4 shaft) sitting in a pocket under the hub; body hangs 0.4 below the hub,
-    # 0.35 above the ground. Encoder cable stays on the ground side.
-    ENC_BODY, ENC_D, COUP_L, POCKET = 0.8, 1.1, 0.6, 0.43            # ASSUMED: measure the Astro Devices az encoder
-    enc_top = G["foot_h"] + G["arm_t"] - POCKET                      # coupling in a Ø1.0 pocket in the hub's underside
-    S["az_coupling"] = (cyl_z(enc_top - COUP_L, COUP_L, 0.375), "ALU")   # 3/8 -> 1/4 flexible coupling
-    S["az_encoder"] = (cyl_z(enc_top - COUP_L - ENC_BODY, ENC_BODY, ENC_D / 2), "ELEC")
-    S["az_encoder_plate"] = (box(0, 0, enc_top - COUP_L - ENC_BODY + 0.5 * ENC_BODY, 2.6, 2.6, 0.0625)
-                             .cut(cyl_z(0, 9, ENC_D / 2 + 0.05)), "ALU")   # 1/16 plate on two standoffs to the hub (drawn as a plate)
-    G["az_encoder_ground_clearance"] = enc_top - COUP_L - ENC_BODY
-    assert G["az_encoder_ground_clearance"] >= 0.2, "az encoder would touch the ground"
+    # encoder is the owned Astro Devices HD azimuth assembly (RLS MR ring Ø48 on a carrier disc, 76 poles x 4096 =
+    # 311,296 steps/rev; RLC2HD reader potted in a block on a 3 mm floating plate whose Ø6.2 bearing rides the disc's
+    # boss). Pivot inverted for it: FR6 in the ground hub, the 3/8 shoulder bolt turns with the rocker, its shoulder
+    # extends below the hub and carries the disc (kit adapter), the plate hangs on the boss and is anchored by one
+    # screw into the hub; nut on the 5/16-18 tail. MEASURED 2026-11-08: ring OD 48 mm, plate 3 mm, bearing bore 6.2,
+    # block 18 mm tall incl. plate (11.5 and 6.8 steps). ASSUMED: disc thickness 11 mm, plate 130 x 25 mm, boss Ø6.
+    hub_bot = G["foot_h"]
+    PLATE_T, BLOCK_H, DISC_T, DISC_R, NUT_T = 3 / 25.4, 15 / 25.4, 11 / 25.4, 24 / 25.4, 0.3
+    S["az_enc_plate"] = (box(0, 2.0, hub_bot - PLATE_T / 2, 1.0, 5.1, PLATE_T).cut(cyl_z(0, 9, 0.25)), "ALU")
+    S["az_enc_reader"] = (box(0, DISC_R + 0.45, hub_bot - PLATE_T - BLOCK_H / 2, 0.9, 0.8, BLOCK_H), "ELEC")
+    S["az_enc_disc"] = (cyl_z(hub_bot - PLATE_T - DISC_T, DISC_T, DISC_R), "BLACK")
+    S["az_enc_ring"] = (cyl_z(hub_bot - PLATE_T - DISC_T + 0.05, DISC_T - 0.1, DISC_R + 0.01)
+                        .cut(cyl_z(0, 9, DISC_R - 0.12)), "STRIP")
+    S["az_enc_nut"] = (cyl_z(hub_bot - PLATE_T - DISC_T - NUT_T, NUT_T, 0.28), "ALU")
+    G["az_encoder_ground_clearance"] = hub_bot - PLATE_T - DISC_T - NUT_T
+    assert G["az_encoder_ground_clearance"] >= 0.2, "az encoder stack would touch the ground"
     # ---- electronics box on the plain wall, front
     S["electronics_box_sitech"] = (box(-(G["wall_out"] + 1.3), 7.0, ft + 3.2, 2.4, 8.0, 5.0), "ELEC")
 

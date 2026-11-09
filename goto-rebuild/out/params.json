@@ -269,7 +269,7 @@
     "az_ratio": 120.48,
     "alt_ratio": 112.48,
     "rocker_top": 16.781220807966918,
-    "az_encoder_ground_clearance": 0.42000000000000015
+    "az_encoder_ground_clearance": 0.6488188976377953
   },
   "rocker_holes": {
     "drive": [
