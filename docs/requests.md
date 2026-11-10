@@ -28,8 +28,10 @@ Mark a line `[done <date>]` when it lands; keep done items until the next tidy.
   walls, the Orca presets on beast were changed (filament flow 0.95 → 0.975, min layer time 3 → 8 s, top shell 5 →
   7 layers / 1.4 mm; later the same day gap fill on top/bottom solid layers, for small voids beside the screw-hole
   walls seen on pair_150_L's bottom). The six remaining fixtures were resliced with them: `*_flow975_top7.gcode`
-  (pair_150_L) and `*_flow975_top7_gapfill.gcode` (the other five). Per-fixture: pair_150 212 / 210 g, 6 h 26–29;
-  socket_back 248 g, 7 h 22–27; socket_point 244 g, 7 h 14–19. `fixture_pair_150_L` started 2026-11-09 17:55
+  (pair_150_L) and `*_flow975_top7_gapfill_ibf75.gcode` (the other five; internal bridge flow 1 → 0.75 added
+  21:50 after pair_150_L's base top came out rippled on the infill pitch: the first solid layer over the cubic
+  infill extruded ~37 % more than the solid layers above it and every layer rode those ridges). Per-fixture:
+  pair_150 212 / 209 g, 6 h 26–29; socket_back 247 g, 7 h 22–27; socket_point 243 g, 7 h 14–19. `fixture_pair_150_L` started 2026-11-09 17:55
   (bed 110, Z −0.07, new brush-refill + prime-line macro: only a hair on the nozzle after the wipe, nothing
   dragged into the prime line); brim and first layers flat. **Filament:** the lane-3 iSANMATE ASA had 443 g
   before pair_150_L, so it covers pair_150_R (~20 g spare) and no more; the four socket fixtures need ~985 g of
