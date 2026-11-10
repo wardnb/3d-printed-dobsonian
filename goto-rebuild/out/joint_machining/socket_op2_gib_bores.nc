@@ -1,8 +1,8 @@
 ( socket block Op2: gib bores + plate tap drills, outside face up, zero at the face's bottom-left corner )
 G20 G90 G94 G17
-M3 S18000
+M3 S10000
 G4 P3
-( T1 = 1/4 3FL carbide flat end mill, LOC >= 1.3 )
+( T1 = 1/4 2FL carbide flat end mill for aluminium, LOC >= 1.3 )
 G0 Z0.5
 G0 X1.1075 Y1.0000
 G1 Z0.0500 F6
@@ -8671,7 +8671,7 @@ G0 Z0.5
 M5
 ( T2 = 1/8 flat end mill: #8-32 tap drills 0.136 x 0.40 deep, peck )
 M0 (change to 1/8 flat, re-zero Z)
-M3 S18000
+M3 S10000
 G4 P3
 G0 X0.4500 Y1.0000
 G0 Z0.1

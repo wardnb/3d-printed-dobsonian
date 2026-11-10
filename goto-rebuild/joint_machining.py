@@ -194,7 +194,7 @@ def build(f):
 
 
 # ---------------------------------------------------------------- G-code
-RPM = 18000
+RPM = 10000   # 2-flute carbide at 40 ipm = 0.002"/tooth; 3FL at 18k rpm (the first version) was 0.0007"/tooth and would rub/weld on a router
 
 
 def g_header(title, g=None):
@@ -238,13 +238,13 @@ def helix_ring(cx, cy, r, z_from, z_to, step, feed, pts=48):
 
 
 def gcode_cup(f, g):
-    """Socket cup: rough with a 1/4" 3-flute flat end mill in stepped rings, finish with a 1/8" ball on one continuous
+    """Socket cup: rough with a 1/4" 2-flute flat end mill in stepped rings, finish with a 1/8" ball on one continuous
     helix that follows the 60 deg cone, then the Ø0.70 apex hole for the plug's head screw (gib clamp)."""
     cx, cy, za = g["feat"]
     z0 = g["top_z"] + 0.05
     sz = safe_z(g)
     L = g_header(f"{f['label']}: 60 deg cup + 0.70 apex hole; fixture tilt {math.degrees(g['st']['tau']):.2f} deg", g)
-    L += ["( T1 = 1/4 3FL carbide flat end mill, rough )", f"G0 Z{sz:.3f}", f"G0 X{cx:.4f} Y{cy:.4f}"]
+    L += ["( T1 = 1/4 2FL carbide flat end mill for aluminium, rough; 0.002 in/tooth at 10k rpm )", f"G0 Z{sz:.3f}", f"G0 X{cx:.4f} Y{cy:.4f}"]
     z = z0
     while z > za + 0.25:
         z = max(z - 0.035, za + 0.25)
@@ -287,12 +287,12 @@ def gcode_cup(f, g):
 
 
 def gcode_bore(f, g):
-    """Pair bore: Ø(tube OD + 0.004) blind bore by helical interpolation with a 1/2" 3-flute flat end mill, flat floor at the tube end."""
+    """Pair bore: Ø(tube OD + 0.004) blind bore by helical interpolation with a 1/2" 2-flute flat end mill, flat floor at the tube end."""
     cx, cy, zf = g["feat"]
     z0 = g["top_z"] + 0.05
     sz = safe_z(g)
     L = g_header(f"{f['label']}: {BORE_D:.3f} blind bonded bore; fixture tilt {math.degrees(g['st']['tau']):.2f} deg", g)
-    L += ["( T1 = 1/2 3FL carbide flat end mill )", f"G0 Z{sz:.3f}"]
+    L += ["( T1 = 1/2 2FL carbide flat end mill for aluminium, lowest rpm, mist )", f"G0 Z{sz:.3f}"]
     r_tool = 0.25
     for r in (BORE_D / 2 - r_tool - 0.12, BORE_D / 2 - r_tool - 0.010):
         L += helix_ring(cx, cy, r, z0, zf + 0.005, 0.03, 30)
@@ -334,7 +334,7 @@ def gcode_gib_bores():
     then the four #8 tap drills with a 1/8 flat (peck)."""
     T_, R_, H_ = SOCK_STOCK
     L = ["( socket block Op2: gib bores + plate tap drills, outside face up, zero at the face's bottom-left corner )",
-         "G20 G90 G94 G17", f"M3 S{RPM}", "G4 P3", "( T1 = 1/4 3FL carbide flat end mill, LOC >= 1.3 )", "G0 Z0.5"]
+         "G20 G90 G94 G17", f"M3 S{RPM}", "G4 P3", "( T1 = 1/4 2FL carbide flat end mill for aluminium, LOC >= 1.3 )", "G0 Z0.5"]
     for side in (-1, 1):
         cx, cy = 0.8 * side + T_ / 2, 1.0 + T.GIB_Z
         for r in (T.GIB_D / 2 - 0.125 - 0.08, T.GIB_D / 2 - 0.125 - 0.004):
@@ -537,7 +537,7 @@ def sheet():
                   loc="upper left", cellLoc="left", colWidths=[0.14, 0.07, 0.07, 0.09, 0.30, 0.25])
     tb.auto_set_font_size(False); tb.set_fontsize(8); tb.scale(1, 1.35)
     ax.text(0, 0.02, f"Cup: 60° included, apex at the X Y Z shown (Ø0.70 apex hole from +0.62 to −0.50 for the head screw). Bore: Ø{BORE_D:.3f} blind, floor at Z shown "
-            "(= tube end, 0.30 past the pair node).\nTools: 1/4 3FL flat (cup rough, LOC ≥ 1.25), 1/8 ball and 1/8 flat (≥ 1.5 reach), 1/2 3FL flat (bore, LOC ≥ 1.5). "
+            "(= tube end, 0.30 past the pair node).\nTools (2-flute for aluminium at ≤ 10k rpm, mist): 1/4 flat (cup rough, LOC ≥ 1.25), 1/8 ball and 1/8 flat (≥ 1.5 reach), 1/2 flat (bore, LOC ≥ 1.5). "
             "Socket 210 and 330 are the same part (checked).", fontsize=7, va="bottom")
     # ops
     ax = fig.add_axes([0.60, 0.05, 0.39, 0.45]); ax.axis("off")

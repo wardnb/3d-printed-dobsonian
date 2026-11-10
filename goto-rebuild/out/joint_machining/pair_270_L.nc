@@ -3,9 +3,9 @@
 ( Z from the block, not the post: touch the block top face at X3.5167 Y3.4728; set that reading to Z0.7298 )
 ( caliper check of the print: fence inner corner at X4.656 Y2.764 Z-0.745 from the post corner; shift G54 by any X/Y difference )
 G20 G90 G17 G94
-M3 S18000
+M3 S10000
 G4 P3
-( T1 = 1/2 3FL carbide flat end mill )
+( T1 = 1/2 2FL carbide flat end mill for aluminium, lowest rpm, mist )
 G0 Z1.464
 G0 X3.7687 Y3.4728
 G1 Z1.0143 F15

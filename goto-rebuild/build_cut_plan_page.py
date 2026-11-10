@@ -133,13 +133,12 @@ BUY = [
     ]),
     dict(group="Cutting tools, workholding and shop consumables (2026-11-09: everything needed to cut the whole build)", items=[
         # --- aluminium end mills (ER20 collets 1/8, 1/4, 3/8, 1/2: check the AltMill's set) ---
-        B("em14al", "1/4\" 3-flute carbide end mill for aluminium (ZrN/uncoated), 0.75\" LOC, ×3", 3, "The workhorse: cage rings, cell frame/triangles, arm and base plates, roller blocks, spider blocks, focuser board, az track. Buy three: one gets dull/chipped", "now", "Lakeshore / Kodiak / Amazon (SpeTool)"),
-        B("em14long", "1/4\" 3FL carbide, ≥ 1.25\" LOC (≥ 1.5\" reach)", 2, "Socket cup roughing (1.4\" deep), gib bores 1.25 deep, roller-block axle slot 1.19 deep, F608 bores", "now", ""),
-        B("em12al", "1/2\" 3FL carbide, ≥ 1.5\" LOC", 1, "Pair-block blind bores Ø1.244 by helix (joint_machining); also fast facing of block stock", "now", ""),
-        B("em18ball", "1/8\" ball carbide, ≥ 1.5\" reach (reduced neck)", 2, "Socket cup 60° cone finish spiral to the apex 1.4\" down; one spare: they snap", "now", ""),
-        B("em18flat", "1/8\" flat carbide, ≥ 1.5\" reach, ×3", 3, "#8-32 tap drills in the blocks, #10 holes and slots in plates, small pockets; spares", "now", ""),
-        B("em14o", "1/4\" single-flute (O-flute) upcut carbide, 1\" CL", 2, "Profiling the 1/4\" cage rings and 1/8\" track ring from plate: clears chips at router rpm, no re-welding", "now", "Amana 51411 / SpeTool"),
-        B("em38al", "3/8\" 3FL carbide, 1\" LOC (optional)", 1, "Faster roughing of the 1/2\" cell frame and 1-1/2 × 2 roller-block bar", "later", ""),
+        B("em14al", "1/4\" single-flute (O-flute) upcut carbide for aluminium, 1\" CL, ×3", 3, "The workhorse on a router: cage rings, cell frame/triangles, arm and base plates, roller blocks, spider blocks, focuser board, az track. One flute keeps the chip load right at 8–24k rpm (0.002\"/tooth = 36 ipm at 18k) and clears the slot; a 3-flute would need 50–145 ipm and welds when the feed drops", "now", "Amana 51411 / SpeTool / Datron-style"),
+        B("em14long", "1/4\" 2-flute carbide for aluminium, ≥ 1.25\" LOC (≥ 1.5\" reach)", 2, "Socket cup roughing (1.4\" deep), gib bores 1.25 deep, roller-block axle slot 1.19 deep, F608 bores", "now", ""),
+        B("em12al", "1/2\" 2-flute carbide for aluminium, ≥ 1.5\" LOC (3FL only if no 2FL in that reach)", 1, "Pair-block blind bores Ø1.244 by helix (joint_machining) at the spindle's lowest rpm; also facing block stock", "now", ""),
+        B("em18ball", "1/8\" 2FL ball carbide, ≥ 1.5\" reach (reduced neck)", 2, "Socket cup 60° cone finish spiral to the apex 1.4\" down; one spare: they snap", "now", ""),
+        B("em18flat", "1/8\" 2FL flat carbide, ≥ 1.5\" reach, ×3", 3, "#8-32 tap drills in the blocks, #10 holes and slots in plates, small pockets; spares", "now", ""),
+        B("em38al", "3/8\" 2FL carbide for aluminium, 1\" LOC (optional)", 1, "Faster roughing of the 1/2\" cell frame and 1-1/2 × 2 roller-block bar", "later", ""),
         B("chamfer", "90° carbide V-bit / chamfer mill, 1/2\" dia, 1/4\" shank", 1, "The 0.06\" cosmetic chamfers on every block and plate edge (last pass) and spot drilling", "now", ""),
         B("csk82", "82° countersink, 3/8\" body, 1/4\" shank (3- or 6-flute)", 1, "#8 and #10 flat-head screws: ring-to-post FHCS, az track #8 FHCS, finder cradle. 90° V-bits are the wrong angle for FHCS", "now", ""),
         B("emsteel", "1/4\" 4FL carbide (AlTiN) for steel", 1, "Gib pins: 0.34 slot and the 8° wedge face in O1 rod (annealed), light cuts at the spindle's lowest rpm; the 1/8\" steel retainer plates can be sawn/drilled by hand instead", "now", ""),
@@ -163,7 +162,7 @@ BUY = [
         # --- measuring and finishing ---
         B("meas", "Dial test indicator 0.0005\" + magnetic base; 1-2-3 blocks (pair); gauge pins 0.250 / 0.625 / 1.100 (or a pin set 0.251–0.500); thread pitch gauge", 1, "Tram the fixtures and vise, check cup apex depth and bore sizes, verify the plug shank against the measured 1.10 bore before bonding", "now", ""),
         B("finish", "Deburring tool + blades, needle files, Scotch-Brite, 1/4-20 and 10-32 thread chasers", 1, "Every edge before bead blasting; chasing threads after anodize", "now", ""),
-        B("cool", "Aluminium cutting fluid (A9 / WD-40 Specialist) in a spray bottle; air blast nozzle; chip brush; shop vac with a cyclone", 1, "Mist on every aluminium cut (3FL at router rpm welds chips without it); vacuum off the birch", "now", ""),
+        B("cool", "Aluminium cutting fluid (A9 / WD-40 Specialist) in a spray bottle; air blast nozzle; chip brush; shop vac with a cyclone", 1, "Mist or air blast on every aluminium cut (dry 6061 at router rpm welds to the tool whatever the flute count); set feeds from chip load (≥ 0.001\"/tooth, aim 0.002) not by feel; vacuum off the birch", "now", ""),
         B("bush29", "Drill bushing 0.29\" OD × 0.201\" ID", 1, "Plug-nose drill guide: pressed into a socket cup's stud hole so the tap drill follows the cone axis", "now", "McMaster"),
         B("hsi", "1/4-20 heat-set inserts (16) + 1/4-20 × 1-1/2 SHCS (16)", 1, "The 8 printed fixtures (2 each)", "now", ""),
         B("fil", "ASA filament, 2 kg", 1, "8 wedge fixtures (~1.7 kg total; two printed by 2026-11-09)", "now", ""),
