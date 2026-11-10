@@ -24,6 +24,17 @@ Mark a line `[done <date>]` when it lands; keep done items until the next tidy.
   before the prime line, so the extra −0.03 is baby-stepped live after priming), chamber 50 °C. A 40 × 40 × 0.6 mm
   ASA coupon (`coupon_40x40x0p6_ASA_firstlayer.gcode`) is on the printer for first-layer checks. Remaining six
   (pair_150_L/R, socket_back_L/R, socket_point_L/R) use the same settings at −0.07, one per plate.
+  **2026-11-09 reslice:** after pair_30_R showed infill show-through on the top face and banding on the block
+  walls, the Orca presets on beast were changed (filament flow 0.95 → 0.975, min layer time 3 → 8 s, top shell 5 →
+  7 layers / 1.4 mm; later the same day gap fill on top/bottom solid layers, for small voids beside the screw-hole
+  walls seen on pair_150_L's bottom). The six remaining fixtures were resliced with them: `*_flow975_top7.gcode`
+  (pair_150_L) and `*_flow975_top7_gapfill.gcode` (the other five). Per-fixture: pair_150 212 / 210 g, 6 h 26–29;
+  socket_back 248 g, 7 h 22–27; socket_point 244 g, 7 h 14–19. `fixture_pair_150_L` started 2026-11-09 17:55
+  (bed 110, Z −0.07, new brush-refill + prime-line macro: only a hair on the nozzle after the wipe, nothing
+  dragged into the prime line); brim and first layers flat. **Filament:** the lane-3 iSANMATE ASA had 443 g
+  before pair_150_L, so it covers pair_150_R (~20 g spare) and no more; the four socket fixtures need ~985 g of
+  new ASA (two 1 kg spools, or one plus the 235 g Zyltech matte ASA from the shelf as an AFC runout lane).
+  Before each start: `python3 ~/trident/forge/forge.py health` (exit 1 = don't start) and `forge.py spool`.
 - **[done 2026-11-04]** Z is now touched off on the block top above the feature (`block_top_z_at_feature_xy`, also in each `.nc` header); X/Y stay on the post with a caliper check against `block_fence_corner_xyz` (block side faces all lean ~13°, so there is no touchable vertical block face). Reasoning in `out/joint_machining/print/README.md`. **Request: let the operator touch off on the BLOCK, not the fixture's datum post.** Printed ASA shrinks
   about 0.4–0.8 % (PLA 0.2–0.4 %), so the fence-to-post distance on a 170–180 mm fixture is off by up to ~0.5 mm, and
   `feature_xyz_from_post_corner` (3.2–4.1" from the post) inherits ~0.3–0.6 mm (0.012–0.025") of that in X/Y. The block
