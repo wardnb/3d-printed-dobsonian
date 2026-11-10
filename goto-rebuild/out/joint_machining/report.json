@@ -264,7 +264,7 @@
     ]
    ],
    "gcode": "pair_30_L.nc",
-   "gcode_lines": 5694
+   "gcode_lines": 7956
   },
   {
    "station": "pair_30_R",
@@ -317,7 +317,7 @@
     ]
    ],
    "gcode": "pair_30_R.nc",
-   "gcode_lines": 5694
+   "gcode_lines": 7956
   },
   {
    "station": "pair_150_L",
@@ -370,7 +370,7 @@
     ]
    ],
    "gcode": "pair_150_L.nc",
-   "gcode_lines": 5694
+   "gcode_lines": 7956
   },
   {
    "station": "pair_150_R",
@@ -423,7 +423,7 @@
     ]
    ],
    "gcode": "pair_150_R.nc",
-   "gcode_lines": 5694
+   "gcode_lines": 7956
   },
   {
    "station": "pair_270_L",
@@ -476,7 +476,7 @@
     ]
    ],
    "gcode": "pair_270_L.nc",
-   "gcode_lines": 5694
+   "gcode_lines": 7956
   },
   {
    "station": "pair_270_R",
@@ -529,7 +529,7 @@
     ]
    ],
    "gcode": "pair_270_R.nc",
-   "gcode_lines": 5694
+   "gcode_lines": 7956
   }
  ],
  "socket_op2_gib_holes_t_u_dia_depth": [

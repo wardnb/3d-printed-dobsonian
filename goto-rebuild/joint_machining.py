@@ -197,7 +197,6 @@ def build(f):
 # AltMill spindle (Nick, 2026-11-09): 1.5 kW, ER20, 7,500-24,000 rpm, 120 V. Per-tool speeds, all 2-flute carbide for aluminium, mist/oil:
 RPM = 10000        # 1/4" flat: 40 ipm = 0.002"/tooth, 650 SFM (3FL at 18k, the first version, was 0.0007"/tooth and would rub/weld)
 RPM_EIGHTH = 18000 # 1/8" ball and flat: 35 ipm = 0.001"/tooth, 590 SFM (at 10k the chip would be 0.0018": too much for a long 1/8)
-RPM_HALF = 7500    # 1/2" flat (pair bores): spindle floor; 25-30 ipm = 0.0017-0.002"/tooth, 980 SFM; cut needs < 0.1 kW
 
 
 def g_header(title, g=None, rpm=None):
@@ -289,19 +288,27 @@ def gcode_cup(f, g):
     return L
 
 
+BORE_TOOL_LOC = 1.5    # the 1/4" 2-flute long end mill's length of cut (GS Tooling/Sowa 101022: 1-1/2 x 4)
+
+
 def gcode_bore(f, g):
-    """Pair bore: Ø(tube OD + 0.004) blind bore by helical interpolation with a 1/2" 2-flute flat end mill, flat floor at the tube end."""
+    """Pair bore: Ø(tube OD + 0.004) blind bore by helical interpolation with the SAME 1/4" 2-flute long end mill as the
+    cups (2026-11-09: the 1/2" tool was dropped, $86 and a 1/2" collet for one feature). Three concentric roughing
+    helices (centre-path radii 0.10 / 0.29 / wall - 0.010: the tool covers the centre, 76 % radial engagement after the
+    first) and one full-depth finish helix at the wall; flat floor at the tube end."""
     cx, cy, zf = g["feat"]
     z0 = g["top_z"] + 0.05
     sz = safe_z(g)
-    L = g_header(f"{f['label']}: {BORE_D:.3f} blind bonded bore; fixture tilt {math.degrees(g['st']['tau']):.2f} deg", g, rpm=RPM_HALF)
-    L += ["( T1 = 1/2 2FL carbide flat end mill for aluminium, 7500 rpm = spindle floor, mist )", f"G0 Z{sz:.3f}"]
-    r_tool = 0.25
-    for r in (BORE_D / 2 - r_tool - 0.12, BORE_D / 2 - r_tool - 0.010):
-        L += helix_ring(cx, cy, r, z0, zf + 0.005, 0.03, 30)
+    r_tool = 0.125
+    r_wall = BORE_D / 2 - r_tool
+    assert z0 - zf <= BORE_TOOL_LOC - 0.05, f"bore {z0 - zf:.2f} deep exceeds the 1/4 tool's length of cut"
+    L = g_header(f"{f['label']}: {BORE_D:.3f} blind bonded bore, {z0 - zf - 0.05:.2f} deep; fixture tilt {math.degrees(g['st']['tau']):.2f} deg", g)
+    L += ["( T1 = 1/4 2FL carbide flat end mill for aluminium, LOC >= 1.5, 10000 rpm, 0.002 in/tooth, mist )", f"G0 Z{sz:.3f}"]
+    for r in (0.10, 0.29, r_wall - 0.010):
+        L += helix_ring(cx, cy, r, z0, zf + 0.005, 0.03, 40)
         L.append(f"G1 X{cx:.4f} Y{cy:.4f} F20")
         L.append(f"G0 Z{sz:.3f}")
-    L += ["( finish pass, full depth )"] + helix_ring(cx, cy, BORE_D / 2 - r_tool, z0, zf, 0.06, 25)
+    L += ["( finish pass, full depth )"] + helix_ring(cx, cy, r_wall, z0, zf, 0.06, 30)
     L.append(f"G1 X{cx:.4f} Y{cy:.4f} F20")
     L += g_footer(sz)
     return L
@@ -540,7 +547,7 @@ def sheet():
                   loc="upper left", cellLoc="left", colWidths=[0.14, 0.07, 0.07, 0.09, 0.30, 0.25])
     tb.auto_set_font_size(False); tb.set_fontsize(8); tb.scale(1, 1.35)
     ax.text(0, 0.02, f"Cup: 60° included, apex at the X Y Z shown (Ø0.70 apex hole from +0.62 to −0.50 for the head screw). Bore: Ø{BORE_D:.3f} blind, floor at Z shown "
-            "(= tube end, 0.30 past the pair node).\nTools (2-flute for aluminium at ≤ 10k rpm, mist): 1/4 flat (cup rough, LOC ≥ 1.25), 1/8 ball and 1/8 flat (≥ 1.5 reach), 1/2 flat (bore, LOC ≥ 1.5). "
+            "(= tube end, 0.30 past the pair node).\nTools (2-flute for aluminium at ≤ 10k rpm, mist): 1/4 flat long (cup rough AND pair bores, LOC ≥ 1.5), 1/8 ball (≥ 1.5 reach) and 1/8 flat. "
             "Socket 210 and 330 are the same part (checked).", fontsize=7, va="bottom")
     # ops
     ax = fig.add_axes([0.60, 0.05, 0.39, 0.45]); ax.axis("off")
