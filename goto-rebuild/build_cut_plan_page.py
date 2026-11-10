@@ -131,13 +131,44 @@ BUY = [
         B("bench", "Bench: 2 × SiTech motor cables (modular + barrel; the motors have SiTech adapter boards), 12 V ≥ 5 A supply, USB-B cable, 3/8 bolt + nylon washers (test-rim pivot)", 1, "Stage 0–2 of docs/drive_bringup.md; the old DobStuff D bearing is the test rim", "now", ""),
         B("pc", "Mini PC, USB3 + 12 V trunk, enclosure, connectors", 1, "Electronics box not laid out yet", "later", ""),
     ]),
-    dict(group="Shop consumables (truss blocks and fixtures)", items=[
-        B("tools", "Carbide end mills", 1, "1/8\" ball, ≥ 1.5\" reach; 1/8\" flat, ≥ 1.5\" reach; 1/4\" 3FL, ≥ 1.25\" LOC; 1/2\" 3FL, ≥ 1.5\" LOC (aluminium geometry)", "now", ""),
-        B("taps", "1/4-20 tap, #7 drill, 0.250\" reamer", 1, "Socket undersides, pair blocks", "now", ""),
+    dict(group="Cutting tools, workholding and shop consumables (2026-11-09: everything needed to cut the whole build)", items=[
+        # --- aluminium end mills (ER20 collets 1/8, 1/4, 3/8, 1/2: check the AltMill's set) ---
+        B("em14al", "1/4\" 3-flute carbide end mill for aluminium (ZrN/uncoated), 0.75\" LOC, ×3", 3, "The workhorse: cage rings, cell frame/triangles, arm and base plates, roller blocks, spider blocks, focuser board, az track. Buy three: one gets dull/chipped", "now", "Lakeshore / Kodiak / Amazon (SpeTool)"),
+        B("em14long", "1/4\" 3FL carbide, ≥ 1.25\" LOC (≥ 1.5\" reach)", 2, "Socket cup roughing (1.4\" deep), gib bores 1.25 deep, roller-block axle slot 1.19 deep, F608 bores", "now", ""),
+        B("em12al", "1/2\" 3FL carbide, ≥ 1.5\" LOC", 1, "Pair-block blind bores Ø1.244 by helix (joint_machining); also fast facing of block stock", "now", ""),
+        B("em18ball", "1/8\" ball carbide, ≥ 1.5\" reach (reduced neck)", 2, "Socket cup 60° cone finish spiral to the apex 1.4\" down; one spare: they snap", "now", ""),
+        B("em18flat", "1/8\" flat carbide, ≥ 1.5\" reach, ×3", 3, "#8-32 tap drills in the blocks, #10 holes and slots in plates, small pockets; spares", "now", ""),
+        B("em14o", "1/4\" single-flute (O-flute) upcut carbide, 1\" CL", 2, "Profiling the 1/4\" cage rings and 1/8\" track ring from plate: clears chips at router rpm, no re-welding", "now", "Amana 51411 / SpeTool"),
+        B("em38al", "3/8\" 3FL carbide, 1\" LOC (optional)", 1, "Faster roughing of the 1/2\" cell frame and 1-1/2 × 2 roller-block bar", "later", ""),
+        B("chamfer", "90° carbide V-bit / chamfer mill, 1/2\" dia, 1/4\" shank", 1, "The 0.06\" cosmetic chamfers on every block and plate edge (last pass) and spot drilling", "now", ""),
+        B("csk82", "82° countersink, 3/8\" body, 1/4\" shank (3- or 6-flute)", 1, "#8 and #10 flat-head screws: ring-to-post FHCS, az track #8 FHCS, finder cradle. 90° V-bits are the wrong angle for FHCS", "now", ""),
+        B("emsteel", "1/4\" 4FL carbide (AlTiN) for steel", 1, "Gib pins: 0.34 slot and the 8° wedge face in O1 rod (annealed), light cuts at the spindle's lowest rpm; the 1/8\" steel retainer plates can be sawn/drilled by hand instead", "now", ""),
+        # --- birch ---
+        B("comp14", "1/4\" compression bit, 1\" CL, 1/4\" shank, ×2", 2, "Profiling the 18 mm birch (walls, floor, D bearings, ring thirds, wings): clean top and bottom edges in 2 passes", "now", "Amana 46170 / SpeTool"),
+        B("down14", "1/4\" downcut spiral, ×2", 2, "Pockets, notches and the D lightening windows (keeps the face clean); one spare", "now", ""),
+        B("down18", "1/8\" downcut spiral", 1, "Small holes/pilots in birch, the encoder plate relief pocket", "now", ""),
+        B("fors", "Forstner bits 1/2\" and 1-3/4\"", 1, "Drill-bushing seats (1/2\" OD) in the box strips; 45 mm stub holes if any ply is re-drilled (1-3/4 = 44.5 mm, then ream/sand)", "now", ""),
+        # --- drills, taps, reamers (hand/drill press unless noted) ---
+        B("tapset", "Taps: #8-32, #10-32, 1/4-20, 5/16-18, 3/8-16, 1/2-13 (plug/bottoming) + tap wrench", 1, "#8 retainer plates, #10 spider studs/standoffs, 1/4-20 everywhere (plug noses, spigots, pair knobs, cross bolts), 5/16-18 pivot insert, 3/8-16 lifting lugs, 1/2-13 roller-block cheeks", "now", ""),
+        B("drills", "Tap/clearance drills: #29, #21, #7, F, 5/16, 27/64, 17/64, 0.201 stub (for the 0.29 bushing), 1/4, 3/8, 13/32", 1, "Number/letter set covers it; cobalt or carbide-tipped for the 1/8\" steel strip", "now", ""),
+        B("reamers", "Chucking reamers: 0.2495\" (press) and 0.2510\" (slip) for 1/4\" dowels; 0.3745\" for the 3/8\" D dowels; 5/8\" (0.6250) for the roller axles", 1, "Pair-block dowels press in the block (0.2495) and slip in the cage ring (0.2510); 5/8 shoulder bolts want ≤ 0.001 clearance in the block cheeks, or helix-bore to 0.627 and skip the reamer", "now", "McMaster"),
+        B("inserts14", "Threaded inserts: 1/4-20 brass EZ-Lok for wood (×30), 5/16-24 steel Keensert/Heli-Coil kit (×3), 5/16-18 steel insert (×1), 1/2-13 Heli-Coil (optional, roller block cheeks if 6061 threads gall)", 1, "D-to-box bolts (12), cell push screws (3), fixture/misc; cell collimation bolts in cast plate", "now", "McMaster"),
+        # --- workholding ---
+        B("vise", "Low-profile 3\" or 4\" CNC vise (fixed jaw ≤ 2.5\" tall) + parallels + soft jaws stock", 1, "Socket Op2 (gib bores, block on its inside face) and Op5 (underside), pair-block top holes, roller blocks, spigots upright, gib pins. Bolts to the spoilboard inserts", "now", "Sienci / Amazon 4\" low-profile"),
+        B("clamps", "Spoilboard T-track hold-down kit + 1/4-20 hold-down bolts, strap clamps (×6, ≤ 0.35\" tall over the block) + 1/4-20 × 1-1/2 SHCS, cam clamps (×4)", 1, "Fixtures (two straps each), plate blanks, birch blanks; the 8 printed fixtures already have the 2 heat-set inserts each", "now", ""),
+        B("tapeca", "Blue painter's tape (2\") + thin CA glue + activator; double-sided CNC tape", 1, "Holding the 21\" ring discs, arm plates and the 1/8\" track ring flat on the spoilboard with no clamps in the tool path", "now", ""),
+        B("spoil", "3/4\" MDF spoilboard sheet + 1/4-20 threaded inserts (×30)", 1, "A fresh surfaced spoilboard before the rings: flatness sets the 1/4\" ring's thickness uniformity", "now", ""),
+        # --- rotary ---
+        B("vortex", "Vortex rotary: 4-jaw chuck + tailstock live centre (if not already in the kit), 1-3/8 round stock stubs", 1, "Cone plugs (12) and spigots (3) as continuous spirals; a 60° centre drill for the tailstock end", "now", "Sienci"),
+        # --- measuring and finishing ---
+        B("meas", "Dial test indicator 0.0005\" + magnetic base; 1-2-3 blocks (pair); gauge pins 0.250 / 0.625 / 1.100 (or a pin set 0.251–0.500); thread pitch gauge", 1, "Tram the fixtures and vise, check cup apex depth and bore sizes, verify the plug shank against the measured 1.10 bore before bonding", "now", ""),
+        B("finish", "Deburring tool + blades, needle files, Scotch-Brite, 1/4-20 and 10-32 thread chasers", 1, "Every edge before bead blasting; chasing threads after anodize", "now", ""),
+        B("cool", "Aluminium cutting fluid (A9 / WD-40 Specialist) in a spray bottle; air blast nozzle; chip brush; shop vac with a cyclone", 1, "Mist on every aluminium cut (3FL at router rpm welds chips without it); vacuum off the birch", "now", ""),
         B("bush29", "Drill bushing 0.29\" OD × 0.201\" ID", 1, "Plug-nose drill guide: pressed into a socket cup's stud hole so the tap drill follows the cone axis", "now", "McMaster"),
-        B("hsi", "1/4-20 heat-set inserts + strap clamps", 1, "16 inserts for the 8 printed fixtures; low-profile straps (≤ 0.35\" above the block)", "now", ""),
-        B("fil", "PETG or ASA filament", 1, "8 wedge fixtures", "now", ""),
-        B("loctite", "Loctite 243 / 263", 1, "Drawbolts, spigot bolts", "now", ""),
+        B("hsi", "1/4-20 heat-set inserts (16) + 1/4-20 × 1-1/2 SHCS (16)", 1, "The 8 printed fixtures (2 each)", "now", ""),
+        B("fil", "ASA filament, 2 kg", 1, "8 wedge fixtures (~1.7 kg total; two printed by 2026-11-09)", "now", ""),
+        B("loctite", "Loctite 243 (blue) + 263 (red)", 1, "Spigot bolts, head screws in the plug noses, set screws", "now", ""),
+        B("ppe", "Safety glasses, hearing protection, nitrile gloves for epoxy, respirator cartridges for the shroud/anodize prep", 1, "", "now", ""),
     ]),
 ]
 
