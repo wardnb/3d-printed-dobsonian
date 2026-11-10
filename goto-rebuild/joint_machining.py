@@ -194,16 +194,19 @@ def build(f):
 
 
 # ---------------------------------------------------------------- G-code
-RPM = 10000   # 2-flute carbide at 40 ipm = 0.002"/tooth; 3FL at 18k rpm (the first version) was 0.0007"/tooth and would rub/weld on a router
+# AltMill spindle (Nick, 2026-11-09): 1.5 kW, ER20, 7,500-24,000 rpm, 120 V. Per-tool speeds, all 2-flute carbide for aluminium, mist/oil:
+RPM = 10000        # 1/4" flat: 40 ipm = 0.002"/tooth, 650 SFM (3FL at 18k, the first version, was 0.0007"/tooth and would rub/weld)
+RPM_EIGHTH = 18000 # 1/8" ball and flat: 35 ipm = 0.001"/tooth, 590 SFM (at 10k the chip would be 0.0018": too much for a long 1/8)
+RPM_HALF = 7500    # 1/2" flat (pair bores): spindle floor; 25-30 ipm = 0.0017-0.002"/tooth, 980 SFM; cut needs < 0.1 kW
 
 
-def g_header(title, g=None):
+def g_header(title, g=None, rpm=None):
     L = [f"( {title} )", "( units inch, WCS zero = datum post top front-left corner; the block top is ABOVE Z0, rapids at block top + 0.5; check every number before cutting )"]
     if g is not None:
         fx, fy, fz = g["feat"]
         L += [f"( Z from the block, not the post: touch the block top face at X{fx:.4f} Y{fy:.4f}; set that reading to Z{g['top_z_at_feat']:.4f} )",
               f"( caliper check of the print: fence inner corner at X{g['fence_corner'][0]:.3f} Y{g['fence_corner'][1]:.3f} Z{g['fence_corner'][2]:.3f} from the post corner; shift G54 by any X/Y difference )"]
-    L += ["G20 G90 G17 G94", f"M3 S{RPM}", "G4 P3"]
+    L += ["G20 G90 G17 G94", f"M3 S{rpm or RPM}", "G4 P3"]
     return L
 
 
@@ -258,7 +261,7 @@ def gcode_cup(f, g):
             L.append(f"G1 X{cx + r:.4f} Y{cy:.4f} F40")
             L.append(f"G2 X{cx + r:.4f} Y{cy:.4f} I{-r:.4f} J0 F40")
         L.append(f"G1 X{cx:.4f} Y{cy:.4f}")
-    L += [f"G0 Z{sz:.3f}", "M5", "( T2 = 1/8 ball end mill, finish )", "M0 (change to 1/8 ball, re-zero Z on the post)", f"M3 S{RPM}", "G4 P3"]
+    L += [f"G0 Z{sz:.3f}", "M5", "( T2 = 1/8 ball end mill, finish )", "M0 (change to 1/8 ball, re-zero Z on the post)", f"M3 S{RPM_EIGHTH}", "G4 P3"]
     rb = 0.0625
     zw_end = za + rb * math.cos(T.HALF) / K30 + 0.002
     zw = z0 - rb * math.sin(T.HALF)
@@ -291,8 +294,8 @@ def gcode_bore(f, g):
     cx, cy, zf = g["feat"]
     z0 = g["top_z"] + 0.05
     sz = safe_z(g)
-    L = g_header(f"{f['label']}: {BORE_D:.3f} blind bonded bore; fixture tilt {math.degrees(g['st']['tau']):.2f} deg", g)
-    L += ["( T1 = 1/2 2FL carbide flat end mill for aluminium, lowest rpm, mist )", f"G0 Z{sz:.3f}"]
+    L = g_header(f"{f['label']}: {BORE_D:.3f} blind bonded bore; fixture tilt {math.degrees(g['st']['tau']):.2f} deg", g, rpm=RPM_HALF)
+    L += ["( T1 = 1/2 2FL carbide flat end mill for aluminium, 7500 rpm = spindle floor, mist )", f"G0 Z{sz:.3f}"]
     r_tool = 0.25
     for r in (BORE_D / 2 - r_tool - 0.12, BORE_D / 2 - r_tool - 0.010):
         L += helix_ring(cx, cy, r, z0, zf + 0.005, 0.03, 30)
@@ -341,7 +344,7 @@ def gcode_gib_bores():
             L += helix_ring(cx, cy, r, 0.05, -T.GIB_BORE_DEPTH, 0.03, 12)
             L.append(f"G1 X{cx:.4f} Y{cy:.4f} F20")
             L.append("G0 Z0.5")
-    L += ["M5", "( T2 = 1/8 flat end mill: #8-32 tap drills 0.136 x 0.40 deep, peck )", "M0 (change to 1/8 flat, re-zero Z)", f"M3 S{RPM}", "G4 P3"]
+    L += ["M5", "( T2 = 1/8 flat end mill: #8-32 tap drills 0.136 x 0.40 deep, peck )", "M0 (change to 1/8 flat, re-zero Z)", f"M3 S{RPM_EIGHTH}", "G4 P3"]
     for side in (-1, 1):
         for dt in (-0.55, 0.55):
             cx, cy = 0.8 * side + dt + T_ / 2, 1.0 + T.GIB_Z

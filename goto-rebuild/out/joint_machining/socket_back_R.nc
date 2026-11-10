@@ -380,7 +380,7 @@ G0 Z1.922
 M5
 ( T2 = 1/8 ball end mill, finish )
 M0 (change to 1/8 ball, re-zero Z on the post)
-M3 S10000
+M3 S18000
 G4 P3
 G0 X3.9364 Y3.7873
 G1 Z1.4719 F15

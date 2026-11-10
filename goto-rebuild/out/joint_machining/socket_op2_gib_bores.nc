@@ -8671,7 +8671,7 @@ G0 Z0.5
 M5
 ( T2 = 1/8 flat end mill: #8-32 tap drills 0.136 x 0.40 deep, peck )
 M0 (change to 1/8 flat, re-zero Z)
-M3 S10000
+M3 S18000
 G4 P3
 G0 X0.4500 Y1.0000
 G0 Z0.1

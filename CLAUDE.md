@@ -23,7 +23,8 @@ decisions; this file is the working knowledge needed to continue the engineering
 - Wants an engineer's review, not reassurance: run numbers, rank findings by cost to image quality, fix them in
   the model, say plainly what is assumed.
 - Visual observing first. Imaging (ASI533 + OAG) is a future option only; no field rotator, EQ platform maybe later.
-- Machines: AltMill 2×4 CNC (primary for aluminium and birch), LongMill CNC, Voron Trident 3D printer.
+- Machines: AltMill 2×4 CNC (primary for aluminium and birch; spindle per Nick 2026-11-09: 1.5 kW, 80 mm body, ER20, 7,500–24,000 rpm, 120 V), LongMill CNC, Voron Trident 3D printer.
+  Aluminium on it (2026-11-09): single-flute O-flute 1/4" for plate profiles, 2-flute elsewhere, feeds from chip load (~0.002"/tooth at 1/4"), mist or oil always; `joint_machining.py` runs 1/4" at 10,000, 1/8" at 18,000, 1/2" at 7,500 rpm. No 3-flutes. Full tool/workholding list = last group of `BUY`.
   CAM is Vectric Aspire (Windows): DXF per part from the export scripts → Aspire toolpaths → gSender. No Fusion.
 - Material: every Al alloy has the same stiffness (~10 Msi) and the designs are stiffness-limited, so 6061-T6 is the default.
   Flat, heavily pocketed plates (cage rings, cell frame, focuser board) may be cast tooling plate (ATP-5 = cast 5083, or MIC-6):
