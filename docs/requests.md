@@ -33,7 +33,9 @@ Mark a line `[done <date>]` when it lands; keep done items until the next tidy.
   infill extruded ~37 % more than the solid layers above it and every layer rode those ridges). Per-fixture:
   pair_150 212 / 209 g, 6 h 26–29; socket_back 247 g, 7 h 22–27; socket_point 243 g, 7 h 14–19. `fixture_pair_150_L` started 2026-11-09 17:55
   (bed 110, Z −0.07, new brush-refill + prime-line macro: only a hair on the nozzle after the wipe, nothing
-  dragged into the prime line); brim and first layers flat. **Filament:** the lane-3 iSANMATE ASA had 443 g
+  dragged into the prime line); finished 2026-11-10 00:58 (6 h 38 min, 84.3 m), brim flat, no lift; the base top
+  is rippled on the infill pitch (hence the ibf75 reslice above), which does not touch the block seats. Three
+  fixtures done, five to go. **Filament:** the lane-3 iSANMATE ASA had 443 g
   before pair_150_L, so it covers pair_150_R (~20 g spare) and no more; the four socket fixtures need ~985 g of
   new ASA (two 1 kg spools, or one plus the 235 g Zyltech matte ASA from the shelf as an AFC runout lane).
   Before each start: `python3 ~/trident/forge/forge.py health` (exit 1 = don't start) and `forge.py spool`.
