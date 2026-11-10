@@ -39,7 +39,9 @@ Mark a line `[done <date>]` when it lands; keep done items until the next tidy.
   before pair_150_L, so it covers pair_150_R (~20 g spare) and no more; the four socket fixtures need ~985 g of
   new ASA (two 1 kg spools, or one plus the 235 g Zyltech matte ASA from the shelf as an AFC runout lane).
   Before each start: `python3 ~/trident/forge/forge.py health` (exit 1 = don't start) and `forge.py spool`.
-  `fixture_pair_150_R` started 2026-11-10 07:23 (same recipe, file `*_gapfill_ibf75`), first layer clean at −0.07.
+  `fixture_pair_150_R` printed 2026-11-10 07:23 → 14:25 (6 h 39 min, 83.3 m; same recipe, file `*_gapfill_ibf75`,
+  PA 0.066 from layer 2), brim flat, no lift. **All four pair fixtures done**; the four socket fixtures remain and
+  wait on new ASA (lane 3 reads 9 g; Zyltech matte 235 g on the shelf is short of a 243–248 g socket print).
   **Pressure advance (found 2026-11-10):** all four fixtures so far ran Klipper's stale global PA 0.037 (tuned for
   the old 0.6 nozzle) because PRINT_START only sets PA when the slice passes `PA=`, which my files did not; the
   symptom is a row of small gaps where first-layer fill lines start at the walls. Set live to 0.066 (this spool's
