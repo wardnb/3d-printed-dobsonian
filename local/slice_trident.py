@@ -10,6 +10,10 @@ OrcaSlicer CLI cannot resolve inherits itself. Gotchas learned 2026-11-04: every
 "version"; the machine and process must KEEP their `inherits` names (the CLI's compatibility check compares the
 process's `compatible_printers` with the machine's inherited system name, not its own name); run under xvfb-run.
 --tool N adds TOOL=N to the PRINT_START line (AFC lane; check `AFC_stepper laneN` material first).
+--pa X adds PA=X to the PRINT_START line. PRINT_START only sets pressure advance when it is given PA=; without it
+Klipper runs printer.cfg's global (0.037, stale, tuned for the old 0.6 nozzle: found 2026-11-10 after four fixture
+prints). The value is per spool (Spoolman filament `extra.pa`; `python3 ~/trident/forge/forge.py spool`):
+iSANMATE ASA gloss 0.066, Zyltech ASA matte 0.054, an unmeasured ASA 0.055 until calibrated.
 Prints time + filament per part; --upload sends the G-code to Moonraker (upload only, never starts a print).
 """
 import argparse, glob, json, os, re, shutil, subprocess, sys, tempfile
@@ -66,6 +70,7 @@ def main():
     ap.add_argument('--upload', help='Moonraker folder under gcodes/ to upload into')
     ap.add_argument('--tag', default='', help='suffix for the G-code name')
     ap.add_argument('--tool', type=int, help='AFC lane as Tn for PRINT_START (lane3/ASA = 2). Without it PRINT_START_STAGE2 runs T0 = lane1 PLA')
+    ap.add_argument('--pa', type=float, help="pressure advance for PRINT_START (per spool; without it Klipper's stale global 0.037 runs)")
     a = ap.parse_args()
     extra = dict(kv.split('=', 1) for kv in a.set)
     fextra = {k: [v] for k, v in (kv.split('=', 1) for kv in a.fset)}  # filament values are one-element lists
@@ -88,9 +93,12 @@ def main():
             continue
         dst = os.path.join(a.out, f'{n}{a.tag}.gcode')
         shutil.move(f'{od}/plate_1.gcode', dst)
-        if a.tool is not None:  # the Trident's PRINT_START ends with T{tool}; Orca's single-filament slice never sets it
+        if a.tool is not None or a.pa is not None:  # PRINT_START params Orca never emits: T{tool} and PA
             txt = open(dst).read()
-            txt = re.sub(r'^(PRINT_START[^\n]*?)(?: TOOL=\d+)?$', rf'\1 TOOL={a.tool}', txt, count=1, flags=re.M)
+            if a.tool is not None:  # the Trident's PRINT_START ends with T{tool}; Orca's single-filament slice never sets it
+                txt = re.sub(r'^(PRINT_START[^\n]*?)(?: TOOL=\d+)?$', rf'\1 TOOL={a.tool}', txt, count=1, flags=re.M)
+            if a.pa is not None:
+                txt = re.sub(r'^(PRINT_START[^\n]*?)(?: PA=[\d.]+)?$', rf'\1 PA={a.pa:g}', txt, count=1, flags=re.M)
             open(dst, 'w').write(txt)
         info = {}
         for line in open(dst):
