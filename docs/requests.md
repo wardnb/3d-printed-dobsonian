@@ -47,6 +47,11 @@ Mark a line `[done <date>]` when it lands; keep done items until the next tidy.
   symptom is a row of small gaps where first-layer fill lines start at the walls. Set live to 0.066 (this spool's
   measured value) on pair_150_R at Z 0.09. `slice_trident.py --pa X` now adds it to the PRINT_START line; the four
   socket files get resliced with the new spool's PA (Zyltech ASA matte 0.054; an unmeasured spool 0.055) when it is loaded.
+  `fixture_socket_point_R` started 2026-11-11 14:54 (file `*_gapfill_ibf75_pa054`, PA 0.054 on the PRINT_START line):
+  Nick loaded the Zyltech ASA matte (235 g, Spoolman estimate) in lane 2 and chose to start without weighing it; lane 3
+  (9 g) is set to run out into lane 2 (`SET_RUNOUT LANE=lane3 RUNOUT=lane2`, spool recorded with `forge spool set 2 1`).
+  ~244 g on the machine against 242.3 g sliced plus the lane-change purge, so it may run out in the last layers; the
+  other three sockets need new ASA regardless.
 - **[done 2026-11-04]** Z is now touched off on the block top above the feature (`block_top_z_at_feature_xy`, also in each `.nc` header); X/Y stay on the post with a caliper check against `block_fence_corner_xyz` (block side faces all lean ~13°, so there is no touchable vertical block face). Reasoning in `out/joint_machining/print/README.md`. **Request: let the operator touch off on the BLOCK, not the fixture's datum post.** Printed ASA shrinks
   about 0.4–0.8 % (PLA 0.2–0.4 %), so the fence-to-post distance on a 170–180 mm fixture is off by up to ~0.5 mm, and
   `feature_xyz_from_post_corner` (3.2–4.1" from the post) inherits ~0.3–0.6 mm (0.012–0.025") of that in X/Y. The block
