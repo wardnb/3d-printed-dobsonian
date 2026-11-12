@@ -53,7 +53,10 @@ Mark a line `[done <date>]` when it lands; keep done items until the next tidy.
   ~244 g on the machine against 242.3 g sliced plus the lane-change purge, so it may run out in the last layers; the
   other three sockets need new ASA regardless. **Cancelled 2026-11-11 17:57 after a layer shift** (Nick saw it; a
   few mm sideways somewhere below Z 7.8 mm, 2 h 37 min in, 40 m extruded). The lane 3 → lane 2 runout change at
-  16:29 itself went cleanly (PA and Z offset held). No Klipper errors logged; cause open with the Trident session.
+  16:29 itself went cleanly (PA and Z offset held). No Klipper errors logged. Trident session's read: the shift is
+  between the 16:53 and 17:23 frames, upper layers moved +X and +Y together, which on CoreXY is Klipper's stepper_x
+  motor losing steps (pulley grub screws, belt tension/teeth, or a hot driver in the 50 °C chamber), not a crash;
+  Nick to check that motor's pulley and both belts by hand before the next start; no slicer change.
   Lane 2 now ~176 g: a socket reprint (242 g) needs new ASA. Fixtures done: four pair; to print: all four sockets.
 - **[done 2026-11-04]** Z is now touched off on the block top above the feature (`block_top_z_at_feature_xy`, also in each `.nc` header); X/Y stay on the post with a caliper check against `block_fence_corner_xyz` (block side faces all lean ~13°, so there is no touchable vertical block face). Reasoning in `out/joint_machining/print/README.md`. **Request: let the operator touch off on the BLOCK, not the fixture's datum post.** Printed ASA shrinks
   about 0.4–0.8 % (PLA 0.2–0.4 %), so the fence-to-post distance on a 170–180 mm fixture is off by up to ~0.5 mm, and
